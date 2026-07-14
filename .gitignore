@@ -1,6 +1,6 @@
-public/error_log
-*.log
 vendor/
-app/vendor/
-public/uploads/app/vendor2/
-app/public/uploads/
+vendor2/
+uploads/
+error_log
+*.log
+.env
