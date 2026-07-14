@@ -4,3 +4,4 @@ uploads/
 error_log
 *.log
 .env
+sessions/
