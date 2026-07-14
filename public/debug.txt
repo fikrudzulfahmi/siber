@@ -1,0 +1,6 @@
+Array
+(
+    [id_tahun] => 1
+    [id_guru] => 
+    [id_mapel_guru] => 214
+)

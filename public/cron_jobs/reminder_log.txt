@@ -1,0 +1,61 @@
+[2025-08-27 13:00:03] ===== CRON JOB DIMULAI (VERSI TAHAN BANTING) =====
+[2025-08-27 13:00:03] Koneksi database BERHASIL.
+[2025-08-27 13:00:03] Hari ini: Rabu, 2025-08-27.
+[2025-08-27 13:00:03] Menjalankan kueri untuk mencari guru...
+[2025-08-27 13:00:04] Ditemukan 7656 total jadwal. Akan dikelompokkan menjadi guru unik.
+[2025-08-27 13:00:04] Ditemukan 27 guru unik yang akan dikirimi pesan.
+[2025-08-27 13:00:04] --- Memproses Pesan ke-1 untuk:  ALWI FIKRI KAFFABIHI M, S.Pd  ---
+[2025-08-27 13:00:04] Pesan SUKSES dikirim ke  ALWI FIKRI KAFFABIHI M, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888731"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":903,"remaining":902,"used":1}},"requestid":73525756,"status":true,"target":["6281358826247"]}
+[2025-08-27 13:00:05] --- Memproses Pesan ke-2 untuk:  ANDRIAN WIRA SYAH PUTRA, S.Pd  ---
+[2025-08-27 13:00:05] Pesan SUKSES dikirim ke  ANDRIAN WIRA SYAH PUTRA, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888742"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":902,"remaining":901,"used":1}},"requestid":73525842,"status":true,"target":["6285604534348"]}
+[2025-08-27 13:00:06] --- Memproses Pesan ke-3 untuk:  ASNANDA PRASETYO, S.Pd  ---
+[2025-08-27 13:00:07] Pesan SUKSES dikirim ke  ASNANDA PRASETYO, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888762"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":901,"remaining":900,"used":1}},"requestid":73525990,"status":true,"target":["6285732232696"]}
+[2025-08-27 13:00:08] --- Memproses Pesan ke-4 untuk:  AYUNIN NADHIROH, S.Ag  ---
+[2025-08-27 13:00:08] Pesan SUKSES dikirim ke  AYUNIN NADHIROH, S.Ag . Respons Fonnte: {"detail":"success! message in queue","id":["116888775"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":900,"remaining":899,"used":1}},"requestid":73526076,"status":true,"target":["6285649233779"]}
+[2025-08-27 13:00:09] --- Memproses Pesan ke-5 untuk:  BADI'USSHOLIHAH, S.Pd  ---
+[2025-08-27 13:00:09] Pesan SUKSES dikirim ke  BADI'USSHOLIHAH, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888891"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":899,"remaining":898,"used":1}},"requestid":73526169,"status":true,"target":["6285645774477"]}
+[2025-08-27 13:00:10] --- Memproses Pesan ke-6 untuk:  BADRUZ ZAMAN, S.Pd  ---
+[2025-08-27 13:00:10] Pesan SUKSES dikirim ke  BADRUZ ZAMAN, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888896"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":898,"remaining":897,"used":1}},"requestid":73526234,"status":true,"target":["6282230977330"]}
+[2025-08-27 13:00:11] --- Memproses Pesan ke-7 untuk:  BUDI SANTOSO, S.Sos  ---
+[2025-08-27 13:00:11] Pesan SUKSES dikirim ke  BUDI SANTOSO, S.Sos . Respons Fonnte: {"detail":"success! message in queue","id":["116888900"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":897,"remaining":896,"used":1}},"requestid":73526282,"status":true,"target":["6285746365333"]}
+[2025-08-27 13:00:12] --- Memproses Pesan ke-8 untuk:  DADANG PUGUH SANTOSO, S.Sn  ---
+[2025-08-27 13:00:12] Pesan SUKSES dikirim ke  DADANG PUGUH SANTOSO, S.Sn . Respons Fonnte: {"detail":"success! message in queue","id":["116888910"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":896,"remaining":895,"used":1}},"requestid":73526349,"status":true,"target":["6285749105983"]}
+[2025-08-27 13:00:13] --- Memproses Pesan ke-9 untuk:  DWI LAILATUL AZIZAH, S.E  ---
+[2025-08-27 13:00:13] Pesan SUKSES dikirim ke  DWI LAILATUL AZIZAH, S.E . Respons Fonnte: {"detail":"success! message in queue","id":["116888916"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":895,"remaining":894,"used":1}},"requestid":73526400,"status":true,"target":["6285856962527"]}
+[2025-08-27 13:00:14] --- Memproses Pesan ke-10 untuk:  FENI RAHAYU, S.Pd  ---
+[2025-08-27 13:00:14] Pesan SUKSES dikirim ke  FENI RAHAYU, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888918"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":894,"remaining":893,"used":1}},"requestid":73526448,"status":true,"target":["6285646504787"]}
+[2025-08-27 13:00:15] --- Memproses Pesan ke-11 untuk:  HENDRIK SUTRISNO, S.Pd  ---
+[2025-08-27 13:00:15] Pesan SUKSES dikirim ke  HENDRIK SUTRISNO, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888923"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":893,"remaining":892,"used":1}},"requestid":73526492,"status":true,"target":["6285816508951"]}
+[2025-08-27 13:00:16] --- Memproses Pesan ke-12 untuk:  IZZUN NAFIATUNIS BATUL F., S.Pd  ---
+[2025-08-27 13:00:17] Pesan SUKSES dikirim ke  IZZUN NAFIATUNIS BATUL F., S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888928"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":892,"remaining":891,"used":1}},"requestid":73526526,"status":true,"target":["6285735119674"]}
+[2025-08-27 13:00:18] --- Memproses Pesan ke-13 untuk:  KHALIMATUS SA'DIYAH  ---
+[2025-08-27 13:00:18] Pesan SUKSES dikirim ke  KHALIMATUS SA'DIYAH . Respons Fonnte: {"detail":"success! message in queue","id":["116888933"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":891,"remaining":890,"used":1}},"requestid":73526565,"status":true,"target":["6285763951890"]}
+[2025-08-27 13:00:19] --- Memproses Pesan ke-14 untuk:  M. TSABIT ROHMATULLOH, S.Ag  ---
+[2025-08-27 13:00:19] Pesan SUKSES dikirim ke  M. TSABIT ROHMATULLOH, S.Ag . Respons Fonnte: {"detail":"success! message in queue","id":["116888939"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":890,"remaining":889,"used":1}},"requestid":73526599,"status":true,"target":["6285755765578"]}
+[2025-08-27 13:00:20] --- Memproses Pesan ke-15 untuk:  MAILISY SYARIFAH, S.Pd.I  ---
+[2025-08-27 13:00:20] Pesan SUKSES dikirim ke  MAILISY SYARIFAH, S.Pd.I . Respons Fonnte: {"detail":"success! message in queue","id":["116888946"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":889,"remaining":888,"used":1}},"requestid":73526637,"status":true,"target":["6282142062927"]}
+[2025-08-27 13:00:21] --- Memproses Pesan ke-16 untuk:  NAJMU LAILATUL MUNIROH, S.Pd  ---
+[2025-08-27 13:00:22] Pesan SUKSES dikirim ke  NAJMU LAILATUL MUNIROH, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888952"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":888,"remaining":887,"used":1}},"requestid":73526692,"status":true,"target":["6281556516852"]}
+[2025-08-27 13:00:23] --- Memproses Pesan ke-17 untuk:  NOVIA NANDA RIZKY, S.Pd.I  ---
+[2025-08-27 13:00:23] Pesan SUKSES dikirim ke  NOVIA NANDA RIZKY, S.Pd.I . Respons Fonnte: {"detail":"success! message in queue","id":["116888957"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":887,"remaining":886,"used":1}},"requestid":73526735,"status":true,"target":["628993155993"]}
+[2025-08-27 13:00:24] --- Memproses Pesan ke-18 untuk:  NUR CHOLIFATUS SAADAH, S.Pd  ---
+[2025-08-27 13:00:25] Pesan SUKSES dikirim ke  NUR CHOLIFATUS SAADAH, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888963"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":886,"remaining":885,"used":1}},"requestid":73526776,"status":true,"target":["62895364926523"]}
+[2025-08-27 13:00:26] --- Memproses Pesan ke-19 untuk:  NUZULINA SEPTIKASARI, S.Pd  ---
+[2025-08-27 13:00:26] Pesan SUKSES dikirim ke  NUZULINA SEPTIKASARI, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888966"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":885,"remaining":884,"used":1}},"requestid":73526802,"status":true,"target":["6285707325655"]}
+[2025-08-27 13:00:27] --- Memproses Pesan ke-20 untuk:  PUTRI SETYA UTAMI, M.Pd  ---
+[2025-08-27 13:00:27] Pesan SUKSES dikirim ke  PUTRI SETYA UTAMI, M.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888973"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":884,"remaining":883,"used":1}},"requestid":73526835,"status":true,"target":["6282335692400"]}
+[2025-08-27 13:00:28] --- Memproses Pesan ke-21 untuk:  SULAIMAN, S.Pd  ---
+[2025-08-27 13:00:28] Pesan SUKSES dikirim ke  SULAIMAN, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888978"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":883,"remaining":882,"used":1}},"requestid":73526874,"status":true,"target":["6285646294026"]}
+[2025-08-27 13:00:29] --- Memproses Pesan ke-22 untuk:  TITA SARI INDRIANI, S.Pd  ---
+[2025-08-27 13:00:29] Pesan SUKSES dikirim ke  TITA SARI INDRIANI, S.Pd . Respons Fonnte: {"detail":"success! message in queue","id":["116888986"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":882,"remaining":881,"used":1}},"requestid":73526905,"status":true,"target":["6285729300456"]}
+[2025-08-27 13:00:30] --- Memproses Pesan ke-23 untuk:  UMI CHOBSOH, S.Ag  ---
+[2025-08-27 13:00:30] Pesan SUKSES dikirim ke  UMI CHOBSOH, S.Ag . Respons Fonnte: {"detail":"success! message in queue","id":["116888993"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":881,"remaining":880,"used":1}},"requestid":73526939,"status":true,"target":["6285706765988"]}
+[2025-08-27 13:00:31] --- Memproses Pesan ke-24 untuk:  ZULFA DZATU SHOLIHAH, S.Pd.I  ---
+[2025-08-27 13:00:32] Pesan SUKSES dikirim ke  ZULFA DZATU SHOLIHAH, S.Pd.I . Respons Fonnte: {"detail":"success! message in queue","id":["116888999"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":880,"remaining":879,"used":1}},"requestid":73526973,"status":true,"target":["628563608698"]}
+[2025-08-27 13:00:33] --- Memproses Pesan ke-25 untuk: ALFINATUN NAHDHOH, S.Pd ---
+[2025-08-27 13:00:33] Pesan SUKSES dikirim ke ALFINATUN NAHDHOH, S.Pd. Respons Fonnte: {"detail":"success! message in queue","id":["116889003"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":879,"remaining":878,"used":1}},"requestid":73526998,"status":true,"target":["6285233350571"]}
+[2025-08-27 13:00:34] --- Memproses Pesan ke-26 untuk: MUCHAMAD SYAIFUDIN ZUHRI, S.Pd ---
+[2025-08-27 13:00:34] Pesan SUKSES dikirim ke MUCHAMAD SYAIFUDIN ZUHRI, S.Pd. Respons Fonnte: {"detail":"success! message in queue","id":["116889008"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":878,"remaining":877,"used":1}},"requestid":73527023,"status":true,"target":["6285645810609"]}
+[2025-08-27 13:00:35] --- Memproses Pesan ke-27 untuk: MUFLIHAH, S.Sos ---
+[2025-08-27 13:00:35] Pesan SUKSES dikirim ke MUFLIHAH, S.Sos. Respons Fonnte: {"detail":"success! message in queue","id":["116889015"],"process":"pending","quota":{"6285893888664":{"details":"deduced from total quota","quota":877,"remaining":876,"used":1}},"requestid":73527049,"status":true,"target":["6289602118916"]}
+[2025-08-27 13:00:36] ===== SEMUA PROSES SELESAI (TIDAK ADA LAGI GURU UNTUK DIPROSES) =====

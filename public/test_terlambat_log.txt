@@ -1,0 +1,202 @@
+[2025-09-01 06:56:04] ===== SESI TESTING KETERLAMBATAN DIMULAI (Guru & Tendik) =====
+[2025-09-01 06:56:04] Ditemukan 60 pegawai (Guru/Tendik) dengan jadwal hari ini.
+[2025-09-01 06:56:04] 
+--- Memproses:  IRSADA FITRI ZULKARNAIN, S.S.  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  SAEFUDIN, S.Pd.I (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Aktual: 06:53:50 | Selisih: -21 menit.
+[2025-09-01 06:56:04]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:04] 
+--- Memproses:  EVI MUFIDAH, S.Akun  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  IZZUN NAFIATUNIS BATUL F., S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  WAQIDHATUN MAGHFIROH  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  FENI RAHAYU, S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  BADI'USSHOLIHAH, S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Aktual: 06:52:34 | Selisih: -22 menit.
+[2025-09-01 06:56:04]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:04] 
+--- Memproses:  BAHRUDIN ALWY, S.Pd.I  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Aktual: 06:44:26 | Selisih: -31 menit.
+[2025-09-01 06:56:04]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:04] 
+--- Memproses:  HAFID DWI NURJANAH, S.T  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  WAHYU TRI SUSANTI, S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  LAILATUN AFIFAH  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  WAHYU PRADANA, Amd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:04]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:04] 
+--- Memproses:  RISKA SOFIANI NURHIDAYAH, S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  DWI LAILATUL AZIZAH, S.E  (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  FENDI ARISTIO SAPUTRA  (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  ARIF ASHARUL FAHRUDA  (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: SUNANTO (Jadwal: 22:00) ---
+[2025-09-01 06:56:05]    Aktual: 05:55:42 | Selisih: -964 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses:  MUHAMMAD RISKI FERNANDA (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  DEWI LUTFIYAH, S.Si  (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Aktual: 06:53:54 | Selisih: -21 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses:  UMI CHOBSOH, S.Ag  (Jadwal: 08:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  AYUNIN NADHIROH, S.Ag  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  NAJMU LAILATUL MUNIROH, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  HENDRIK SUTRISNO, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  NUR CHOLIFATUS SAADAH, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: MUCHAMAD SYAIFUDIN ZUHRI, S.Pd (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Aktual: 06:54:41 | Selisih: -20 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses:  TITA SARI INDRIANI, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  SULAIMAN, S.Pd  (Jadwal: 08:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  BADRUZ ZAMAN, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  INDAH SEPTRIANI, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  DADANG PUGUH SANTOSO, S.Sn  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  FITRI PUJI ASTUTIK, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  MAILISY SYARIFAH, S.Pd.I  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  M. BAHRUDIN, S.Pd  (Jadwal: 08:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  UMI ROHMATUL MUDAWAMAH, S.Si  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  LIA ANGGRAINI, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  M. TSABIT ROHMATULLOH, S.Ag  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  NOVIA NANDA RIZKY, S.Pd.I  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  EFI KHOIRUNNISA, S.Pd  (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  ASNANDA PRASETYO, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  ALWI FIKRI KAFFABIHI M, S.Pd  (Jadwal: 08:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  HESTI WULANDARI, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  PUTRI SETYA UTAMI, M.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  SALWA FITRIANA HIDAYAH, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  AMIN NUR ROHMAN, M.Pd.  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  ZULFA DZATU SHOLIHAH, S.Pd.I  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  GUSTINA RIZKI FADILA, S.Pd.  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  USWATUN HASANAH, S.Pd.  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  AHMAD SUHADAK, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  NUZULINA SEPTIKASARI, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  ANDRIAN WIRA SYAH PUTRA, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses:  AKHMAD MUSTAGHISIN RIDLO, S.Pd  (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: ALFINATUN NAHDHOH, S.Pd (Jadwal: 07:45) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: NADIYA NADIRAWATI, S.Psi (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Aktual: 06:48:05 | Selisih: -27 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses: MUFLIHAH, S.Sos (Jadwal: 09:15) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: FATKHUR ROHMAN (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Aktual: 06:06:34 | Selisih: 7 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: TERLAMBAT
+[2025-09-01 06:56:05] 
+--- Memproses: YASINTA UMAR (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Aktual: 06:06:37 | Selisih: 7 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: TERLAMBAT
+[2025-09-01 06:56:05] 
+--- Memproses: MUHAIMIN (Jadwal: 22:00) ---
+[2025-09-01 06:56:05]    Aktual: 06:06:29 | Selisih: -954 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses: WAHYU SASMITO (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Status: Belum Absen / Keterangan bukan 'Hadir'. Dilewati.
+[2025-09-01 06:56:05] 
+--- Memproses: NALA SOVIA (Jadwal: 07:15) ---
+[2025-09-01 06:56:05]    Aktual: 06:49:39 | Selisih: -25 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: Tepat Waktu
+[2025-09-01 06:56:05] 
+--- Memproses: M CHAFID TAMAMI (Jadwal: 06:00) ---
+[2025-09-01 06:56:05]    Aktual: 06:09:27 | Selisih: 9 menit.
+[2025-09-01 06:56:05]    KEPUTUSAN: TERLAMBAT
+[2025-09-01 06:56:05] 
+--- REKAP HASIL TES ---
+[2025-09-01 06:56:05] Total pegawai terdeteksi terlambat: 3
+[2025-09-01 06:56:05] - FATKHUR ROHMAN (Terlambat 7 menit)
+[2025-09-01 06:56:05] - YASINTA UMAR (Terlambat 7 menit)
+[2025-09-01 06:56:05] - M CHAFID TAMAMI (Terlambat 9 menit)
+[2025-09-01 06:56:05] 
+===== SESI TESTING SELESAI =====

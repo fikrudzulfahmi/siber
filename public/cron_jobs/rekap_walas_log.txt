@@ -1,0 +1,70 @@
+[2026-07-13 13:45:05] ===== CRON JOB REKAP WALI KELAS DIMULAI =====
+[2026-07-13 13:45:05] Koneksi database BERHASIL.
+[2026-07-13 13:45:05] MODE DEBUG: NON-AKTIF (KIRIM ASLI)
+[2026-07-13 13:45:05] Mengambil tahun pelajaran yang aktif...
+[2026-07-13 13:45:05] Tahun Pelajaran Aktif terdeteksi dengan ID: 0
+[2026-07-13 13:45:05] Mengambil daftar semua wali kelas aktif...
+[2026-07-13 13:45:05] Ditemukan 30 wali kelas aktif.
+[2026-07-13 13:45:05] Mengambil data absensi hari ini berdasarkan tahun pelajaran aktif...
+[2026-07-13 13:45:05] Berhasil menarik data absensi.
+[2026-07-13 13:45:05] --- Memproses 1:  LIA ANGGRAINI, S.Pd  (X-1) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:05] STATUS: Terkirim ke 6281775121054. Respons: {"reason":"request invalid on disconnected device","requestid":594227912,"status":false}
+[2026-07-13 13:45:07] --- Memproses 2:  ZULFA DZATU SHOLIHAH, S.Pd.I  (X-2) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:07] STATUS: Terkirim ke 628563608698. Respons: {"reason":"request invalid on disconnected device","requestid":594228157,"status":false}
+[2026-07-13 13:45:09] --- Memproses 3:  M. TSABIT ROHMATULLOH, S.Ag  (X-3) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:10] STATUS: Terkirim ke 6285755765578. Respons: {"reason":"request invalid on disconnected device","requestid":594228327,"status":false}
+[2026-07-13 13:45:12] --- Memproses 4:  WAHYU PRADANA, Amd  (X-4) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:12] STATUS: Terkirim ke 6285816215809. Respons: {"reason":"request invalid on disconnected device","requestid":594228479,"status":false}
+[2026-07-13 13:45:14] --- Memproses 5:  EVI MUFIDAH, S.Akun  (XI-A (IPA1)) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:14] STATUS: Terkirim ke 6282264864199. Respons: {"reason":"request invalid on disconnected device","requestid":594228642,"status":false}
+[2026-07-13 13:45:16] --- Memproses 6:  BADRUZ ZAMAN, S.Pd  (XI-B (IPA 2)) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:16] STATUS: Terkirim ke 6282230977330. Respons: {"reason":"request invalid on disconnected device","requestid":594228802,"status":false}
+[2026-07-13 13:45:18] --- Memproses 7: ALFINATUN NAHDHOH, S.Pd (XI-C(AGAMA 1)) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:18] STATUS: Terkirim ke 6285233350571. Respons: {"reason":"request invalid on disconnected device","requestid":594228953,"status":false}
+[2026-07-13 13:45:20] --- Memproses 8:  AMIN NUR ROHMAN, M.Pd.  (XI-D(AGAMA 2)) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:20] STATUS: Terkirim ke 628161861984. Respons: {"reason":"request invalid on disconnected device","requestid":594229114,"status":false}
+[2026-07-13 13:45:22] --- Memproses 9:  AKHMAD MUSTAGHISIN RIDLO, S.Pd  (XII IPA 2) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:22] STATUS: Terkirim ke 6285748821782. Respons: {"reason":"request invalid on disconnected device","requestid":594229285,"status":false}
+[2026-07-13 13:45:24] --- Memproses 10:  NUZULINA SEPTIKASARI, S.Pd  (XII AGAMA 1) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:24] STATUS: Terkirim ke 6285707325655. Respons: {"reason":"request invalid on disconnected device","requestid":594229419,"status":false}
+[2026-07-13 13:45:26] --- Memproses 11:  MAILISY SYARIFAH, S.Pd.I  (XII AGAMA 2) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:26] STATUS: Terkirim ke 6282142062927. Respons: {"reason":"request invalid on disconnected device","requestid":594229523,"status":false}
+[2026-07-13 13:45:28] --- Memproses 12:  NAJMU LAILATUL MUNIROH, S.Pd  (VII A) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:28] STATUS: Terkirim ke 6281556516852. Respons: {"reason":"request invalid on disconnected device","requestid":594229625,"status":false}
+[2026-07-13 13:45:30] --- Memproses 13:  DADANG PUGUH SANTOSO, S.Sn  (VII C) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:30] STATUS: Terkirim ke 6285749105983. Respons: {"reason":"request invalid on disconnected device","requestid":594229728,"status":false}
+[2026-07-13 13:45:32] --- Memproses 14:  EFI KHOIRUNNISA, S.Pd  (VII D) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:32] STATUS: Terkirim ke 6285851301593. Respons: {"reason":"request invalid on disconnected device","requestid":594229823,"status":false}
+[2026-07-13 13:45:34] --- Memproses 15:  FITRI PUJI ASTUTIK, S.Pd  (VII E) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:34] STATUS: Terkirim ke 6285856565861. Respons: {"reason":"request invalid on disconnected device","requestid":594229919,"status":false}
+[2026-07-13 13:45:36] --- Memproses 16:  SALWA FITRIANA HIDAYAH, S.Pd  (VII F) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:36] STATUS: Terkirim ke 6285857022797. Respons: {"reason":"request invalid on disconnected device","requestid":594230029,"status":false}
+[2026-07-13 13:45:38] --- Memproses 17:  RISKA SOFIANI NURHIDAYAH, S.Pd  (VII G) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:38] STATUS: Terkirim ke 6285749394775. Respons: {"reason":"request invalid on disconnected device","requestid":594230145,"status":false}
+[2026-07-13 13:45:40] --- Memproses 18:  HENDRIK SUTRISNO, S.Pd  (VIII A) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:40] STATUS: Terkirim ke 6285816508951. Respons: {"reason":"request invalid on disconnected device","requestid":594230243,"status":false}
+[2026-07-13 13:45:42] --- Memproses 19:  INDAH SEPTRIANI, S.Pd  (VIII B) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:42] STATUS: Terkirim ke 6285784677898. Respons: {"reason":"request invalid on disconnected device","requestid":594230314,"status":false}
+[2026-07-13 13:45:44] --- Memproses 20:  AHMAD SUHADAK, S.Pd  (VIII C) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:44] STATUS: Terkirim ke 6289517614866. Respons: {"reason":"request invalid on disconnected device","requestid":594230402,"status":false}
+[2026-07-13 13:45:46] --- Memproses 21:  UMI ROHMATUL MUDAWAMAH, S.Si  (VIII D) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:46] STATUS: Terkirim ke 6285790808384. Respons: {"reason":"request invalid on disconnected device","requestid":594230507,"status":false}
+[2026-07-13 13:45:48] --- Memproses 22:  NUR CHOLIFATUS SAADAH, S.Pd  (VIII E) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:48] STATUS: Terkirim ke 62895364926523. Respons: {"reason":"request invalid on disconnected device","requestid":594230621,"status":false}
+[2026-07-13 13:45:50] --- Memproses 23:  HESTI WULANDARI, S.Pd  (VIII F) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:50] STATUS: Terkirim ke 6283142890543. Respons: {"reason":"request invalid on disconnected device","requestid":594230726,"status":false}
+[2026-07-13 13:45:52] --- Memproses 24:  AYUNIN NADHIROH, S.Ag  (IX A) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:52] STATUS: Terkirim ke 6285649233779. Respons: {"reason":"request invalid on disconnected device","requestid":594230830,"status":false}
+[2026-07-13 13:45:54] --- Memproses 25:  USWATUN HASANAH, S.Pd.  (IX B) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:54] STATUS: Terkirim ke 6285718142467. Respons: {"reason":"request invalid on disconnected device","requestid":594230934,"status":false}
+[2026-07-13 13:45:56] --- Memproses 26:  ANDRIAN WIRA SYAH PUTRA, S.Pd  (IX C) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:56] STATUS: Terkirim ke 6285604534348. Respons: {"reason":"request invalid on disconnected device","requestid":594231040,"status":false}
+[2026-07-13 13:45:58] --- Memproses 27:  KHALIMATUS SA'DIYAH  (IX D) | Status: BELUM PRESENSI ---
+[2026-07-13 13:45:58] STATUS: Terkirim ke 6285763951890. Respons: {"reason":"request invalid on disconnected device","requestid":594231145,"status":false}
+[2026-07-13 13:46:00] --- Memproses 28:  NOVIA NANDA RIZKY, S.Pd.I  (IX E) | Status: BELUM PRESENSI ---
+[2026-07-13 13:46:00] STATUS: Terkirim ke 628993155993. Respons: {"reason":"request invalid on disconnected device","requestid":594231257,"status":false}
+[2026-07-13 13:46:02] --- Memproses 29:  TITA SARI INDRIANI, S.Pd  (IX F) | Status: BELUM PRESENSI ---
+[2026-07-13 13:46:02] STATUS: Terkirim ke 6285729300456. Respons: {"reason":"request invalid on disconnected device","requestid":594231405,"status":false}
+[2026-07-13 13:46:04] --- Memproses 30:  RISKA SOFIANI NURHIDAYAH, S.Pd  (VIII G) | Status: BELUM PRESENSI ---
+[2026-07-13 13:46:04] STATUS: Terkirim ke 6285749394775. Respons: {"reason":"request invalid on disconnected device","requestid":594231675,"status":false}
+[2026-07-13 13:46:06] ===== SEMUA PROSES SELESAI =====

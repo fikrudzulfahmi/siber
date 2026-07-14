@@ -1,0 +1,6 @@
+[2026-07-13 14:00:06] ===== CRON JOB REKAP KETERLAMBATAN DIMULAI =====
+[2026-07-13 14:00:06] MODE DEBUG: NON-AKTIF (MASUK ANTRIAN WA)
+[2026-07-13 14:00:06] Memproses rekap untuk 1 nomor pimpinan...
+[2026-07-13 14:00:07] -> Pesan disimpan ke tabel outbox_wa (pending) untuk: 6281216898874
+[2026-07-13 14:00:07] 
+===== SEMUA PROSES SELESAI =====

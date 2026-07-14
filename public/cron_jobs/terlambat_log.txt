@@ -1,0 +1,167 @@
+[2026-07-14 13:30:05] ===== CRON JOB NOTIFIKASI KETERLAMBATAN DIMULAI =====
+[2026-07-14 13:30:05] MODE DEBUG: NON-AKTIF (KIRIM ASLI)
+[2026-07-14 13:30:05] 
+--- Memproses:  IRSADA FITRI ZULKARNAIN, S.S.  (Jadwal: 07:00) ---
+[2026-07-14 13:30:05] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:05] 
+--- Memproses:  SAEFUDIN, S.Pd.I (Jadwal: 07:00) ---
+[2026-07-14 13:30:05] KEPUTUSAN: TERLAMBAT (5 Menit).
+[2026-07-14 13:30:05] STATUS: Pesan dikirim ke 082228024263. Respons: {"reason":"request invalid on disconnected device","requestid":596216876,"status":false}
+[2026-07-14 13:30:07] 
+--- Memproses:  EVI MUFIDAH, S.Akun  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:07] 
+--- Memproses:  IZZUN NAFIATUNIS BATUL F., S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:07] 
+--- Memproses:  WAQIDHATUN MAGHFIROH  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:07] 
+--- Memproses:  FENI RAHAYU, S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:07] 
+--- Memproses:  BADI'USSHOLIHAH, S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:07] 
+--- Memproses:  BAHRUDIN ALWY, S.Pd.I  (Jadwal: 07:00) ---
+[2026-07-14 13:30:07] KEPUTUSAN: BELUM ABSEN / TIDAK HADIR.
+[2026-07-14 13:30:07] 
+--- Memproses:  HAFID DWI NURJANAH, S.T  (Jadwal: 07:00) ---
+[2026-07-14 13:30:08] KEPUTUSAN: TERLAMBAT (5 Menit).
+[2026-07-14 13:30:08] STATUS: Pesan dikirim ke  085815352721. Respons: {"reason":"request invalid on disconnected device","requestid":596217170,"status":false}
+[2026-07-14 13:30:10] 
+--- Memproses:  WAHYU TRI SUSANTI, S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:10] KEPUTUSAN: TERLAMBAT (26 Menit).
+[2026-07-14 13:30:10] STATUS: Pesan dikirim ke 085707673201. Respons: {"reason":"request invalid on disconnected device","requestid":596217307,"status":false}
+[2026-07-14 13:30:12] 
+--- Memproses:  LAILATUN AFIFAH  (Jadwal: 07:00) ---
+[2026-07-14 13:30:12] KEPUTUSAN: TERLAMBAT (5 Menit).
+[2026-07-14 13:30:12] STATUS: Pesan dikirim ke 085855549967. Respons: {"reason":"request invalid on disconnected device","requestid":596217445,"status":false}
+[2026-07-14 13:30:14] 
+--- Memproses:  WAHYU PRADANA, Amd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:14] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:14] 
+--- Memproses:  RISKA SOFIANI NURHIDAYAH, S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:14] KEPUTUSAN: TERLAMBAT (12 Menit).
+[2026-07-14 13:30:14] STATUS: Pesan dikirim ke 085749394775. Respons: {"reason":"request invalid on disconnected device","requestid":596217585,"status":false}
+[2026-07-14 13:30:16] 
+--- Memproses:  DWI LAILATUL AZIZAH, S.E  (Jadwal: 07:00) ---
+[2026-07-14 13:30:16] KEPUTUSAN: TERLAMBAT (16 Menit).
+[2026-07-14 13:30:16] STATUS: Pesan dikirim ke 085856962527. Respons: {"reason":"request invalid on disconnected device","requestid":596217670,"status":false}
+[2026-07-14 13:30:18] 
+--- Memproses: MUHAMMAD RISKI FERNANDA (Jadwal: 07:00) ---
+[2026-07-14 13:30:18] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:18] 
+--- Memproses:  DEWI LUTFIYAH, S.Si  (Jadwal: 07:00) ---
+[2026-07-14 13:30:18] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:18] 
+--- Memproses:  UMI CHOBSOH, S.Ag  (Jadwal: 08:45) ---
+[2026-07-14 13:30:18] KEPUTUSAN: BELUM ABSEN / TIDAK HADIR.
+[2026-07-14 13:30:18] 
+--- Memproses:  AYUNIN NADHIROH, S.Ag  (Jadwal: 08:00) ---
+[2026-07-14 13:30:18] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:18] 
+--- Memproses:  BUDI SANTOSO, S.Sos  (Jadwal: 08:00) ---
+[2026-07-14 13:30:18] KEPUTUSAN: TERLAMBAT (4 Menit).
+[2026-07-14 13:30:18] STATUS: Pesan dikirim ke 085746365333. Respons: {"reason":"request invalid on disconnected device","requestid":596217795,"status":false}
+[2026-07-14 13:30:20] 
+--- Memproses:  HENDRIK SUTRISNO, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  NUR CHOLIFATUS SAADAH, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses: MUCHAMAD SYAIFUDIN ZUHRI, S.Pd (Jadwal: 07:00) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  TITA SARI INDRIANI, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  SULAIMAN, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  BADRUZ ZAMAN, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  DADANG PUGUH SANTOSO, S.Sn  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  FITRI PUJI ASTUTIK, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:20] 
+--- Memproses:  MAILISY SYARIFAH, S.Pd.I  (Jadwal: 07:00) ---
+[2026-07-14 13:30:20] KEPUTUSAN: TERLAMBAT (17 Menit).
+[2026-07-14 13:30:20] STATUS: Pesan dikirim ke 082142062927. Respons: {"reason":"request invalid on disconnected device","requestid":596217926,"status":false}
+[2026-07-14 13:30:22] 
+--- Memproses:  M. BAHRUDIN, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:22] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:22] 
+--- Memproses:  UMI ROHMATUL MUDAWAMAH, S.Si  (Jadwal: 08:00) ---
+[2026-07-14 13:30:22] KEPUTUSAN: TERLAMBAT (2 Menit).
+[2026-07-14 13:30:22] STATUS: Pesan dikirim ke 085790808384. Respons: {"reason":"request invalid on disconnected device","requestid":596218061,"status":false}
+[2026-07-14 13:30:24] 
+--- Memproses:  LIA ANGGRAINI, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:24] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:24] 
+--- Memproses:  M. TSABIT ROHMATULLOH, S.Ag  (Jadwal: 08:45) ---
+[2026-07-14 13:30:24] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:24] 
+--- Memproses:  NOVIA NANDA RIZKY, S.Pd.I  (Jadwal: 08:45) ---
+[2026-07-14 13:30:24] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:24] 
+--- Memproses:  EFI KHOIRUNNISA, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:24] KEPUTUSAN: TERLAMBAT (52 Menit).
+[2026-07-14 13:30:24] STATUS: Pesan dikirim ke 085851301593. Respons: {"reason":"request invalid on disconnected device","requestid":596218186,"status":false}
+[2026-07-14 13:30:26] 
+--- Memproses:  ASNANDA PRASETYO, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:26] KEPUTUSAN: BELUM ABSEN / TIDAK HADIR.
+[2026-07-14 13:30:26] 
+--- Memproses:  ALWI FIKRI KAFFABIHI M, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:26] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:26] 
+--- Memproses:  HESTI WULANDARI, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:26] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:26] 
+--- Memproses:  KHALIMATUS SA'DIYAH  (Jadwal: 08:45) ---
+[2026-07-14 13:30:26] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:26] 
+--- Memproses:  SALWA FITRIANA HIDAYAH, S.Pd  (Jadwal: 07:00) ---
+[2026-07-14 13:30:26] KEPUTUSAN: TERLAMBAT (73 Menit).
+[2026-07-14 13:30:26] STATUS: Pesan dikirim ke 085857022797. Respons: {"reason":"request invalid on disconnected device","requestid":596218271,"status":false}
+[2026-07-14 13:30:28] 
+--- Memproses:  AMIN NUR ROHMAN, M.Pd.  (Jadwal: 08:00) ---
+[2026-07-14 13:30:28] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:28] 
+--- Memproses:  ZULFA DZATU SHOLIHAH, S.Pd.I  (Jadwal: 08:45) ---
+[2026-07-14 13:30:28] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:28] 
+--- Memproses:  GUSTINA RIZKI FADILA, S.Pd.  (Jadwal: 08:45) ---
+[2026-07-14 13:30:28] KEPUTUSAN: BELUM ABSEN / TIDAK HADIR.
+[2026-07-14 13:30:28] 
+--- Memproses:  AHMAD SUHADAK, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:28] KEPUTUSAN: TERLAMBAT (6 Menit).
+[2026-07-14 13:30:28] STATUS: Pesan dikirim ke 089517614866. Respons: {"reason":"request invalid on disconnected device","requestid":596218323,"status":false}
+[2026-07-14 13:30:30] 
+--- Memproses:  NUZULINA SEPTIKASARI, S.Pd  (Jadwal: 08:45) ---
+[2026-07-14 13:30:30] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:30] 
+--- Memproses:  ANDRIAN WIRA SYAH PUTRA, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:30] KEPUTUSAN: TERLAMBAT (11 Menit).
+[2026-07-14 13:30:30] STATUS: Pesan dikirim ke 085604534348. Respons: {"reason":"request invalid on disconnected device","requestid":596218378,"status":false}
+[2026-07-14 13:30:32] 
+--- Memproses:  AKHMAD MUSTAGHISIN RIDLO, S.Pd  (Jadwal: 08:00) ---
+[2026-07-14 13:30:32] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:32] 
+--- Memproses: ALFINATUN NAHDHOH, S.Pd (Jadwal: 08:45) ---
+[2026-07-14 13:30:32] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:32] 
+--- Memproses: NADIYA NADIRAWATI, S.Psi (Jadwal: 07:00) ---
+[2026-07-14 13:30:32] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:32] 
+--- Memproses: AFINA AFIDHOTUN NISA, S.Pd (Jadwal: 08:45) ---
+[2026-07-14 13:30:32] KEPUTUSAN: BELUM ABSEN / TIDAK HADIR.
+[2026-07-14 13:30:32] 
+--- Memproses: NALA SOVIA (Jadwal: 07:00) ---
+[2026-07-14 13:30:32] KEPUTUSAN: TEPAT WAKTU.
+[2026-07-14 13:30:32] 
+===== SEMUA PROSES SELESAI =====
