@@ -8,25 +8,26 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
 }
 
 // File: rekap_terlambat.php
-// VERSI ADAPTASI WA GATEWAY SENDIRI (Tanpa Fonnte)
+// VERSI FINAL: Ditambahkan Fitur Debug Mode dari Database
 
 // --- KONFIGURASI ---
 $dbHost = 'localhost';
 $dbName = 'u607305378_siber';
 $dbUser = 'u607305378_siber';
 $dbPass = 'root@P4ssw0rd';
+$fonnteToken = 'ZFUkS3d6pgPT1vRgfuLV';
 $logFile = __DIR__ . '/rekap_terlambat_log.txt';
 $toleransiKeterlambatan = 1; // Menit
 $idJabatanSatpam = 3;
 $debugMode = true; // Default awal
 
 $nomorTujuanRekap = [
-    // '6285790900076',
-    // '6285645810609',
-    // '6285815543137',
-    // '6285735119674',
-    // '6282139315007',
-    '6281216898874', //nomor fikru untuk tes 
+    '6285790900076',
+    '6285645810609',
+    '6285815543137',
+    '6285735119674',
+    '6282139315007',
+    // '6281216898874', nomor fikru untuk tes 
 ];
 // --------------------
 
@@ -61,10 +62,12 @@ try {
     $stmtSetting->execute();
     $rowSetting = $stmtSetting->fetch(PDO::FETCH_ASSOC);
 
+    // Jika DB status 'true' -> Debug Off (Kirim WA)
+    // Jika DB status 'false' -> Debug On (Simulasi)
     $dbStatus = $rowSetting ? $rowSetting['status'] : 'false';
     $debugMode = ($dbStatus === 'false');
 
-    write_log("MODE DEBUG: " . ($debugMode ? "AKTIF (SIMULASI)" : "NON-AKTIF (MASUK ANTRIAN WA)"));
+    write_log("MODE DEBUG: " . ($debugMode ? "AKTIF (SIMULASI)" : "NON-AKTIF (KIRIM ASLI)"));
     // ----------------------------------------------
 
     // Cek hari libur
@@ -115,17 +118,18 @@ try {
             $selisihMenit = round((strtotime($pegawai['jam_absen_aktual']) - strtotime($pegawai['jam_masuk_seharusnya'])) / 60);
             $jamAktualFormatted = date('H:i', strtotime($pegawai['jam_absen_aktual']));
             $namaClean = trim($pegawai['nama']);
-            $daftarTerlambat[] = "{$no}. *{$namaClean}* (Masuk: " . date('H:i', strtotime($pegawai['jam_masuk_seharusnya'])) . ", Absen: {$jamAktualFormatted}, Telat: {$selisihMenit} mnt)";
+            $daftarTerlambat[] = "{$no}. *{$namaClean}* (Jam masuk seharusnya: " . date('H:i', strtotime($pegawai['jam_masuk_seharusnya'])) . ", Absen: {$jamAktualFormatted}, Terlambat: {$selisihMenit} menit)";
             $no++;
         }
         $pesan = "*Laporan Keterlambatan Harian* 📋\n\n" .
             "Yth. Bapak/Ibu Pimpinan,\n\n" .
-            "Berikut rekapitulasi pegawai terlambat hari ini, " . date('d F Y') . ":\n\n" .
+            "Berikut adalah rekapitulasi pegawai yang terlambat pada hari ini, " . date('d F Y') . ":\n\n" .
             implode("\n", $daftarTerlambat) . "\n\n" .
-            "Mohon untuk ditindaklanjuti.\n\n*SIBER PPRM*";
+            "Mohon untuk ditindaklanjuti.\n\n" .
+            "*SIBER PPRM*";
     }
 
-    // Eksekusi Pengiriman (Insert ke Database Hosting)
+    // Eksekusi Pengiriman
     write_log("Memproses rekap untuk " . count($nomorTujuanRekap) . " nomor pimpinan...");
 
     if ($debugMode) {
@@ -133,14 +137,20 @@ try {
         write_log("\n----------------------------\n" . $pesan . "\n----------------------------");
     }
 
-    // Siapkan query insert
-    $stmtInsert = $pdo->prepare("INSERT INTO outbox_wa (nomor, pesan, status) VALUES (?, ?, 'pending')");
-
     foreach ($nomorTujuanRekap as $nomor) {
         if (!$debugMode) {
-            // Masukkan ke tabel antrian hosting, bukan cURL ke fonnte
-            $stmtInsert->execute([$nomor, $pesan]);
-            write_log("-> Pesan disimpan ke tabel outbox_wa (pending) untuk: {$nomor}");
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.fonnte.com/send',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => ['target' => $nomor, 'message' => $pesan],
+                CURLOPT_HTTPHEADER => ["Authorization: {$fonnteToken}"],
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+            write_log("-> Mengirim ke: {$nomor}. Respons: {$response}");
+            sleep(2);
         } else {
             write_log("-> [SIMULASI] Ke nomor pimpinan: {$nomor}");
         }
