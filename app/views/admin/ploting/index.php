@@ -90,6 +90,11 @@
                     <i class="fas fa-arrow-right fa-2x"></i>
                 </button>
                 <div class="mt-2 font-weight-bold text-success">PROSES</div>
+
+                <button id="btnLuluskan" class="btn btn-warning btn-sm shadow rounded-circle p-3 mt-4">
+                    <i class="fas fa-user-graduate"></i>
+                </button>
+                <div class="mt-2 font-weight-bold text-warning" style="font-size: 0.8rem;">LULUSKAN</div>
             </div>
         </div>
 
@@ -174,7 +179,9 @@
         if (mode === 'baru') {
             // Mode Siswa Baru: tidak butuh kelas asal
             url = '?controller=ploting&method=get_siswa_baru';
-            ajaxData = { id_tahun: id_tahun };
+            ajaxData = {
+                id_tahun: id_tahun
+            };
         } else {
             // Mode Pindah Kelas: butuh kelas asal juga
             let id_kelas = $('#kls_asal').val();
@@ -183,7 +190,10 @@
                 return;
             }
             url = '?controller=ploting&method=get_data_siswa';
-            ajaxData = { id_kelas: id_kelas, id_tahun: id_tahun };
+            ajaxData = {
+                id_kelas: id_kelas,
+                id_tahun: id_tahun
+            };
         }
 
         $('#list_siswa_asal').html('<tr><td colspan="3">Loading...</td></tr>');
@@ -196,9 +206,9 @@
             success: function(response) {
                 let html = '';
                 if (response.length === 0) {
-                    let pesan = (mode === 'baru')
-                        ? 'Semua siswa sudah punya kelas di tahun ini'
-                        : 'Tidak ada data siswa ditemukan';
+                    let pesan = (mode === 'baru') ?
+                        'Semua siswa sudah punya kelas di tahun ini' :
+                        'Tidak ada data siswa ditemukan';
                     html = `<tr><td colspan="3" class="text-danger">${pesan}</td></tr>`;
                 } else {
                     $.each(response, function(i, item) {
@@ -251,6 +261,57 @@
             }
         });
     }
+
+    // --- 3b. EKSEKUSI LULUSKAN SISWA ---
+    $('#btnLuluskan').click(function() {
+        let ids = [];
+        $('.check-item:checked').each(function() {
+            ids.push($(this).val());
+        });
+
+        let id_tahun = $('#th_asal').val(); // tahun ajaran saat siswa lulus
+
+        if (ids.length === 0) {
+            Swal.fire('Gagal', 'Belum ada siswa yang dicentang di tabel kiri!', 'error');
+            return;
+        }
+        if (id_tahun == '') {
+            Swal.fire('Gagal', 'Pilih Tahun Ajaran (kiri) dahulu sebagai tahun kelulusan!', 'error');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Konfirmasi Kelulusan',
+            text: `Yakin ingin meluluskan ${ids.length} siswa? Siswa TIDAK akan dimasukkan ke kelas manapun.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Luluskan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '?controller=ploting&method=luluskan',
+                    type: 'POST',
+                    data: {
+                        ids_siswa: ids,
+                        id_tahun: id_tahun
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        Swal.fire('Selesai!', response.msg, 'success');
+
+                        loadSiswaAsal(); // Refresh kiri (siswa yg lulus akan hilang dari daftar)
+
+                        $('.check-item').prop('checked', false);
+                        $('#checkAll').prop('checked', false);
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Gagal memproses kelulusan.', 'error');
+                    }
+                });
+            }
+        });
+    });
 
     // --- 3. Check All Checkbox ---
     $('#checkAll').click(function() {

@@ -96,4 +96,32 @@ class PlotingController extends BaseController
         ]);
         exit;
     }
+
+    // API untuk AJAX: Meluluskan siswa terpilih (tidak dimasukkan ke kelas manapun)
+    public function luluskan()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        $ids_siswa = $_POST['ids_siswa'] ?? [];
+        $id_tahun = $_POST['id_tahun'] ?? 0;
+
+        $model = new Ploting($this->db);
+        $sukses = 0;
+
+        foreach ($ids_siswa as $id_siswa) {
+            $model->luluskanSiswa($id_siswa, $id_tahun);
+            $sukses++;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'success',
+            'msg' => "$sukses siswa berhasil diluluskan.",
+            'inserted' => $sukses
+        ]);
+        exit;
+    }
 }

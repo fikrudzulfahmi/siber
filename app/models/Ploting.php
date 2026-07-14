@@ -37,11 +37,13 @@ class Ploting
 
     // Ambil siswa yang BELUM punya kelas di tahun ajaran tertentu
     // (termasuk siswa baru yang belum pernah diplot sama sekali)
+    // Siswa yang sudah berstatus 'lulus' tidak ikut ditampilkan
     public function getSiswaBelumPunyaKelas($id_tahun)
     {
         $sql = "SELECT s.id_siswa, s.nama_siswa, s.nisn
                 FROM siswa s
-                WHERE NOT EXISTS (
+                WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                AND NOT EXISTS (
                     SELECT 1 FROM ploting_siswa ps
                     WHERE ps.id_siswa = s.id_siswa AND ps.id_tahun = ?
                 )
@@ -50,6 +52,16 @@ class Ploting
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_tahun]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Tandai siswa sebagai LULUS di tahun ajaran tertentu
+    // Siswa tidak dimasukkan ke ploting_siswa manapun, cukup update status
+    public function luluskanSiswa($id_siswa, $id_tahun)
+    {
+        $stmt = $this->db->prepare(
+            "UPDATE siswa SET status_siswa = 'lulus', tahun_lulus = ? WHERE id_siswa = ?"
+        );
+        return $stmt->execute([$id_tahun, $id_siswa]);
     }
 
     // Cek apakah siswa sudah ada di tahun ajaran tujuan (supaya tidak ganda)
