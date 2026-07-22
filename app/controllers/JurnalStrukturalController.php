@@ -150,8 +150,13 @@ class JurnalStrukturalController
             exit;
         }
 
-        // MASTER program kerja (dropdown)
-        $programKerja = $model->getAllProgramKerja();
+        $programModel = new ProgramKerjaModel($this->db);
+
+        // MASTER program kerja (dropdown) HANYA milik user
+        $programKerja = $programModel->getByUserAndTahun(
+            $id_user,
+            $jurnal['id_tahun_pelajaran']
+        );
 
         // DETAIL jurnal
         $programList = $model->getProgramKerjaByJurnal($id_jurnal);
