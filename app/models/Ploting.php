@@ -28,6 +28,7 @@ class Ploting
                 FROM ploting_siswa ps
                 JOIN siswa s ON s.id_siswa = ps.id_siswa
                 WHERE ps.id_kelas = ? AND ps.id_tahun = ?
+                AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
                 ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
