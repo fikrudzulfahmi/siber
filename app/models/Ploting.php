@@ -36,6 +36,23 @@ class Ploting
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Ambil data siswa lengkap untuk Export Excel
+    public function getSiswaLengkapByKelasTahun($id_kelas, $id_tahun)
+    {
+        $sql = "SELECT s.*, ps.id_ploting, k.kelas as nama_kelas, t.tahun_pelajaran 
+                FROM ploting_siswa ps
+                JOIN siswa s ON s.id_siswa = ps.id_siswa
+                JOIN kelas k ON k.id_kelas = ps.id_kelas
+                JOIN tahun_pelajaran t ON t.id_tahun_pelajaran = ps.id_tahun
+                WHERE ps.id_kelas = ? AND ps.id_tahun = ?
+                AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                ORDER BY s.nama_siswa ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id_kelas, $id_tahun]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Ambil siswa yang BELUM punya kelas di tahun ajaran tertentu
     // (termasuk siswa baru yang belum pernah diplot sama sekali)
     // Siswa yang sudah berstatus 'lulus' tidak ikut ditampilkan

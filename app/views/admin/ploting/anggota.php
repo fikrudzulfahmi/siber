@@ -59,8 +59,11 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header pb-0">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h6>Daftar Siswa</h6>
+                    <a href="#" id="btnExport" class="btn btn-sm btn-success mb-0 d-none" target="_blank">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </a>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
@@ -112,7 +115,9 @@
                     let html = '';
                     if (response.length === 0) {
                         html = '<tr><td colspan="3" class="text-danger py-4">Tidak ada anggota di kelas ini.</td></tr>';
+                        $('#btnExport').addClass('d-none');
                     } else {
+                        $('#btnExport').attr('href', `?controller=ploting&method=export_excel&id_tahun=${id_tahun}&id_kelas=${id_kelas}`).removeClass('d-none');
                         $.each(response, function(i, item) {
                             html += `<tr>
                                 <td><p class="text-xs font-weight-bold mb-0">${i + 1}</p></td>

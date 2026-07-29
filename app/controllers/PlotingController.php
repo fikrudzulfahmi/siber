@@ -135,4 +135,71 @@ class PlotingController extends BaseController
         ]);
         exit;
     }
+
+    // Export Data Anggota Kelas Lengkap ke Excel
+    public function export_excel()
+    {
+        $id_kelas = $_GET['id_kelas'] ?? 0;
+        $id_tahun = $_GET['id_tahun'] ?? 0;
+
+        $model = new Ploting($this->db);
+        $data_siswa = $model->getSiswaLengkapByKelasTahun($id_kelas, $id_tahun);
+
+        if (empty($data_siswa)) {
+            setFlash('error', 'Tidak ada data siswa untuk diexport pada kelas dan tahun ajaran tersebut.');
+            header('Location: ?controller=ploting&method=anggota');
+            exit;
+        }
+
+        $nama_kelas = $data_siswa[0]['nama_kelas'];
+        // Ganti karakter '/' agar aman untuk nama file (misal 2026/2027 jadi 2026-2027)
+        $tahun_ajaran = str_replace('/', '-', $data_siswa[0]['tahun_pelajaran']);
+        
+        require_once __DIR__ . '/../vendor2/autoload.php';
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header
+        $headers = ['No', 'Nama Siswa', 'NISN', 'Tempat Lahir', 'Tanggal Lahir', 'Alamat', 'Nama Wali', 'No. HP Wali'];
+        $col = 'A';
+        foreach ($headers as $h) {
+            $sheet->setCellValue($col . '1', $h);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $col++;
+        }
+
+        $rowNum = 2;
+        $no = 1;
+        foreach ($data_siswa as $row) {
+            $sheet->setCellValue('A' . $rowNum, $no++);
+            $sheet->setCellValue('B' . $rowNum, $row['nama_siswa']);
+            $sheet->setCellValueExplicit('C' . $rowNum, $row['nisn'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('D' . $rowNum, $row['tempat_lhr']);
+            $sheet->setCellValue('E' . $rowNum, $row['tgl_lhr']);
+            $sheet->setCellValue('F' . $rowNum, $row['alamat']);
+            $sheet->setCellValue('G' . $rowNum, $row['nama_wali']);
+            $sheet->setCellValueExplicit('H' . $rowNum, $row['hp_wali'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $rowNum++;
+        }
+
+        foreach (range('A', 'H') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $filename = "Data_Siswa_{$nama_kelas}_{$tahun_ajaran}.xlsx";
+
+        // Bersihkan output buffer jika ada sebelumnya (mencegah file excel rusak)
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
 }
