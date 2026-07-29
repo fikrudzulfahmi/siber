@@ -21,6 +21,17 @@ class PlotingController extends BaseController
         require __DIR__ . '/../views/admin/ploting/index.php';
     }
 
+    public function anggota()
+    {
+        $model = new Ploting($this->db);
+
+        // Siapkan data untuk dropdown filter
+        $tahun_ajaran = $model->getAllTahun();
+        $daftar_kelas = $model->getAllKelas();
+
+        require __DIR__ . '/../views/admin/ploting/anggota.php';
+    }
+
     // API untuk AJAX: Mengambil daftar siswa
     public function get_data_siswa()
     {

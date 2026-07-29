@@ -114,7 +114,13 @@ if (!function_exists('collapseItem')) {
                     ' . (
                         // Data Siswa: Admin (1), Kesiswaan (6), Level 7
                         (isAnyLevel($id_level, [1, 6, 7]) ?
-                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=index"><i class="material-icons me-2 opacity-10">groups</i> Ploting Kelas</a></li>'
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") && (!isset($_GET["method"]) || $_GET["method"] === "index") ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=index"><i class="material-icons me-2 opacity-10">groups</i> Ploting Kelas</a></li>'
+                            : '')
+                    ) . '
+                    ' . (
+                        // Anggota Kelas: Admin (1), Kesiswaan (6), Level 7
+                        (isAnyLevel($id_level, [1, 6, 7]) ?
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") && isset($_GET["method"]) && $_GET["method"] === "anggota" ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=anggota"><i class="material-icons me-2 opacity-10">people</i> Anggota Kelas</a></li>'
                             : '')
                     ) . '
 
@@ -550,7 +556,13 @@ if (!function_exists('collapseItem')) {
                     ' . (
                         // Data Siswa: Admin (1), Kesiswaan (6), Level 7
                         (isAnyLevel($id_level, [1, 6, 7]) ?
-                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=index"><i class="material-icons me-2 opacity-10">groups</i> Ploting Kelas</a></li>'
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") && (!isset($_GET["method"]) || $_GET["method"] === "index") ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=index"><i class="material-icons me-2 opacity-10">groups</i> Ploting Kelas</a></li>'
+                            : '')
+                    ) . '
+                    ' . (
+                        // Anggota Kelas: Admin (1), Kesiswaan (6), Level 7
+                        (isAnyLevel($id_level, [1, 6, 7]) ?
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("ploting") && isset($_GET["method"]) && $_GET["method"] === "anggota" ? "active bg-gradient-success" : "") . '" href="?controller=ploting&method=anggota"><i class="material-icons me-2 opacity-10">people</i> Anggota Kelas</a></li>'
                             : '')
                     ) . '
 
