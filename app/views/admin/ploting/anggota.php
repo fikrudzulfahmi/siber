@@ -44,8 +44,9 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-2 mb-3 d-flex align-items-end">
-                            <button id="btnCari" class="btn btn-success w-100">
+                        <div class="col-md-2 mb-3">
+                            <label class="d-none d-md-block">&nbsp;</label>
+                            <button id="btnCari" class="btn btn-success w-100 mb-0">
                                 <i class="fas fa-search"></i> Cari
                             </button>
                         </div>
@@ -66,9 +67,9 @@
                         <table class="table align-items-center mb-0 text-center">
                             <thead class="table-dark text-white">
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="5%">No</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Siswa</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NISN</th>
+                                    <th class="text-uppercase text-white text-xs font-weight-bolder" width="5%">No</th>
+                                    <th class="text-uppercase text-white text-xs font-weight-bolder text-start ps-4">Nama Siswa</th>
+                                    <th class="text-uppercase text-white text-xs font-weight-bolder">NISN</th>
                                 </tr>
                             </thead>
                             <tbody id="list_anggota_kelas">
