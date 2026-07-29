@@ -93,18 +93,15 @@ class SiswaController extends BaseController
                     $row = $rows[$i];
                     if (empty($row[1])) continue; // Skip jika nama kosong
 
-                    // Cari ID Kelas dari nama di Excel
-                    $id_kelas = $model->getIdKelasByNama($row[5]);
-
                     $data = [
-                        'nama_siswa' => $row[1],
-                        'nisn'       => $row[2],
-                        'tempat_lhr' => $row[3],
-                        'tgl_lhr'    => date('Y-m-d', strtotime($row[4])),
-                        'id_kelas'   => $id_kelas, // Pass ID kelas (bisa null jika tidak ketemu)
-                        'alamat'     => $row[6],
-                        'nama_wali'  => $row[7],
-                        'hp_wali'    => $row[8],
+                        'nama_siswa' => $row[1] ?? '',
+                        'nisn'       => $row[2] ?? '',
+                        'tempat_lhr' => $row[3] ?? '',
+                        'tgl_lhr'    => date('Y-m-d', strtotime($row[4] ?? '')),
+                        'id_kelas'   => null, // Kelas tidak lagi di-upload lewat Excel
+                        'alamat'     => $row[5] ?? '',
+                        'nama_wali'  => $row[6] ?? '',
+                        'hp_wali'    => $row[7] ?? '',
                     ];
 
                     // Fungsi insert model sudah otomatis handle ploting
