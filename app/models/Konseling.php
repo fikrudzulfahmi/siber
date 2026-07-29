@@ -266,7 +266,7 @@ class Konseling
 
         // Tambahkan filter untuk Wali Kelas
         if ($id_level == 3 && $id_user) {
-            $sql .= " JOIN siswa s ON k.id_siswa = s.id_siswa JOIN kelas kel ON s.id_kelas = kel.id_kelas WHERE kel.wali_kelas = ? AND k.tanggal_masalah BETWEEN ? AND ?";
+            $sql .= " JOIN siswa s ON k.id_siswa = s.id_siswa JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa JOIN kelas kel ON ps.id_kelas = kel.id_kelas WHERE kel.wali_kelas = ? AND k.tanggal_masalah BETWEEN ? AND ?";
             $params = [$id_user, $start, $end];
         } else {
             $sql .= " WHERE k.tanggal_masalah BETWEEN ? AND ?";
@@ -310,7 +310,8 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN kelas kel ON s.id_kelas = kel.id_kelas
+            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
+            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.tanggal_masalah BETWEEN ? AND ?
         ";
@@ -365,8 +366,9 @@ class Konseling
         $sql = "
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
-            JOIN siswa s ON s.id_siswa = s.id_siswa
-            JOIN kelas kel ON s.id_kelas = kel.id_kelas
+            JOIN siswa s ON s.id_siswa = k.id_siswa
+            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
+            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_kategori = ?
         ";
@@ -402,7 +404,8 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN kelas kel ON s.id_kelas = kel.id_kelas
+            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
+            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_siswa = ?
             ORDER BY k.tanggal_masalah ASC
