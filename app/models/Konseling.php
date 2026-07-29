@@ -12,12 +12,8 @@ class Konseling
     private function applyWaliKelasFilter(&$sql, &$params, $id_level, $id_user)
     {
         if ($id_level == 3 && $id_user) {
-            // Join ke ploting_siswa jika belum ada
-            if (strpos($sql, 'JOIN ploting_siswa ps') === false) {
-                $sql .= " JOIN ploting_siswa ps ON k.id_siswa = ps.id_siswa";
-            }
             if (strpos($sql, 'JOIN kelas kel') === false) {
-                $sql .= " JOIN kelas kel ON ps.id_kelas = kel.id_kelas";
+                $sql .= " JOIN kelas kel ON k.id_kelas = kel.id_kelas";
             }
 
             $sql .= (strpos($sql, 'WHERE') === false) ? " WHERE kel.wali_kelas = ?" : " AND kel.wali_kelas = ?";
@@ -39,15 +35,14 @@ class Konseling
              WHERE FIND_IN_SET(e.id_employe, k.id_employee)) AS nama_petugas
         FROM konseling k
         JOIN siswa s ON s.id_siswa = k.id_siswa
-        JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-        JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+        JOIN kelas kel ON k.id_kelas = kel.id_kelas
         JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
     ";
 
         $params = [];
 
         if ($id_kelas !== null) {
-            $sql .= " WHERE ps.id_kelas = :id_kelas";
+            $sql .= " WHERE k.id_kelas = :id_kelas";
             $params[':id_kelas'] = $id_kelas;
         }
 
@@ -95,11 +90,10 @@ class Konseling
     public function find($id)
     {
         $sql = "
-            SELECT k.*, s.nama_siswa, ps.id_kelas, kel.kelas, kat.nama_kategori 
+            SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori 
             FROM konseling k 
             JOIN siswa s ON s.id_siswa = k.id_siswa 
-            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas 
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas 
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori 
             WHERE k.id_konseling = ?
         ";
@@ -216,8 +210,7 @@ class Konseling
         $params = [];
 
         if ($id_level == 3 && $id_user) {
-            $sql .= " JOIN ploting_siswa ps ON k.id_siswa = ps.id_siswa 
-                      JOIN kelas kel ON ps.id_kelas = kel.id_kelas 
+            $sql .= " JOIN kelas kel ON k.id_kelas = kel.id_kelas 
                       WHERE kel.wali_kelas = ? AND k.tanggal_masalah BETWEEN ? AND ?";
             $params = [$id_user, $start, $end];
         } else {
@@ -237,8 +230,7 @@ class Konseling
         $sql = "
             SELECT kel.kelas, COUNT(*) as total
             FROM konseling k
-            JOIN ploting_siswa ps ON k.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas
         ";
         $params = [];
 
@@ -266,7 +258,7 @@ class Konseling
 
         // Tambahkan filter untuk Wali Kelas
         if ($id_level == 3 && $id_user) {
-            $sql .= " JOIN siswa s ON k.id_siswa = s.id_siswa JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa JOIN kelas kel ON ps.id_kelas = kel.id_kelas WHERE kel.wali_kelas = ? AND k.tanggal_masalah BETWEEN ? AND ?";
+            $sql .= " JOIN siswa s ON k.id_siswa = s.id_siswa JOIN kelas kel ON k.id_kelas = kel.id_kelas WHERE kel.wali_kelas = ? AND k.tanggal_masalah BETWEEN ? AND ?";
             $params = [$id_user, $start, $end];
         } else {
             $sql .= " WHERE k.tanggal_masalah BETWEEN ? AND ?";
@@ -310,8 +302,7 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.tanggal_masalah BETWEEN ? AND ?
         ";
@@ -367,8 +358,7 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_kategori = ?
         ";
@@ -388,10 +378,9 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
-            WHERE ps.id_kelas = ?
+            WHERE k.id_kelas = ?
             ORDER BY k.tanggal_masalah ASC
         ");
         $stmt->execute([$id_kelas]);
@@ -404,8 +393,7 @@ class Konseling
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
-            JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
-            JOIN kelas kel ON ps.id_kelas = kel.id_kelas
+            JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_siswa = ?
             ORDER BY k.tanggal_masalah ASC
