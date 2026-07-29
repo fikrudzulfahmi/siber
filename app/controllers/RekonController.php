@@ -127,11 +127,13 @@ class RekonController extends BaseController
                 break;
             case 'kelas':
                 $id_kelas = $_GET['id_kelas'];
-                $data = $this->model->getByKelas($id_kelas); // Filter by kelas sudah spesifik
+                $id_tp = !empty($_GET['id_tahun_pelajaran']) ? $_GET['id_tahun_pelajaran'] : null;
+                $data = $this->model->getByKelas($id_kelas, $id_tp);
                 break;
             case 'siswa':
                 $id_siswa = $_GET['id_siswa'];
-                $data = $this->model->getBySiswa($id_siswa); // Filter by siswa sudah spesifik
+                $id_tp = !empty($_GET['id_tahun_pelajaran']) ? $_GET['id_tahun_pelajaran'] : null;
+                $data = $this->model->getBySiswa($id_siswa, $id_tp);
                 break;
         }
 

@@ -93,9 +93,10 @@
                                 <input type="date" name="end_date" class="form-control" value="<?= date('Y-m-t') ?>">
                             </div>
 
-                            <div class="col-md-3 mode-input mode-semester d-none">
+                            <div class="col-md-3 mode-input mode-semester mode-kelas mode-siswa d-none">
                                 <label class="form-label mb-1">Tahun Pelajaran:</label>
                                 <select name="id_tahun_pelajaran" class="form-control">
+                                    <option value="">-- Semua Semester --</option>
                                     <?php foreach ($tahunPelajaran as $tp): ?>
                                         <option value="<?= $tp['id_tahun_pelajaran'] ?>">
                                             <?= $tp['tahun_pelajaran'] ?> (<?= ucfirst($tp['semester']) ?>)

@@ -371,34 +371,79 @@ class Konseling
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // 🔹 Filter Berdasarkan Kelas
-    public function getByKelas($id_kelas)
+    public function getByKelas($id_kelas, $id_tp = null)
     {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
             JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_kelas = ?
-            ORDER BY k.tanggal_masalah ASC
-        ");
-        $stmt->execute([$id_kelas]);
+        ";
+        $params = [$id_kelas];
+
+        if (!empty($id_tp)) {
+            $tp = $this->db->prepare("SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran = ?");
+            $tp->execute([$id_tp]);
+            $row = $tp->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                $tahun = explode('/', $row['tahun_pelajaran']);
+                if (strtolower($row['semester']) === 'ganjil') {
+                    $start = $tahun[0] . "-07-01";
+                    $end = $tahun[0] . "-12-31";
+                } else {
+                    $start = $tahun[1] . "-01-01";
+                    $end = $tahun[1] . "-06-30";
+                }
+                $sql .= " AND k.tanggal_masalah BETWEEN ? AND ?";
+                $params[] = $start;
+                $params[] = $end;
+            }
+        }
+
+        $sql .= " ORDER BY k.tanggal_masalah ASC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getBySiswa($id_siswa)
+    public function getBySiswa($id_siswa, $id_tp = null)
     {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT k.*, s.nama_siswa, kel.kelas, kat.nama_kategori
             FROM konseling k
             JOIN siswa s ON s.id_siswa = k.id_siswa
             JOIN kelas kel ON k.id_kelas = kel.id_kelas
             LEFT JOIN kategori_permasalahan kat ON kat.id_kategori = k.id_kategori
             WHERE k.id_siswa = ?
-            ORDER BY k.tanggal_masalah ASC
-        ");
-        $stmt->execute([$id_siswa]);
+        ";
+        $params = [$id_siswa];
+
+        if (!empty($id_tp)) {
+            $tp = $this->db->prepare("SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran = ?");
+            $tp->execute([$id_tp]);
+            $row = $tp->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                $tahun = explode('/', $row['tahun_pelajaran']);
+                if (strtolower($row['semester']) === 'ganjil') {
+                    $start = $tahun[0] . "-07-01";
+                    $end = $tahun[0] . "-12-31";
+                } else {
+                    $start = $tahun[1] . "-01-01";
+                    $end = $tahun[1] . "-06-30";
+                }
+                $sql .= " AND k.tanggal_masalah BETWEEN ? AND ?";
+                $params[] = $start;
+                $params[] = $end;
+            }
+        }
+
+        $sql .= " ORDER BY k.tanggal_masalah ASC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function allKategori()
