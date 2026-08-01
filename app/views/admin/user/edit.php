@@ -221,6 +221,7 @@
                                             <div class="modal-content">
                                                 <form action="?controller=user&method=deleteJadwal" method="POST">
                                                     <input type="hidden" name="id" value="<?= $j['id_jadwal'] ?>">
+                                                    <input type="hidden" name="id_user" value="<?= $user['id_employe'] ?>">
                                                     <!-- Modal Body -->
                                                     <div class="modal-body">
                                                         <div class="text-center">

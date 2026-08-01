@@ -89,7 +89,13 @@ class BackupController extends BaseController
         $base64Data = base64_encode($sqlScript);
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
-        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? GOOGLE_DRIVE_FOLDER_ID : '';
+        
+        // Ambil Folder ID langsung dari config.php untuk menghindari cache
+        $folderId = '';
+        $cfgPath = __DIR__ . '/../config.php';
+        if (file_exists($cfgPath) && preg_match("/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'(.*?)'\);/", file_get_contents($cfgPath), $m)) {
+            $folderId = $m[1];
+        }
 
         $postData = http_build_query([
             'secret' => $secretKey,
@@ -142,7 +148,13 @@ class BackupController extends BaseController
         $base64Data = base64_encode($sqlScript);
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
-        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? GOOGLE_DRIVE_FOLDER_ID : '';
+        
+        // Ambil Folder ID langsung dari config.php untuk menghindari cache
+        $folderId = '';
+        $cfgPath = __DIR__ . '/../config.php';
+        if (file_exists($cfgPath) && preg_match("/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'(.*?)'\);/", file_get_contents($cfgPath), $m)) {
+            $folderId = $m[1];
+        }
 
         $postData = http_build_query([
             'secret' => $secretKey,

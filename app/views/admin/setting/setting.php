@@ -179,13 +179,24 @@
                         <p class="text-sm text-secondary mb-0">Ambil kombinasi huruf dan angka di belakang /folders/.</p>
                     </div>
                     <div class="card-body p-3">
+                        <?php
+                            $realFolderId = '';
+                            $configPath = __DIR__ . '/../../../config.php';
+                            if (file_exists($configPath)) {
+                                $cfg = file_get_contents($configPath);
+                                if (preg_match("/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'(.*?)'\);/", $cfg, $matches)) {
+                                    $realFolderId = $matches[1];
+                                }
+                            }
+                        ?>
                         <form action="?controller=setting&method=updateFolderIdConfig" method="POST">
                             <div class="row">
                                 <div class="col-md-9">
-                                    <div class="input-group input-group-outline mb-3 is-filled">
+                                    <div class="input-group input-group-outline mb-1 is-filled">
                                         <label class="form-label">Google Drive Folder ID</label>
-                                        <input type="text" name="folder_id" class="form-control" value="<?= defined('GOOGLE_DRIVE_FOLDER_ID') ? htmlspecialchars(GOOGLE_DRIVE_FOLDER_ID) : '' ?>" placeholder="Contoh: 1A2b3C4d5E6f7G8h9I0j" required>
+                                        <input type="text" name="folder_id" class="form-control" value="<?= htmlspecialchars($realFolderId) ?>" placeholder="Contoh: 1A2b3C4d5E6f7G8h9I0j" required>
                                     </div>
+                                    <small class="text-success text-xs fw-bold">ID Tersimpan saat ini: <?= htmlspecialchars($realFolderId ?: 'Belum ada') ?></small>
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary w-100">Simpan ID Folder</button>
