@@ -8,7 +8,14 @@ class BackupController extends BaseController
 
     public function __construct($pdo)
     {
-        parent::__construct($pdo);
+        // Jika yang dipanggil adalah autoBackup (Cron), jangan cek login di parent
+        $method = $_GET['method'] ?? '';
+        if ($method === 'autoBackup') {
+            $this->db = $pdo;
+        } else {
+            parent::__construct($pdo);
+        }
+        
         // Pastikan config sudah dimuat
         if (!defined('GOOGLE_DRIVE_WEBHOOK_URL')) {
             require_once __DIR__ . '/../config.php';
