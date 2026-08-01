@@ -95,32 +95,34 @@ class SettingController
         exit;
     }
 
-    public function updateGoogleDriveConfig()
+    public function updateFolderIdConfig()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $webhook_url = $_POST['webhook_url'] ?? '';
-            $secret_key = $_POST['secret_key'] ?? '';
+            $folder_id = $_POST['folder_id'] ?? '';
 
             $configFile = __DIR__ . '/../config.php';
             if (file_exists($configFile) && is_writable($configFile)) {
                 $configContent = file_get_contents($configFile);
 
-                // Regex untuk mengganti nilai define
-                $configContent = preg_replace(
-                    "/define\('GOOGLE_DRIVE_WEBHOOK_URL',\s*'.*?'\);/",
-                    "define('GOOGLE_DRIVE_WEBHOOK_URL', '" . addslashes($webhook_url) . "');",
-                    $configContent
-                );
-
-                $configContent = preg_replace(
-                    "/define\('GOOGLE_DRIVE_SECRET_KEY',\s*'.*?'\);/",
-                    "define('GOOGLE_DRIVE_SECRET_KEY', '" . addslashes($secret_key) . "');",
-                    $configContent
-                );
+                // Jika konstanta GOOGLE_DRIVE_FOLDER_ID sudah ada, replace nilainya
+                if (strpos($configContent, "define('GOOGLE_DRIVE_FOLDER_ID'") !== false) {
+                    $configContent = preg_replace(
+                        "/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'.*?'\);/",
+                        "define('GOOGLE_DRIVE_FOLDER_ID', '" . addslashes($folder_id) . "');",
+                        $configContent
+                    );
+                } else {
+                    // Jika belum ada, tambahkan di baris baru setelah GOOGLE_DRIVE_SECRET_KEY
+                    $configContent = preg_replace(
+                        "/(define\('GOOGLE_DRIVE_SECRET_KEY',\s*'.*?'\);)/",
+                        "$1\ndefine('GOOGLE_DRIVE_FOLDER_ID', '" . addslashes($folder_id) . "');",
+                        $configContent
+                    );
+                }
 
                 file_put_contents($configFile, $configContent);
 
-                echo "<script>alert('Konfigurasi Google Drive berhasil disimpan!'); window.location.href='?controller=setting&method=index';</script>";
+                echo "<script>alert('ID Folder Google Drive berhasil disimpan!'); window.location.href='?controller=setting&method=index';</script>";
             } else {
                 echo "<script>alert('Gagal! File config.php tidak memiliki izin tulis (writeable).'); window.location.href='?controller=setting&method=index';</script>";
             }

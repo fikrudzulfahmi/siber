@@ -89,9 +89,11 @@ class BackupController extends BaseController
         $base64Data = base64_encode($sqlScript);
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
+        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? GOOGLE_DRIVE_FOLDER_ID : '';
 
         $postData = http_build_query([
             'secret' => $secretKey,
+            'folder_id' => $folderId,
             'filename' => $filename,
             'file_base64' => $base64Data
         ]);
@@ -140,9 +142,11 @@ class BackupController extends BaseController
         $base64Data = base64_encode($sqlScript);
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
+        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? GOOGLE_DRIVE_FOLDER_ID : '';
 
         $postData = http_build_query([
             'secret' => $secretKey,
+            'folder_id' => $folderId,
             'filename' => $filename,
             'file_base64' => $base64Data
         ]);

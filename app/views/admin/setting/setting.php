@@ -168,31 +168,27 @@
             </div>
         </div>
         
-        <!-- Card Konfigurasi Google Drive -->
+        <!-- Card Konfigurasi Folder Google Drive -->
         <div class="row mt-4">
             <div class="col-lg-12 col-md-12 mx-auto mb-4">
                 <div class="card">
                     <div class="card-header pb-0 p-3">
-                        <h6 class="mb-0">Konfigurasi Google Drive Webhook</h6>
-                        <p class="text-sm text-secondary mb-0">Atur tautan Webhook dari Google Apps Script dan Secret Key Anda untuk fitur Auto Backup.</p>
+                        <h6 class="mb-0">Konfigurasi Folder Google Drive</h6>
+                        <p class="text-sm text-secondary mb-0">Atur ID Folder Google Drive yang akan digunakan untuk menampung file backup Anda secara otomatis.</p>
                     </div>
                     <div class="card-body p-3">
-                        <form action="?controller=setting&method=updateGoogleDriveConfig" method="POST">
+                        <form action="?controller=setting&method=updateFolderIdConfig" method="POST">
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-9">
                                     <div class="input-group input-group-outline mb-3 is-filled">
-                                        <label class="form-label">Google Drive Webhook URL</label>
-                                        <input type="text" name="webhook_url" class="form-control" value="<?= defined('GOOGLE_DRIVE_WEBHOOK_URL') ? htmlspecialchars(GOOGLE_DRIVE_WEBHOOK_URL) : '' ?>" required>
+                                        <label class="form-label">Google Drive Folder ID</label>
+                                        <input type="text" name="folder_id" class="form-control" value="<?= defined('GOOGLE_DRIVE_FOLDER_ID') ? htmlspecialchars(GOOGLE_DRIVE_FOLDER_ID) : '' ?>" placeholder="Contoh: 1A2b3C4d5E6f7G8h9I0j" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-outline mb-3 is-filled">
-                                        <label class="form-label">Secret Key</label>
-                                        <input type="text" name="secret_key" class="form-control" value="<?= defined('GOOGLE_DRIVE_SECRET_KEY') ? htmlspecialchars(GOOGLE_DRIVE_SECRET_KEY) : '' ?>" required>
-                                    </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary w-100">Simpan ID Folder</button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Simpan Konfigurasi</button>
                         </form>
                     </div>
                 </div>
