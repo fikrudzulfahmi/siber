@@ -72,8 +72,21 @@ class Repres
                 $isLibur = $stmtLibur->fetch(PDO::FETCH_ASSOC);
 
                 // --- LOGIKA UTAMA ---
+                $isSatpam = ($pegawai['id_jabatan'] == 3);
 
-                // KONDISI A: PEGAWAI MELAKUKAN SCAN (Hadir di hari apapun)
+                // Abaikan jika tidak ada jadwal (Sesuai dengan Rekap Individu)
+                if (!$jadwal || $jadwal['jam_masuk'] === null) {
+                    $currentDate->modify('+1 day');
+                    continue;
+                }
+
+                // Abaikan jika hari libur dan bukan Satpam (Sesuai dengan Rekap Individu)
+                if ($isLibur && !$isSatpam) {
+                    $currentDate->modify('+1 day');
+                    continue;
+                }
+
+                // KONDISI A: PEGAWAI MELAKUKAN SCAN
                 if ($datang) {
                     $summary['Hari_Efektif']++;
 
@@ -86,14 +99,16 @@ class Repres
                         $summary['Kehadiran']++;
 
                         // Hitung Terlambat & Pulang Cepat
-                        $jamJadwalMasuk = ($jadwal && $jadwal['jam_masuk']) ? $jadwal['jam_masuk'] : '08:00:00';
-                        $jamJadwalPulang = ($jadwal && $jadwal['jam_pulang']) ? $jadwal['jam_pulang'] : '16:00:00';
+                        $jamJadwalMasuk = $jadwal['jam_masuk'];
+                        $jamJadwalPulang = $jadwal['jam_pulang'];
 
                         $waktuDatangAktual = strtotime($datang['scan_date']);
                         $waktuDatangJadwal = strtotime($tanggal . ' ' . $jamJadwalMasuk);
                         if ($waktuDatangAktual > $waktuDatangJadwal) {
                             $selisih = round(($waktuDatangAktual - $waktuDatangJadwal) / 60);
-                            if ($selisih > 0) $summary['Terlambat']++;
+                            if ($selisih > 1) { // Toleransi keterlambatan 1 menit
+                                $summary['Terlambat']++;
+                            }
                         }
 
                         if ($pulang) {
@@ -101,24 +116,17 @@ class Repres
                             $waktuPulangJadwal = strtotime($tanggal . ' ' . $jamJadwalPulang);
                             if ($waktuPulangAktual < $waktuPulangJadwal) {
                                 $selisih = round(($waktuPulangJadwal - $waktuPulangAktual) / 60);
-                                if ($selisih > 0) $summary['Pulang_Cepat']++;
+                                if ($selisih > 0) {
+                                    $summary['Pulang_Cepat']++;
+                                }
                             }
                         }
                     }
                 }
                 // KONDISI B: PEGAWAI TIDAK MELAKUKAN SCAN
                 else {
-                    // --- UBAHAN 2: Cek apakah dia Satpam ---
-                    $isSatpam = ($pegawai['id_jabatan'] == 3);
-
-                    // Hanya dihitung Alpa jika: Dia PUNYA jadwal
-                    if ($jadwal && $jadwal['jam_masuk'] !== null) {
-                        // Jika BUKAN libur nasional, ATAU jika dia adalah Satpam (Satpam trabas libur)
-                        if (!$isLibur || $isSatpam) {
-                            $summary['Hari_Efektif']++;
-                            $summary['Alpa']++;
-                        }
-                    }
+                    $summary['Hari_Efektif']++;
+                    $summary['Alpa']++;
                 }
 
                 $currentDate->modify('+1 day');
