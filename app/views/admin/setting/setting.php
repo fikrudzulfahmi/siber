@@ -175,7 +175,8 @@
                     <div class="card-header pb-0 p-3">
                         <h6 class="mb-0">Konfigurasi Folder Google Drive</h6>
                         <p class="text-sm text-secondary mb-0">Atur ID Folder Google Drive yang akan digunakan untuk menampung file backup Anda secara otomatis.</p>
-                    </div>
+                        <p class="text-sm text-secondary mb-0">COntoh : https://drive.google.com/drive/u/0/folders/1Addxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                        <p class="text-sm text-secondary mb-0">ambil kombinasi huruf NGK di belakang /folders/
                     <div class="card-body p-3">
                         <form action="?controller=setting&method=updateFolderIdConfig" method="POST">
                             <div class="row">
