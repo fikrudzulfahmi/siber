@@ -22,5 +22,5 @@ define('WHATSAPP_RECIPIENTS', [
 // Konfigurasi Google Drive Webhook untuk Auto Backup
 define('GOOGLE_DRIVE_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbw80hxm_meKP_VjOKS2rkrVNbm6JbQlErvZgqXKZSMtP-aKhlNu91t9W96FvYcdQCN0dg/exec');
 define('GOOGLE_DRIVE_SECRET_KEY', 'TUsmekisa1968'); // Harus sama dengan SECRET_KEY di Google Apps Script
-define('GOOGLE_DRIVE_FOLDER_ID', ''); // Simpan Folder ID untuk upload otomatis
+define('GOOGLE_DRIVE_FOLDER_ID', '13yUQjoLBTAMMZ4YP2XN3zagFHysja2G5'); // Simpan Folder ID untuk upload otomatis
 
