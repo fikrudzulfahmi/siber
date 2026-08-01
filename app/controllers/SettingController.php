@@ -94,4 +94,39 @@ class SettingController
         }
         exit;
     }
+
+    public function updateGoogleDriveConfig()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $webhook_url = $_POST['webhook_url'] ?? '';
+            $secret_key = $_POST['secret_key'] ?? '';
+
+            $configFile = __DIR__ . '/../config.php';
+            if (file_exists($configFile) && is_writable($configFile)) {
+                $configContent = file_get_contents($configFile);
+
+                // Regex untuk mengganti nilai define
+                $configContent = preg_replace(
+                    "/define\('GOOGLE_DRIVE_WEBHOOK_URL',\s*'.*?'\);/",
+                    "define('GOOGLE_DRIVE_WEBHOOK_URL', '" . addslashes($webhook_url) . "');",
+                    $configContent
+                );
+
+                $configContent = preg_replace(
+                    "/define\('GOOGLE_DRIVE_SECRET_KEY',\s*'.*?'\);/",
+                    "define('GOOGLE_DRIVE_SECRET_KEY', '" . addslashes($secret_key) . "');",
+                    $configContent
+                );
+
+                file_put_contents($configFile, $configContent);
+
+                echo "<script>alert('Konfigurasi Google Drive berhasil disimpan!'); window.location.href='?controller=setting&method=index';</script>";
+            } else {
+                echo "<script>alert('Gagal! File config.php tidak memiliki izin tulis (writeable).'); window.location.href='?controller=setting&method=index';</script>";
+            }
+        } else {
+            header('Location: ?controller=setting&method=index');
+        }
+        exit;
+    }
 }
