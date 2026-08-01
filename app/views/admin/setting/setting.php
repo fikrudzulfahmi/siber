@@ -125,6 +125,58 @@
             </div>
         </div>
 
+        <!-- Start Backup & Restore Card -->
+        <div class="col-lg-12 col-md-12 mx-auto mt-4">
+            <div class="card">
+                <div class="card-header p-3 pt-2">
+                    <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                        <i class="material-icons opacity-10">storage</i>
+                    </div>
+
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize">Manajemen Data</p>
+                        <h4 class="mb-0">Backup & Restore Database</h4>
+                    </div>
+                </div>
+                
+                <hr class="dark horizontal my-0">
+                
+                <div class="card-body p-3">
+                    <div class="row mt-3">
+                        <!-- Kolom Backup -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-dark font-weight-bolder">Backup Database</h6>
+                            <p class="text-xs text-secondary mb-3">Unduh salinan database ke perangkat lokal atau unggah otomatis ke Google Drive.</p>
+                            
+                            <a href="?controller=backup&method=manualBackup" class="btn btn-sm btn-info w-100 mb-2">
+                                <i class="material-icons text-sm">download</i> Download Backup Manual
+                            </a>
+                            
+                            <a href="?controller=backup&method=uploadToGoogleDrive" class="btn btn-sm btn-success w-100" onclick="return confirm('Apakah Anda yakin ingin memulai proses backup ke Google Drive? Proses ini mungkin membutuhkan waktu beberapa saat.')">
+                                <i class="material-icons text-sm">cloud_upload</i> Backup ke Google Drive
+                            </a>
+                        </div>
+                        
+                        <!-- Kolom Restore -->
+                        <div class="col-md-6">
+                            <h6 class="text-dark font-weight-bolder">Restore Database</h6>
+                            <p class="text-xs text-secondary mb-3">Pulihkan data dari file .sql hasil backup sebelumnya. <span class="text-danger">Peringatan: Data lama akan tertimpa!</span></p>
+                            
+                            <form action="?controller=backup&method=restore" method="POST" enctype="multipart/form-data" onsubmit="return confirm('PERINGATAN! Semua data yang ada saat ini akan dihapus dan diganti dengan data dari file backup. Lanjutkan?');">
+                                <div class="input-group input-group-outline mb-3">
+                                    <input type="file" name="backup_file" class="form-control" accept=".sql" required>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                    <i class="material-icons text-sm">restore</i> Restore Database
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Backup & Restore Card -->
+
     </div>
 </div>
 

@@ -18,3 +18,8 @@ define('WHATSAPP_RECIPIENTS', [
     '6285735119674',
     '6282139315007',
 ]);
+
+// Konfigurasi Google Drive Webhook untuk Auto Backup
+define('GOOGLE_DRIVE_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbw1bjdJhWfIUx1qK1OKh0i5js33g4jFR5JEYn04ezkvj_kN-I9dk47POByosKn63Nv3nQ/exec');
+define('GOOGLE_DRIVE_SECRET_KEY', 'TUsmekisa1968'); // Harus sama dengan SECRET_KEY di Google Apps Script
+

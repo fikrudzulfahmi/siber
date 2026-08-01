@@ -23,6 +23,7 @@ log_message("--- REQUEST BARU MASUK ---"); // ✅ JEJAK 1
 // Daftar controller-method yang bebas akses
 $freeAccess = [
     'auth' => ['login', 'logout'],
+    'backup' => ['autoBackup'], // Bebas akses untuk Cron, pengecekan pakai TOKEN
 ];
 
 // Tangkap controller dan method
