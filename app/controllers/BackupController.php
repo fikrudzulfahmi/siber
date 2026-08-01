@@ -4,12 +4,19 @@ require_once 'BaseController.php';
 
 class BackupController extends BaseController
 {
+    private $backupDir;
+
     public function __construct($pdo)
     {
         parent::__construct($pdo);
         // Pastikan config sudah dimuat
         if (!defined('GOOGLE_DRIVE_WEBHOOK_URL')) {
             require_once __DIR__ . '/../config.php';
+        }
+        
+        $this->backupDir = __DIR__ . '/../../public/backups/';
+        if (!is_dir($this->backupDir)) {
+            mkdir($this->backupDir, 0777, true);
         }
     }
 
@@ -66,19 +73,48 @@ class BackupController extends BaseController
     }
 
     /**
-     * Download Backup secara manual
+     * Membuat Backup secara manual:
+     * Menyimpan di folder lokal & Upload ke Google Drive
      */
-    public function manualBackup()
+    public function createBackup()
     {
-        $databaseName = "backup_siber_" . date("Ymd_His") . ".sql";
+        $filename = "backup_siber_" . date("Ymd_His") . ".sql";
         $sqlScript = $this->exportDb();
 
-        header('Content-Type: application/sql');
-        header('Content-Disposition: attachment; filename="' . $databaseName . '"');
-        header('Cache-Control: private, max-age=0, must-revalidate');
-        header('Pragma: public');
+        // 1. Simpan file secara lokal
+        $filePath = $this->backupDir . $filename;
+        file_put_contents($filePath, $sqlScript);
+
+        // 2. Upload ke Google Drive
+        $base64Data = base64_encode($sqlScript);
+        $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
+        $secretKey = GOOGLE_DRIVE_SECRET_KEY;
+
+        $postData = http_build_query([
+            'secret' => $secretKey,
+            'filename' => $filename,
+            'file_base64' => $base64Data
+        ]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Timeout 60 detik
         
-        echo $sqlScript;
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $resData = json_decode($response, true);
+        
+        // 3. Redirect ke Halaman Setting
+        if ($resData && isset($resData['status']) && $resData['status'] === 'success') {
+            echo "<script>alert('Backup berhasil disimpan lokal dan diunggah ke Google Drive!'); window.location.href='?controller=setting&method=index';</script>";
+        } else {
+            $errorMsg = $resData['message'] ?? 'Unknown error';
+            echo "<script>alert('Backup disimpan lokal, TETAPI gagal diunggah ke Google Drive: $errorMsg'); window.location.href='?controller=setting&method=index';</script>";
+        }
         exit;
     }
 
@@ -93,19 +129,15 @@ class BackupController extends BaseController
             die(json_encode(['status' => 'error', 'message' => 'Token tidak valid']));
         }
 
-        $this->uploadToGoogleDrive(true);
-    }
-
-    /**
-     * Upload hasil backup ke Google Drive via Webhook (Google Apps Script)
-     */
-    public function uploadToGoogleDrive($isCron = false)
-    {
-        $filename = "backup_siber_" . date("Ymd_His") . ".sql";
+        $filename = "backup_siber_auto_" . date("Ymd_His") . ".sql";
         $sqlScript = $this->exportDb();
-        
-        $base64Data = base64_encode($sqlScript);
 
+        // 1. Simpan secara lokal
+        $filePath = $this->backupDir . $filename;
+        file_put_contents($filePath, $sqlScript);
+
+        // 2. Upload ke Google Drive
+        $base64Data = base64_encode($sqlScript);
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
 
@@ -122,23 +154,52 @@ class BackupController extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         
         $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($isCron) {
-            header('Content-Type: application/json');
-            echo $response;
+        header('Content-Type: application/json');
+        echo $response;
+        exit;
+    }
+
+    /**
+     * Download Backup Lokal
+     */
+    public function downloadBackup()
+    {
+        $file = $_GET['file'] ?? '';
+        $filePath = $this->backupDir . basename($file);
+
+        if ($file && file_exists($filePath)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/sql');
+            header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filePath));
+            readfile($filePath);
             exit;
         } else {
-            // Jika dipanggil dari UI manual
-            $resData = json_decode($response, true);
-            if ($resData && isset($resData['status']) && $resData['status'] === 'success') {
-                echo "<script>alert('Backup berhasil diunggah ke Google Drive!'); window.location.href='?controller=setting&method=index';</script>";
-            } else {
-                $errorMsg = $resData['message'] ?? 'Unknown error';
-                echo "<script>alert('Gagal mengunggah backup: $errorMsg'); window.location.href='?controller=setting&method=index';</script>";
-            }
+            echo "<script>alert('File tidak ditemukan!'); window.location.href='?controller=setting&method=index';</script>";
+            exit;
         }
+    }
+
+    /**
+     * Hapus Backup Lokal
+     */
+    public function deleteBackup()
+    {
+        $file = $_GET['file'] ?? '';
+        $filePath = $this->backupDir . basename($file);
+
+        if ($file && file_exists($filePath)) {
+            unlink($filePath);
+            echo "<script>alert('File backup berhasil dihapus.'); window.location.href='?controller=setting&method=index';</script>";
+        } else {
+            echo "<script>alert('File tidak ditemukan!'); window.location.href='?controller=setting&method=index';</script>";
+        }
+        exit;
     }
 
     /**

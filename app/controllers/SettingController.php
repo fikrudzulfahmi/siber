@@ -33,6 +33,40 @@ class SettingController
 
         // Data ini akan dikirim ke view
         $data['last_ping'] = $data_server['last_ping'];
+        
+        // --- LOGIKA RIWAYAT BACKUP ---
+        $backupDir = __DIR__ . '/../../public/backups/';
+        $riwayat_backup = [];
+        if (is_dir($backupDir)) {
+            $files = array_diff(scandir($backupDir), array('.', '..'));
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_EXTENSION) === 'sql') {
+                    $filePath = $backupDir . $file;
+                    $sizeBytes = filesize($filePath);
+                    
+                    // Format Size
+                    if ($sizeBytes >= 1048576) {
+                        $sizeStr = number_format($sizeBytes / 1048576, 2) . ' MB';
+                    } elseif ($sizeBytes >= 1024) {
+                        $sizeStr = number_format($sizeBytes / 1024, 2) . ' KB';
+                    } else {
+                        $sizeStr = $sizeBytes . ' Bytes';
+                    }
+
+                    $riwayat_backup[] = [
+                        'nama_file' => $file,
+                        'ukuran' => $sizeStr,
+                        'tanggal' => date("Y-m-d H:i:s", filemtime($filePath)),
+                        'timestamp' => filemtime($filePath)
+                    ];
+                }
+            }
+            // Sort by timestamp desc
+            usort($riwayat_backup, function($a, $b) {
+                return $b['timestamp'] - $a['timestamp'];
+            });
+        }
+        
         require __DIR__ . '/../views/admin/setting/setting.php';
     }
 

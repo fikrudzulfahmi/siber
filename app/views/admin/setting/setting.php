@@ -125,57 +125,101 @@
             </div>
         </div>
 
-        <!-- Start Backup & Restore Card -->
-        <div class="col-lg-12 col-md-12 mx-auto mt-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">storage</i>
+        <!-- 2 Kolom Backup & Restore -->
+        <div class="row mt-4">
+            <!-- Card Backup -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="icon icon-shape icon-lg bg-light text-center border-radius-xl">
+                            <i class="material-icons text-success text-gradient opacity-10">cloud_upload</i>
+                        </div>
                     </div>
-
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Manajemen Data</p>
-                        <h4 class="mb-0">Backup & Restore Database</h4>
+                    <h5 class="text-dark font-weight-bolder">Backup Database</h5>
+                    <p class="text-sm text-secondary mb-4">Buat cadangan data aplikasi Anda saat ini. Proses ini akan menghasilkan file .sql berisi database, menyimpannya secara lokal, dan mengunggahnya ke Google Drive.</p>
+                    <div>
+                        <a href="?controller=backup&method=createBackup" class="btn btn-success" onclick="return confirm('Apakah Anda yakin ingin memulai proses backup sekarang? Proses ini akan memakan waktu beberapa saat.')">
+                            Buat Backup Sekarang
+                        </a>
                     </div>
                 </div>
-                
-                <hr class="dark horizontal my-0">
-                
+            </div>
+            
+            <!-- Card Restore -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="icon icon-shape icon-lg bg-light text-center border-radius-xl">
+                            <i class="material-icons text-danger text-gradient opacity-10">autorenew</i>
+                        </div>
+                    </div>
+                    <h5 class="text-dark font-weight-bolder">Restore Database</h5>
+                    <p class="text-sm text-secondary mb-4">Pulihkan database dari file `.sql` mentah hasil backup sebelumnya.</p>
+                    
+                    <form action="?controller=backup&method=restore" method="POST" enctype="multipart/form-data" onsubmit="return confirm('PERINGATAN Keras! Semua data Anda saat ini akan dihapus permanen dan diganti dengan data dari file backup. Lanjutkan?');">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <input type="file" name="backup_file" class="form-control form-control-sm border px-2" accept=".sql" style="max-width: 250px;" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100" style="max-width: 250px;">
+                            Restore Database
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card Riwayat Backup -->
+        <div class="col-lg-12 col-md-12 mx-auto mb-4">
+            <div class="card">
+                <div class="card-header pb-0 p-3">
+                    <h6 class="mb-0">Riwayat Backup</h6>
+                </div>
                 <div class="card-body p-3">
-                    <div class="row mt-3">
-                        <!-- Kolom Backup -->
-                        <div class="col-md-6 mb-3">
-                            <h6 class="text-dark font-weight-bolder">Backup Database</h6>
-                            <p class="text-xs text-secondary mb-3">Unduh salinan database ke perangkat lokal atau unggah otomatis ke Google Drive.</p>
-                            
-                            <a href="?controller=backup&method=manualBackup" class="btn btn-sm btn-info w-100 mb-2">
-                                <i class="material-icons text-sm">download</i> Download Backup Manual
-                            </a>
-                            
-                            <a href="?controller=backup&method=uploadToGoogleDrive" class="btn btn-sm btn-success w-100" onclick="return confirm('Apakah Anda yakin ingin memulai proses backup ke Google Drive? Proses ini mungkin membutuhkan waktu beberapa saat.')">
-                                <i class="material-icons text-sm">cloud_upload</i> Backup ke Google Drive
-                            </a>
-                        </div>
-                        
-                        <!-- Kolom Restore -->
-                        <div class="col-md-6">
-                            <h6 class="text-dark font-weight-bolder">Restore Database</h6>
-                            <p class="text-xs text-secondary mb-3">Pulihkan data dari file .sql hasil backup sebelumnya. <span class="text-danger">Peringatan: Data lama akan tertimpa!</span></p>
-                            
-                            <form action="?controller=backup&method=restore" method="POST" enctype="multipart/form-data" onsubmit="return confirm('PERINGATAN! Semua data yang ada saat ini akan dihapus dan diganti dengan data dari file backup. Lanjutkan?');">
-                                <div class="input-group input-group-outline mb-3">
-                                    <input type="file" name="backup_file" class="form-control" accept=".sql" required>
-                                </div>
-                                <button type="submit" class="btn btn-sm btn-danger w-100">
-                                    <i class="material-icons text-sm">restore</i> Restore Database
-                                </button>
-                            </form>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama File</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Ukuran</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tanggal</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($riwayat_backup)): ?>
+                                    <?php foreach ($riwayat_backup as $rb): ?>
+                                        <tr>
+                                            <td>
+                                                <p class="text-sm font-weight-bold mb-0 px-3"><?= htmlspecialchars($rb['nama_file']) ?></p>
+                                            </td>
+                                            <td>
+                                                <p class="text-sm text-secondary mb-0"><?= htmlspecialchars($rb['ukuran']) ?></p>
+                                            </td>
+                                            <td>
+                                                <p class="text-sm text-secondary mb-0"><?= htmlspecialchars($rb['tanggal']) ?></p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <a href="?controller=backup&method=downloadBackup&file=<?= urlencode($rb['nama_file']) ?>" class="text-info font-weight-bold text-xs mx-2">
+                                                    Unduh
+                                                </a>
+                                                <a href="?controller=backup&method=deleteBackup&file=<?= urlencode($rb['nama_file']) ?>" class="text-danger font-weight-bold text-xs mx-2" onclick="return confirm('Yakin ingin menghapus file backup ini secara permanen?')">
+                                                    Hapus
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="4" class="text-center text-sm text-secondary py-3">Belum ada riwayat backup lokal.</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End Backup & Restore Card -->
+
 
     </div>
 </div>
