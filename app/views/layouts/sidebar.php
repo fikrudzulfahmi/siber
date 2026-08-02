@@ -270,7 +270,7 @@ if (!function_exists('collapseItem')) {
                     "collapseProgramStruktural",
                     "Program Struktural",
                     "source",
-                    ['programStruktural', 'deadlineProgramStruktural', 'verifikasiProgramStruktural'],
+                    ['programStruktural', 'deadlineProgramStruktural', 'verifikasiProgramStruktural', 'jenisProgramStruktural'],
                     '
             <li class="sidebar-item">
                 <a class="nav-link text-white ' . (isActive("programStruktural") ? "active bg-gradient-success" : "") . '" 
@@ -289,6 +289,14 @@ if (!function_exists('collapseItem')) {
                 <a class="nav-link text-white ' . (isActive("verifikasiProgramStruktural") ? "active bg-gradient-success" : "") . '" 
                    href="?controller=verifikasiProgramStruktural&method=index">
                    <i class="material-icons me-2 opacity-10">task</i> Verifikasi Program
+                </a>
+            </li>
+            ' : '') . '
+            ' . (isLevel($id_level, 1) ? '
+            <li class="sidebar-item">
+                <a class="nav-link text-white ' . (isActive("jenisProgramStruktural") ? "active bg-gradient-success" : "") . '" 
+                   href="?controller=jenisProgramStruktural&method=index">
+                   <i class="material-icons me-2 opacity-10">category</i> Jenis Program Struktural
                 </a>
             </li>
             ' : '') . '
@@ -714,7 +722,7 @@ if (!function_exists('collapseItem')) {
                     "collapseProgramStruktural",
                     "Program Struktural",
                     "source",
-                    ['programStruktural', 'deadlineProgramStruktural', 'verifikasiProgramStruktural'],
+                    ['programStruktural', 'deadlineProgramStruktural', 'verifikasiProgramStruktural', 'jenisProgramStruktural'],
                     '
             <li class="sidebar-item">
                 <a class="nav-link text-white ' . (isActive("programStruktural") ? "active bg-gradient-success" : "") . '" 
@@ -733,6 +741,14 @@ if (!function_exists('collapseItem')) {
                 <a class="nav-link text-white ' . (isActive("verifikasiProgramStruktural") ? "active bg-gradient-success" : "") . '" 
                    href="?controller=verifikasiProgramStruktural&method=index">
                    <i class="material-icons me-2 opacity-10">task</i> Verifikasi Program
+                </a>
+            </li>
+            ' : '') . '
+            ' . (isLevel($id_level, 1) ? '
+            <li class="sidebar-item">
+                <a class="nav-link text-white ' . (isActive("jenisProgramStruktural") ? "active bg-gradient-success" : "") . '" 
+                   href="?controller=jenisProgramStruktural&method=index">
+                   <i class="material-icons me-2 opacity-10">category</i> Jenis Program Struktural
                 </a>
             </li>
             ' : '') . '
