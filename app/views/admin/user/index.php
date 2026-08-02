@@ -30,10 +30,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Jabatan Spesifik</th>
-                                    <th>Kategori Jabatan</th>
-                                    <th>PIN</th>
+                                    <th>Nama & PIN</th>
+                                    <th>Jabatan</th>
                                     <th>No WA</th>
                                     <th>Username</th>
                                     <th>Level</th>
@@ -45,12 +43,14 @@
                                 foreach ($users as $user): ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= htmlspecialchars($user['nama']) ?></td>
-                                        <td><?= htmlspecialchars($user['jabatan']) ?></td>
                                         <td>
-                                            <span class="badge bg-gradient-secondary"><?= htmlspecialchars($user['kategori_jabatan'] ?? 'N/A') ?></span>
+                                            <span class="d-block text-sm font-weight-bold"><?= htmlspecialchars($user['nama']) ?></span>
+                                            <span class="text-xs text-secondary">PIN: <?= htmlspecialchars($user['pin']) ?></span>
                                         </td>
-                                        <td><?= htmlspecialchars($user['pin']) ?></td>
+                                        <td>
+                                            <span class="d-block text-sm font-weight-bold"><?= htmlspecialchars($user['jabatan']) ?></span>
+                                            <span class="badge bg-gradient-secondary border-radius-sm"><?= htmlspecialchars($user['kategori_jabatan'] ?? 'N/A') ?></span>
+                                        </td>
                                         <td><?= htmlspecialchars($user['no_wa']) ?></td>
                                         <td><?= htmlspecialchars($user['username']) ?></td>
                                         <td>
