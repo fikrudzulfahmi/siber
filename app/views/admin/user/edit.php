@@ -90,23 +90,33 @@
 
                         <!-- Level -->
                         <div class="mb-4">
-                            <label for="levels" class="form-label text-dark fw-bold">Level Akses</label>
+                            <label class="form-label text-dark fw-bold">Level Akses</label>
 
-                            <select multiple class="form-select border focus-ring focus-ring-success rounded-3" id="levels" name="levels[]" size="6">
-
+                            <div class="row px-2 mt-2">
                                 <?php foreach ($allLevels as $level): ?>
                                     <?php
                                     // Cek apakah level ini dimiliki oleh user
                                     $isSelected = in_array($level['id_level'], $userOwnedLevels);
                                     ?>
-                                    <option value="<?= $level['id_level'] ?>" <?= $isSelected ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($level['nama_level']) ?>
-                                    </option>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="form-check custom-control custom-checkbox">
+                                            <input class="form-check-input border-secondary focus-ring focus-ring-success" 
+                                                   type="checkbox" 
+                                                   name="levels[]" 
+                                                   value="<?= $level['id_level'] ?>" 
+                                                   id="level_<?= $level['id_level'] ?>"
+                                                   <?= $isSelected ? 'checked' : '' ?>
+                                                   style="cursor: pointer;">
+                                            <label class="form-check-label text-dark" for="level_<?= $level['id_level'] ?>" style="cursor: pointer;">
+                                                <?= htmlspecialchars($level['nama_level']) ?>
+                                            </label>
+                                        </div>
+                                    </div>
                                 <?php endforeach; ?>
-
-                            </select>
-                            <div class="form-text">
-                                Tahan tombol Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu level.
+                            </div>
+                            
+                            <div class="form-text mt-2">
+                                Anda dapat mencentang lebih dari satu level akses.
                             </div>
                         </div>
 
