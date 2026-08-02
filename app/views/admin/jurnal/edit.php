@@ -36,9 +36,9 @@
     
     /* Custom Styling Tombol Presensi */
     .btn-presensi {
-        min-width: 60px !important;
-        padding: 12px 15px !important;
-        font-size: 1.1rem !important;
+        min-width: 45px !important;
+        padding: 6px 10px !important;
+        font-size: 0.95rem !important;
         font-weight: bold !important;
         background-color: transparent;
         border: 1px solid #ced4da;
