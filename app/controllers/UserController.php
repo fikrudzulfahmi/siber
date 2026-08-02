@@ -91,6 +91,19 @@ class UserController extends BaseController
     }
 
     // =================== JADWAL ===================
+    public function jadwal()
+    {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            die('Error: ID User tidak ditemukan di URL.');
+        }
+
+        $user = $this->model->find($id);
+        $jadwal = $this->model->getJadwal($user['pin']);
+
+        require __DIR__ . '/../views/admin/user/jadwal.php';
+    }
+
     public function addJadwal()
     {
         if ($this->model->addJadwal($_POST)) {
@@ -98,7 +111,7 @@ class UserController extends BaseController
         } else {
             setFlash('danger', 'Gagal menambahkan jadwal.');
         }
-        header('Location: index.php?controller=user&method=edit&id=' . $_POST['id_employe']);
+        header('Location: index.php?controller=user&method=jadwal&id=' . $_POST['id_employe']);
         exit; // Selalu gunakan exit setelah header location
     }
 
@@ -106,7 +119,7 @@ class UserController extends BaseController
     {
         $this->model->updateJadwal($_POST);
         setFlash('success', 'Jadwal berhasil diperbarui.');
-        header('Location: index.php?controller=user&method=edit&id=' . $_POST['id_employe']);
+        header('Location: index.php?controller=user&method=jadwal&id=' . $_POST['id_employe']);
     }
 
     public function deleteJadwal()
@@ -114,7 +127,7 @@ class UserController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->deleteJadwal($_POST['id']);
             setFlash('success', 'Jadwal berhasil dihapus.');
-            header('Location: index.php?controller=user&method=edit&id=' . $_POST['id_user']);
+            header('Location: index.php?controller=user&method=jadwal&id=' . $_POST['id_user']);
         } else {
             // Jika bukan POST, redirect atau tampilkan error
             header('Location: index.php?controller=user&method=index');

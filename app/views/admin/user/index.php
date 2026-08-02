@@ -62,6 +62,7 @@
                                             </div>
                                         </td>
                                         <td>
+                                            <a href="?controller=user&method=jadwal&id=<?= $user['id_employe'] ?>" class="btn btn-info btn-sm">Jadwal</a>
                                             <a href="?controller=user&method=edit&id=<?= $user['id_employe'] ?>" class="btn btn-dark btn-sm">Edit</a>
                                         </td>
                                     </tr>
