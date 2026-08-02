@@ -144,15 +144,16 @@ if (!function_exists('collapseItem')) {
                             '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("tahunPelajaran") ? "active bg-gradient-success" : "") . '" href="?controller=tahunPelajaran&method=index"><i class="material-icons me-2 opacity-10">date_range</i> Tahun Pelajaran</a></li>'
                             : '')
                     ) . '
-' . (
+
+                ' . (
                         // Setting WA Jurnal: Admin (1)
                         (isLevel($id_level, 1) ?
-                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">notification_important</i> Setting Notif WA</a></li>'
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">settings</i> Setting</a></li>'
                             : '')
                     ) . '
 
                 ' . (
-                        // Data Pegawai: Semua level yang berhak masuk Master
+                        // Data Pegawai: Semua level yang berhak masuk Master   
                         '<li class="sidebar-item"><a class="nav-link text-white ' . (isActive("user") ? "active bg-gradient-success" : "") . '" href="?controller=user&method=index"><i class="material-icons me-2 opacity-10">person</i> Data Pegawai</a></li>'
                     ),
                     $id_level
@@ -589,7 +590,7 @@ if (!function_exists('collapseItem')) {
 ' . (
                         // Setting WA Jurnal: Admin (1)
                         (isLevel($id_level, 1) ?
-                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">notification_important</i> Setting Notif WA</a></li>'
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">settings</i> Pengaturan</a></li>'
                             : '')
                     ) . '
 
