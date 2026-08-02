@@ -11,7 +11,7 @@
         <div class="card-body px-4 pb-4">
             <form method="POST" class="row g-3 align-items-center">
                 <div class="col-md-5">
-                    <select name="pin" class="form-control" required>
+                    <select name="pin" class="form-control select2" required>
                         <option value="">-- Pilih Pegawai --</option>
                         <?php foreach ($listPegawai as $p) : ?>
                             <option value="<?= $p['pin'] ?>" <?= (isset($pin) && $pin == $p['pin']) ? 'selected' : '' ?>><?= htmlspecialchars($p['nama']) ?></option>
@@ -115,4 +115,13 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
+    });
+</script>
 <?php include '../app/views/layouts/footer.php'; ?>
