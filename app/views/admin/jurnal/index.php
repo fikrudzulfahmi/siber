@@ -32,6 +32,35 @@
     .tp-row .btn-hapus-tp {
         margin-left: 0.5rem;
     }
+    
+    /* Custom Styling Tombol Presensi */
+    .btn-presensi {
+        min-width: 60px !important;
+        padding: 12px 15px !important;
+        font-size: 1.1rem !important;
+        font-weight: bold !important;
+        background-color: transparent;
+        border: 1px solid #ced4da;
+        color: #6c757d;
+        margin: 0;
+        box-shadow: none !important;
+    }
+    
+    /* Hilangkan efek hover sama sekali */
+    .btn-presensi:hover {
+        background-color: transparent !important;
+        color: #6c757d !important;
+        transform: none !important;
+        box-shadow: none !important;
+        border-color: #ced4da !important;
+    }
+
+    /* Warna saat terpilih (checked) */
+    .btn-check:checked + .btn-presensi.btn-p-h { background-color: #4caf50 !important; border-color: #4caf50 !important; color: white !important; }
+    .btn-check:checked + .btn-presensi.btn-p-s { background-color: #ff9800 !important; border-color: #ff9800 !important; color: white !important; }
+    .btn-check:checked + .btn-presensi.btn-p-i { background-color: #03a9f4 !important; border-color: #03a9f4 !important; color: white !important; }
+    .btn-check:checked + .btn-presensi.btn-p-a { background-color: #f44336 !important; border-color: #f44336 !important; color: white !important; }
+    .btn-check:checked + .btn-presensi.btn-p-b { background-color: #344767 !important; border-color: #344767 !important; color: white !important; }
 </style>
 
 <div class="container-fluid py-4">
@@ -190,19 +219,19 @@
                                 <span class="text-sm fw-bold mb-2 mb-md-0">${idx+1}. ${s.nama_siswa}</span>
                                 <div class="btn-group" role="group" aria-label="Kehadiran Siswa">
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="H_${s.id_siswa}" value="H" autocomplete="off" checked>
-                                    <label class="btn btn-outline-success btn-sm mb-0 px-3 py-2" for="H_${s.id_siswa}">H</label>
+                                    <label class="btn btn-presensi btn-p-h" for="H_${s.id_siswa}">H</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="S_${s.id_siswa}" value="S" autocomplete="off">
-                                    <label class="btn btn-outline-warning btn-sm mb-0 px-3 py-2" for="S_${s.id_siswa}">S</label>
+                                    <label class="btn btn-presensi btn-p-s" for="S_${s.id_siswa}">S</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="I_${s.id_siswa}" value="I" autocomplete="off">
-                                    <label class="btn btn-outline-info btn-sm mb-0 px-3 py-2" for="I_${s.id_siswa}">I</label>
+                                    <label class="btn btn-presensi btn-p-i" for="I_${s.id_siswa}">I</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="A_${s.id_siswa}" value="A" autocomplete="off">
-                                    <label class="btn btn-outline-danger btn-sm mb-0 px-3 py-2" for="A_${s.id_siswa}">A</label>
+                                    <label class="btn btn-presensi btn-p-a" for="A_${s.id_siswa}">A</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="B_${s.id_siswa}" value="B" autocomplete="off">
-                                    <label class="btn btn-outline-dark btn-sm mb-0 px-3 py-2" for="B_${s.id_siswa}">B</label>
+                                    <label class="btn btn-presensi btn-p-b" for="B_${s.id_siswa}">B</label>
                                 </div>
                             </div>`;
                             });
