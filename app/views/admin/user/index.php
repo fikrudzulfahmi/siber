@@ -33,8 +33,7 @@
                                     <th>Nama & PIN</th>
                                     <th>Jabatan</th>
                                     <th>No WA</th>
-                                    <th>Username</th>
-                                    <th>Level</th>
+                                    <th>Username & Level</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -52,13 +51,15 @@
                                             <span class="badge bg-gradient-secondary border-radius-sm"><?= htmlspecialchars($user['kategori_jabatan'] ?? 'N/A') ?></span>
                                         </td>
                                         <td><?= htmlspecialchars($user['no_wa']) ?></td>
-                                        <td><?= htmlspecialchars($user['username']) ?></td>
                                         <td>
-                                            <?php
-                                            // Ubah string "1,5" menjadi array [1, 5] lalu tampilkan namanya
-                                            $levels = !empty($user['user_levels']) ? explode(',', $user['user_levels']) : [];
-                                            echo levelDisplay($levels);
-                                            ?>
+                                            <span class="d-block text-sm font-weight-bold"><?= htmlspecialchars($user['username']) ?></span>
+                                            <div class="mt-1 text-xs">
+                                                <?php
+                                                // Ubah string "1,5" menjadi array [1, 5] lalu tampilkan namanya
+                                                $levels = !empty($user['user_levels']) ? explode(',', $user['user_levels']) : [];
+                                                echo levelDisplay($levels);
+                                                ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <a href="?controller=user&method=edit&id=<?= $user['id_employe'] ?>" class="btn btn-dark btn-sm">Edit</a>
