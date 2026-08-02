@@ -20,8 +20,7 @@ class JenisProgramStrukturalController extends BaseController
 
     public function index()
     {
-        $model = new JenisProgramStruktural();
-        $model->db = $this->db; // Inject manual karena JenisProgramStruktural extends Model
+        $model = new JenisProgramStruktural($this->db);
         $jenis_program = $model->getAllAdmin(); 
         require __DIR__ . '/../views/admin/jenis_program_struktural/index.php';
     }
@@ -34,8 +33,7 @@ class JenisProgramStrukturalController extends BaseController
             if (empty($nama)) {
                 setFlash('error', 'Nama jenis program struktural tidak boleh kosong.');
             } else {
-                $model = new JenisProgramStruktural();
-                $model->db = $this->db;
+                $model = new JenisProgramStruktural($this->db);
                 if ($model->create($nama)) {
                     setFlash('success', 'Jenis program struktural berhasil ditambahkan.');
                 } else {
@@ -57,8 +55,7 @@ class JenisProgramStrukturalController extends BaseController
             if (empty($nama)) {
                 setFlash('error', 'Nama jenis program struktural tidak boleh kosong.');
             } else {
-                $model = new JenisProgramStruktural();
-                $model->db = $this->db;
+                $model = new JenisProgramStruktural($this->db);
                 if ($model->update($id, $nama, $status)) {
                     setFlash('success', 'Jenis program struktural berhasil diperbarui.');
                 } else {
@@ -74,8 +71,7 @@ class JenisProgramStrukturalController extends BaseController
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            $model = new JenisProgramStruktural();
-            $model->db = $this->db;
+            $model = new JenisProgramStruktural($this->db);
             
             if ($model->delete($id)) {
                 setFlash('success', 'Jenis program struktural berhasil dinonaktifkan.');
