@@ -400,13 +400,16 @@ if (!function_exists('collapseItem')) {
                     "collapsePerangkat",
                     "Perangkat Mengajar",
                     "source",
-                    ['perangkat', 'verifikasi', 'deadlinePerangkat', 'rekat'],
+                    ['perangkat', 'verifikasi', 'deadlinePerangkat', 'rekat', 'jenisPerangkat'],
                     '
                     <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("perangkat") ? "active bg-gradient-success" : "") . '" href="?controller=perangkat&method=index"><i class="material-icons me-2 opacity-10">note_add</i> Perangkat Saya</a></li>
                     ' . (isAnyLevel($id_level, [1, 5]) ? '
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("rekat") ? "active bg-gradient-success" : "") . '" href="?controller=rekat&method=index"><i class="material-icons me-2 opacity-10">view_timeline</i> Rekap Perangkat</a></li>
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("verifikasi") ? "active bg-gradient-success" : "") . '" href="?controller=verifikasi&method=index"><i class="material-icons me-2 opacity-10">task</i> Verifikasi Perangkat</a></li>
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("deadlinePerangkat") ? "active bg-gradient-success" : "") . '" href="?controller=deadlinePerangkat&method=index"><i class="material-icons me-2 opacity-10">settings</i> Pengaturan Deadline</a></li>
+                    ' : '') . '
+                    ' . (isLevel($id_level, 1) ? '
+                        <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("jenisPerangkat") ? "active bg-gradient-success" : "") . '" href="?controller=jenisPerangkat&method=index"><i class="material-icons me-2 opacity-10">category</i> Jenis Perangkat</a></li>
                     ' : '') . '
                 ',
                     $id_level
@@ -842,13 +845,16 @@ if (!function_exists('collapseItem')) {
                     "collapsePerangkat",
                     "Perangkat Mengajar",
                     "source",
-                    ['perangkat', 'verifikasi', 'deadlinePerangkat', 'rekat'],
+                    ['perangkat', 'verifikasi', 'deadlinePerangkat', 'rekat', 'jenisPerangkat'],
                     '
                     <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("perangkat") ? "active bg-gradient-success" : "") . '" href="?controller=perangkat&method=index"><i class="material-icons me-2 opacity-10">note_add</i> Perangkat Saya</a></li>
                     ' . (isAnyLevel($id_level, [1, 5]) ? '
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("rekat") ? "active bg-gradient-success" : "") . '" href="?controller=rekat&method=index"><i class="material-icons me-2 opacity-10">view_timeline</i> Rekap Perangkat</a></li>
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("verifikasi") ? "active bg-gradient-success" : "") . '" href="?controller=verifikasi&method=index"><i class="material-icons me-2 opacity-10">task</i> Verifikasi Perangkat</a></li>
                         <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("deadlinePerangkat") ? "active bg-gradient-success" : "") . '" href="?controller=deadlinePerangkat&method=index"><i class="material-icons me-2 opacity-10">settings</i> Pengaturan Deadline</a></li>
+                    ' : '') . '
+                    ' . (isLevel($id_level, 1) ? '
+                        <li class="sidebar-item"><a class="nav-link text-white ' . (isActive("jenisPerangkat") ? "active bg-gradient-success" : "") . '" href="?controller=jenisPerangkat&method=index"><i class="material-icons me-2 opacity-10">category</i> Jenis Perangkat</a></li>
                     ' : '') . '
                 ',
                     $id_level
