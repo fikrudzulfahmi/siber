@@ -190,19 +190,19 @@
                                 <span class="text-sm fw-bold mb-2 mb-md-0">${idx+1}. ${s.nama_siswa}</span>
                                 <div class="btn-group" role="group" aria-label="Kehadiran Siswa">
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="H_${s.id_siswa}" value="H" autocomplete="off" checked>
-                                    <label class="btn btn-outline-success btn-sm mb-0 px-2 py-1" for="H_${s.id_siswa}">H</label>
+                                    <label class="btn btn-outline-success btn-sm mb-0 px-3 py-2" for="H_${s.id_siswa}">H</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="S_${s.id_siswa}" value="S" autocomplete="off">
-                                    <label class="btn btn-outline-warning btn-sm mb-0 px-2 py-1" for="S_${s.id_siswa}">S</label>
+                                    <label class="btn btn-outline-warning btn-sm mb-0 px-3 py-2" for="S_${s.id_siswa}">S</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="I_${s.id_siswa}" value="I" autocomplete="off">
-                                    <label class="btn btn-outline-info btn-sm mb-0 px-2 py-1" for="I_${s.id_siswa}">I</label>
+                                    <label class="btn btn-outline-info btn-sm mb-0 px-3 py-2" for="I_${s.id_siswa}">I</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="A_${s.id_siswa}" value="A" autocomplete="off">
-                                    <label class="btn btn-outline-danger btn-sm mb-0 px-2 py-1" for="A_${s.id_siswa}">A</label>
+                                    <label class="btn btn-outline-danger btn-sm mb-0 px-3 py-2" for="A_${s.id_siswa}">A</label>
                                     
                                     <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="B_${s.id_siswa}" value="B" autocomplete="off">
-                                    <label class="btn btn-outline-dark btn-sm mb-0 px-2 py-1" for="B_${s.id_siswa}">B</label>
+                                    <label class="btn btn-outline-dark btn-sm mb-0 px-3 py-2" for="B_${s.id_siswa}">B</label>
                                 </div>
                             </div>`;
                             });
