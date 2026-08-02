@@ -41,9 +41,8 @@
         font-size: 0.95rem !important;
         font-weight: bold !important;
         background-color: transparent;
-        border: 1px solid #ced4da;
+        border: 1px solid #ced4da !important; /* Pastikan garis batas muncul */
         color: #6c757d;
-        margin: 0;
         box-shadow: none !important;
     }
     
