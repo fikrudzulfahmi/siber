@@ -186,15 +186,24 @@
                         if (Array.isArray(data) && data.length > 0) {
                             data.forEach((s, idx) => {
                                 html += `
-                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <span class="text-sm fw-bold">${idx+1}. ${s.nama_siswa}</span>
-                                <select name="kehadiran[${s.id_siswa}]" class="form-select form-select-sm border focus-ring focus-ring-success rounded-3 text-center w-auto" style="min-width:80px">
-                                    <option value="H" selected>Hadir</option>
-                                    <option value="S">Sakit</option>
-                                    <option value="I">Izin</option>
-                                    <option value="A">Alpa</option>
-                                    <option value="B">Bolos</option>
-                                </select>
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2 flex-wrap">
+                                <span class="text-sm fw-bold mb-2 mb-md-0">${idx+1}. ${s.nama_siswa}</span>
+                                <div class="btn-group" role="group" aria-label="Kehadiran Siswa">
+                                    <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="H_${s.id_siswa}" value="H" autocomplete="off" checked>
+                                    <label class="btn btn-outline-success btn-sm mb-0 px-2 py-1" for="H_${s.id_siswa}">H</label>
+                                    
+                                    <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="S_${s.id_siswa}" value="S" autocomplete="off">
+                                    <label class="btn btn-outline-warning btn-sm mb-0 px-2 py-1" for="S_${s.id_siswa}">S</label>
+                                    
+                                    <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="I_${s.id_siswa}" value="I" autocomplete="off">
+                                    <label class="btn btn-outline-info btn-sm mb-0 px-2 py-1" for="I_${s.id_siswa}">I</label>
+                                    
+                                    <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="A_${s.id_siswa}" value="A" autocomplete="off">
+                                    <label class="btn btn-outline-danger btn-sm mb-0 px-2 py-1" for="A_${s.id_siswa}">A</label>
+                                    
+                                    <input type="radio" class="btn-check" name="kehadiran[${s.id_siswa}]" id="B_${s.id_siswa}" value="B" autocomplete="off">
+                                    <label class="btn btn-outline-dark btn-sm mb-0 px-2 py-1" for="B_${s.id_siswa}">B</label>
+                                </div>
                             </div>`;
                             });
                         } else {
