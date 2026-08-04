@@ -25,6 +25,11 @@ class RekapIndividuModel
 
     public function generateRekapLengkap($pin, $periode)
     {
+        $stmtPegawai = $this->db->prepare("SELECT id_jabatan FROM employe WHERE pin = ?");
+        $stmtPegawai->execute([$pin]);
+        $pegawai = $stmtPegawai->fetch(PDO::FETCH_ASSOC);
+        $isSatpam = ($pegawai && $pegawai['id_jabatan'] == 3);
+
         list($year, $month) = explode('-', $periode);
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
@@ -40,11 +45,7 @@ class RekapIndividuModel
             // Cek libur
             $stmtLibur = $this->db->prepare("SELECT keterangan FROM hari_libur WHERE :tgl BETWEEN tanggal_mulai AND tanggal_selesai LIMIT 1");
             $stmtLibur->execute([':tgl' => $currentDate]);
-            if ($libur = $stmtLibur->fetch()) {
-                $daily['keterangan'] = $libur['keterangan'];
-                $rincian[] = $daily;
-                continue;
-            }
+            $libur = $stmtLibur->fetch();
 
             // Ambil jam masuk paling pagi DAN jam pulang paling akhir
             $stmtJadwal = $this->db->prepare("
@@ -57,6 +58,12 @@ class RekapIndividuModel
 
             if (!$jadwal || $jadwal['jam_masuk'] === null) {
                 $daily['keterangan'] = 'Tidak Ada Jadwal';
+                $rincian[] = $daily;
+                continue;
+            }
+
+            if ($libur && !$isSatpam) {
+                $daily['keterangan'] = $libur['keterangan'];
                 $rincian[] = $daily;
                 continue;
             }
