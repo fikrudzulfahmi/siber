@@ -131,6 +131,7 @@ class LegerController extends BaseController
         }
 
         // Kirim file ke browser
+        if (ob_get_length()) ob_end_clean();
         $writer = new Xlsx($spreadsheet);
         $filename = 'leger-kelas-' . str_replace(' ', '-', strtolower($info_kelas['kelas'])) . '-' . date('Y-m-d') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

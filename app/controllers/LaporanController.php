@@ -109,6 +109,7 @@ class LaporanController
         }
 
         // Kirim file ke browser
+        if (ob_get_length()) ob_end_clean();
         $writer = new Xlsx($spreadsheet);
         $filename = 'laporan-nilai-' . str_replace(' ', '-', strtolower($info_kategori['kategori'])) . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

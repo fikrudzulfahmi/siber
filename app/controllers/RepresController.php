@@ -179,6 +179,7 @@ foreach (range(3, 10) as $colIndex) { // C-J
 }
 
     // Output Excel
+    if (ob_get_length()) ob_end_clean();
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="rekap_presensi.xlsx"');
     header('Cache-Control: max-age=0');
