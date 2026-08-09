@@ -75,7 +75,7 @@
                         <!-- Nama Siswa -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Nama Siswa</label>
-                            <input type="text" name="siswa"
+                            <input type="text" name="nama_siswa"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
                                 placeholder="Contoh : Budi " required>
                         </div>
@@ -102,17 +102,11 @@
                                 placeholder="Contoh : 09/12/2008" required>
                         </div>
 
-                        <!-- Wali Kelas -->
-                        <div class="mb-4">
-                            <label class="form-label text-dark fw-bold">Kelas</label>
-                            <select name="id_kelas"
-                                class="form-control select2 border focus-ring focus-ring-success rounded-3"
-                                required>
-                                <option value="" disabled selected>-- Pilih Kelas --</option>
-                                <?php foreach ($kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <!-- Info Kelas via Ploting -->
+                        <div class="alert alert-info py-2 px-3" role="alert">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Penempatan kelas siswa baru diatur melalui menu
+                            <strong>Ploting / Kenaikan Kelas</strong> (mode "Siswa Baru") berdasarkan tahun pelajaran.
                         </div>
 
                         <!-- Alamat -->

@@ -17,7 +17,8 @@ if (!$id_kelas || !is_numeric($id_kelas)) {
 $sql = "SELECT s.id_siswa, s.nama_siswa 
         FROM ploting_siswa ps
         JOIN siswa s ON ps.id_siswa = s.id_siswa 
-        WHERE ps.id_kelas = ?";
+        WHERE ps.id_kelas = ?
+        AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')";
 
 // Jika Anda memiliki sistem tahun ajaran, tambahkan filter tahun agar data akurat
 $params = [$id_kelas];

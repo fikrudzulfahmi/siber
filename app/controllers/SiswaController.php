@@ -31,8 +31,6 @@ class SiswaController extends BaseController
 
     public function create()
     {
-        $model = new Siswa($this->db);
-        $kelas = $model->getDaftarKelas();
         require __DIR__ . '/../views/admin/siswa/create.php';
     }
 
@@ -41,7 +39,7 @@ class SiswaController extends BaseController
         $model = new Siswa($this->db);
         try {
             $model->insert($_POST);
-            setFlash('success', 'Siswa berhasil ditambahkan dan masuk ke kelas aktif.');
+            setFlash('success', 'Siswa berhasil ditambahkan. Atur kelasnya melalui menu Ploting (mode Siswa Baru).');
         } catch (Exception $e) {
             setFlash('error', 'Gagal menyimpan: ' . $e->getMessage());
         }
@@ -104,7 +102,8 @@ class SiswaController extends BaseController
                         'hp_wali'    => $row[7] ?? '',
                     ];
 
-                    // Fungsi insert model sudah otomatis handle ploting
+                    // Siswa hasil import TIDAK langsung dapat kelas.
+                    // Penempatan kelas via menu Ploting (mode "Siswa Baru").
                     $model->insert($data);
                     $count++;
                 }

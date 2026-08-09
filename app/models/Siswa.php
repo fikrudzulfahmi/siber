@@ -19,10 +19,13 @@ class Siswa
         $id_tahun_aktif = $this->getTahunAktif();
 
         // Gunakan LEFT JOIN agar siswa yang belum dapat kelas tetap muncul
+        // Hanya tampilkan siswa AKTIF (belum lulus) — siswa yang sudah diluluskan
+        // lewat Ploting tidak tampil di daftar.
         $sql = "SELECT s.*, k.kelas as nama_kelas, k.id_kelas as current_id_kelas
                 FROM siswa s
                 LEFT JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa AND ps.id_tahun = ?
                 LEFT JOIN kelas k ON ps.id_kelas = k.id_kelas
+                WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
                 ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
@@ -47,12 +50,10 @@ class Siswa
 
     public function insert($data)
     {
-        $id_tahun_aktif = $this->getTahunAktif();
-
         try {
             $this->db->beginTransaction();
 
-            // 1. Insert Data Biodata Siswa (Tanpa id_kelas)
+            // Insert Data Biodata Siswa (Tanpa id_kelas — kelas diatur via Ploting)
             $stmt = $this->db->prepare("INSERT INTO siswa (
                 nama_siswa, nisn, tempat_lhr, tgl_lhr, alamat, nama_wali, hp_wali
             ) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -67,13 +68,9 @@ class Siswa
                 $data['hp_wali']
             ]);
 
-            $new_id_siswa = $this->db->lastInsertId();
-
-            // 2. Insert ke Ploting Siswa (Jika ada tahun aktif & user memilih kelas)
-            if ($id_tahun_aktif && !empty($data['id_kelas'])) {
-                $stmt2 = $this->db->prepare("INSERT INTO ploting_siswa (id_siswa, id_kelas, id_tahun) VALUES (?, ?, ?)");
-                $stmt2->execute([$new_id_siswa, $data['id_kelas'], $id_tahun_aktif]);
-            }
+            // Kelas TIDAK di-plot otomatis di sini.
+            // Penempatan kelas dilakukan via menu Ploting (mode "Siswa Baru")
+            // berdasarkan tahun pelajaran.
 
             $this->db->commit();
         } catch (Exception $e) {
