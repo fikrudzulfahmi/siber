@@ -8,22 +8,45 @@ class Izin
         $this->db = $pdo;
     }
 
-    public function getAllWithSiswaKelas($id_kelas = null)
+    public function getTahunAktif()
     {
+        $stmt = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1");
+        return $stmt->fetchColumn(); // Mengembalikan ID atau false
+    }
+
+    /**
+     * Daftar perizinan siswa — hanya siswa yang TER-PLOTING di tahun pelajaran AKTIF.
+     * Kelas & wali kelas diambil dari ploting tahun aktif (bukan id_kelas lama di perizinan).
+     */
+    public function getAllWithSiswaKelas($id_kelas = null, $id_tahun = null)
+    {
+        if ($id_tahun === null) {
+            $id_tahun = $this->getTahunAktif();
+        }
+
+        // Tidak ada tahun aktif → tidak ada data yang relevan
+        if (!$id_tahun) {
+            return [];
+        }
+
         $sql = "
             SELECT 
                 i.id_perizinan, i.id_siswa, i.id_kelas, i.keperluan,
                 i.waktu_meninggalkan, i.waktu_kembali, i.nama_rekom,
-                i.keterangan, i.tindakan, s.nama_siswa, k.kelas AS nama_kelas
+                i.keterangan, i.tindakan, s.nama_siswa,
+                k.kelas AS nama_kelas, e.nama AS nama_wali_kelas
             FROM perizinan i
             JOIN siswa s ON i.id_siswa = s.id_siswa
-            JOIN kelas k ON i.id_kelas = k.id_kelas
+            JOIN ploting_siswa ps ON ps.id_siswa = s.id_siswa AND ps.id_tahun = ?
+            JOIN kelas k ON ps.id_kelas = k.id_kelas
+            LEFT JOIN employe e ON e.id_employe = k.wali_kelas
+            WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
         ";
-        $params = [];
+        $params = [$id_tahun];
 
-        // ✅ LOGIKA FILTER BARU
+        // ✅ LOGIKA FILTER (kelas dari ploting tahun aktif, bukan id_kelas lama)
         if ($id_kelas !== null) {
-            $sql .= " WHERE i.id_kelas = ?";
+            $sql .= " AND ps.id_kelas = ?";
             $params[] = $id_kelas;
         }
 

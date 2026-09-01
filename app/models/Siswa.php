@@ -10,7 +10,8 @@ class Siswa
 
     public function getTahunAktif()
     {
-        $stmt = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 1 LIMIT 1");
+        // Konsisten dengan seluruh aplikasi: status disimpan sebagai string 'Aktif'
+        $stmt = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1");
         return $stmt->fetchColumn(); // Mengembalikan ID atau false
     }
 
