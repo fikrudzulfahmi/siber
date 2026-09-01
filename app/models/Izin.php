@@ -33,13 +33,11 @@ class Izin
             SELECT 
                 i.id_perizinan, i.id_siswa, i.id_kelas, i.keperluan,
                 i.waktu_meninggalkan, i.waktu_kembali, i.nama_rekom,
-                i.keterangan, i.tindakan, s.nama_siswa,
-                k.kelas AS nama_kelas, e.nama AS nama_wali_kelas
+                i.keterangan, i.tindakan, s.nama_siswa, k.kelas AS nama_kelas
             FROM perizinan i
             JOIN siswa s ON i.id_siswa = s.id_siswa
             JOIN ploting_siswa ps ON ps.id_siswa = s.id_siswa AND ps.id_tahun = ?
             JOIN kelas k ON ps.id_kelas = k.id_kelas
-            LEFT JOIN employe e ON e.id_employe = k.wali_kelas
             WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
         ";
         $params = [$id_tahun];

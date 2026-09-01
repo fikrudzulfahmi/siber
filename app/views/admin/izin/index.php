@@ -68,14 +68,13 @@
                             <thead class="text-center">
                                 <tr>
                                     <th width="3%">No</th>
-                                    <th width="17%">Nama Siswa</th>
+                                    <th width="20%">Nama Siswa</th>
                                     <th width="10%">Kelas</th>
-                                    <th width="12%">Wali Kelas</th>
-                                    <th width="17%">Keperluan</th>
-                                    <th width="14%">Waktu Meninggalkan</th>
-                                    <th width="14%">Waktu Kembali</th>
-                                    <th width="13%">Rekomendasi</th>
-                                    <th width="20%">Keterangan</th>
+                                    <th width="20%">Keperluan</th>
+                                    <th width="15%">Waktu Meninggalkan</th>
+                                    <th width="15%">Waktu Kembali</th>
+                                    <th width="15%">Rekomendasi</th>
+                                    <th width="25%">Keterangan</th>
                                     <?php if (isAnyLevel($id_level, [3, 1, 5, 6, 7])): // ✅ Ditambahkan Pimpinan bisa edit/hapus juga 
                                     ?>
                                         <th>Aksi</th>
@@ -89,7 +88,6 @@
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $row['nama_siswa'] ?></td>
                                         <td><?= $row['nama_kelas'] ?></td>
-                                        <td><?= !empty($row['nama_wali_kelas']) ? $row['nama_wali_kelas'] : '-' ?></td>
                                         <td><?= $row['keperluan'] ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_meninggalkan'], true, true) ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_kembali'], true, true) ?></td>
