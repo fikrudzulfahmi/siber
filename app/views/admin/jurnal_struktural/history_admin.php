@@ -65,20 +65,29 @@
                     </div>
                 </div>
 
-                <form method="GET" class="row mb-3 p-3 mt-3">
+                <form method="GET" class="row mb-3 p-3 mt-3 align-items-end">
                     <input type="hidden" name="controller" value="jurnalStruktural">
                     <input type="hidden" name="method" value="historyAdmin">
 
-
                     <div class="col-md-3">
-                        <input type="date" name="tanggal"
-                            value="<?= $tanggal ?>"
+                        <label class="form-label fw-bold text-xs">Dari Tanggal</label>
+                        <input type="date" name="tanggal_awal"
+                            value="<?= $tanggalAwal ?>"
                             class="form-control border focus-ring focus-ring-success rounded-3">
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-success">Tampilkan</button>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-xs">Sampai Tanggal</label>
+                        <input type="date" name="tanggal_akhir"
+                            value="<?= $tanggalAkhir ?>"
+                            class="form-control border focus-ring focus-ring-success rounded-3">
                     </div>
-
+                    <div class="col-md-4 d-flex gap-2">
+                        <button class="btn btn-success">Tampilkan</button>
+                        <a href="?controller=jurnalStruktural&method=cetakLaporan&tanggal_awal=<?= $tanggalAwal ?>&tanggal_akhir=<?= $tanggalAkhir ?>"
+                            class="btn btn-dark" target="_blank">
+                            <i class="fas fa-print me-1"></i> Cetak Laporan
+                        </a>
+                    </div>
                 </form>
 
                 <div class="card-body px-4 py-4">
@@ -97,7 +106,9 @@
                                 <?php if (empty($jurnalList)): ?>
                                     <tr>
                                         <td colspan="5" class="text-center text-muted">
-                                            Tidak ada jurnal pada tanggal ini
+                                            Tidak ada jurnal pada periode
+                                            <?= date('d-m-Y', strtotime($tanggalAwal)) ?> s.d
+                                            <?= date('d-m-Y', strtotime($tanggalAkhir)) ?>
                                         </td>
                                     </tr>
                                 <?php else: ?>

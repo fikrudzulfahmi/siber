@@ -227,17 +227,77 @@ class JurnalStrukturalController
             exit;
         }
 
-        $tanggal = $_GET['tanggal'] ?? date('Y-m-d');
+        // Default periode: awal bulan berjalan s.d hari ini
+        $tanggalAwal  = $_GET['tanggal_awal']  ?? date('Y-m-01');
+        $tanggalAkhir = $_GET['tanggal_akhir'] ?? date('Y-m-d');
 
         $data = [
-            'tahunAktif' => $tahunAktif,
-            'tanggal'    => $tanggal,
-            'jurnalList' => $model->getHistoryAdminHarian(
+            'tahunAktif'   => $tahunAktif,
+            'tanggalAwal'  => $tanggalAwal,
+            'tanggalAkhir' => $tanggalAkhir,
+            'jurnalList'   => $model->getHistoryAdminPeriode(
                 $tahunAktif['id_tahun_pelajaran'],
-                $tanggal
+                $tanggalAwal,
+                $tanggalAkhir
             )
         ];
         extract($data);
         require '../app/views/admin/jurnal_struktural/history_admin.php';
+    }
+
+    /**
+     * Cetak laporan rekap jurnal struktural berdasarkan periode (tanggal awal s.d akhir) ke PDF
+     */
+    public function cetakLaporan()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?controller=auth&method=login");
+            exit;
+        }
+
+        $model = new JurnalStrukturalModel($this->db);
+        $tahunModel = new TahunPelajaran($this->db);
+        $tahunAktif = $tahunModel->getAktif();
+
+        if (!$tahunAktif) {
+            setFlash('danger', 'Tahun pelajaran aktif belum ditentukan');
+            redirect('?controller=jurnalStruktural&method=historyAdmin');
+            exit;
+        }
+
+        $tanggalAwal  = $_GET['tanggal_awal']  ?? date('Y-m-01');
+        $tanggalAkhir = $_GET['tanggal_akhir'] ?? date('Y-m-d');
+
+        // Validasi urutan tanggal
+        if ($tanggalAwal > $tanggalAkhir) {
+            setFlash('danger', 'Tanggal awal tidak boleh melebihi tanggal akhir.');
+            redirect('?controller=jurnalStruktural&method=historyAdmin');
+            exit;
+        }
+
+        $jurnalList = $model->getHistoryAdminPeriode(
+            $tahunAktif['id_tahun_pelajaran'],
+            $tanggalAwal,
+            $tanggalAkhir
+        );
+
+        // Render HTML laporan
+        ob_start();
+        require __DIR__ . '/../views/admin/jurnal_struktural/laporan_pdf.php';
+        $html = ob_get_clean();
+
+        require_once __DIR__ . '/../vendor/autoload.php';
+
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new \Dompdf\Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream(
+            'Laporan_Jurnal_Struktural_' . $tanggalAwal . '_s.d_' . $tanggalAkhir . '.pdf',
+            ['Attachment' => false]
+        );
+        exit;
     }
 }

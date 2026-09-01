@@ -147,7 +147,7 @@ class JurnalStrukturalModel
 
 
 
-    public function getHistoryAdminHarian($idTahunPelajaran, $tanggal)
+    public function getHistoryAdminPeriode($idTahunPelajaran, $tanggalAwal, $tanggalAkhir)
     {
         $sql = "
         SELECT 
@@ -173,14 +173,14 @@ class JurnalStrukturalModel
             ON pk.id_program = jpk.id_program
 
         WHERE js.id_tahun_pelajaran = ?
-          AND js.tanggal = ?
+          AND js.tanggal BETWEEN ? AND ?
 
         GROUP BY js.id_jurnal
-        ORDER BY e.nama ASC
+        ORDER BY js.tanggal ASC, e.nama ASC
     ";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$idTahunPelajaran, $tanggal]);
+        $stmt->execute([$idTahunPelajaran, $tanggalAwal, $tanggalAkhir]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
