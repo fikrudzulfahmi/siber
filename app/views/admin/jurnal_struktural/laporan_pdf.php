@@ -35,22 +35,6 @@
         .mb {
             margin-bottom: 20px;
         }
-
-        .ttd {
-            margin-top: 40px;
-            width: 100%;
-        }
-
-        .ttd table {
-            border: none;
-            width: 100%;
-        }
-
-        .ttd td {
-            border: none;
-            text-align: center;
-            width: 50%;
-        }
     </style>
 </head>
 
@@ -89,25 +73,6 @@
             <?php endif; ?>
         </tbody>
     </table>
-
-    <div class="ttd">
-        <table>
-            <tr>
-                <td>
-                    Mengetahui,<br>
-                    Kepala Madrasah
-                    <br><br><br><br>
-                    <strong><u>................................................</u></strong>
-                </td>
-                <td>
-                    <?= date('d F Y') ?><br>
-                    Petugas
-                    <br><br><br><br>
-                    <strong><u><?= htmlspecialchars($_SESSION['user']['nama'] ?? '') ?></u></strong>
-                </td>
-            </tr>
-        </table>
-    </div>
 </body>
 
 </html>
