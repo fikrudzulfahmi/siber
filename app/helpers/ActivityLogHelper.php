@@ -176,7 +176,7 @@ function activityLogModul($controller)
  *
  * @return array{aktivitas:string, modul:string, aksi:string}
  */
-function activityLogSusunAktivitas($controller, $method, $httpMethod = 'GET')
+function activityLogSusunAktivitas($controller, $method)
 {
     $modul = activityLogModul($controller);
     $aksi = 'Lainnya';
@@ -267,7 +267,7 @@ function activityLogCatat($pdo, $controller, $method)
             $namaUser = $_POST['username'] ?? 'Tamu';
             $susunan  = ['aktivitas' => 'Percobaan login gagal', 'modul' => 'Login', 'aksi' => 'Login'];
         } else {
-            $susunan = activityLogSusunAktivitas($controller, $method, $httpMethod);
+            $susunan = activityLogSusunAktivitas($controller, $method);
             if (!$user) {
                 $namaUser = $_POST['username'] ?? 'Tamu (belum login)';
             }
