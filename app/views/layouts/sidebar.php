@@ -151,6 +151,12 @@ if (!function_exists('collapseItem')) {
                             '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">settings</i> Setting</a></li>'
                             : '')
                     ) . '
+                    ' . (
+                        // Activity Log: Admin (1)
+                        (isLevel($id_level, 1) ?
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("activityLog")) ? "active bg-gradient-success" : "") . '" href="?controller=activityLog&method=index"><i class="material-icons me-2 opacity-10">history_edu</i> Activity Log</a></li>'
+                            : '')
+                    ) . '
 
                 ' . (
                         // Data Pegawai: Semua level yang berhak masuk Master   
@@ -602,6 +608,12 @@ if (!function_exists('collapseItem')) {
                         // Setting WA Jurnal: Admin (1)
                         (isLevel($id_level, 1) ?
                             '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("setting")) ? "active bg-gradient-success" : "") . '" href="?controller=setting&method=index"><i class="material-icons me-2 opacity-10">settings</i> Pengaturan</a></li>'
+                            : '')
+                    ) . '
+                    ' . (
+                        // Activity Log: Admin (1)
+                        (isLevel($id_level, 1) ?
+                            '<li class="sidebar-item"><a class="nav-link text-white ' . ((isActive("activityLog")) ? "active bg-gradient-success" : "") . '" href="?controller=activityLog&method=index"><i class="material-icons me-2 opacity-10">history_edu</i> Activity Log</a></li>'
                             : '')
                     ) . '
 

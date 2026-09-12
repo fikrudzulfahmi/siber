@@ -19,6 +19,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // ✅ PERBAIKAN: Panggil file database.php di sini agar class "Database" dikenali
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../app/helpers/LevelHelper.php';
+require_once __DIR__ . '/../app/helpers/ActivityLogHelper.php'; // ✅ pencatat aktivitas
 log_message("--- REQUEST BARU MASUK ---"); // ✅ JEJAK 1
 // Daftar controller-method yang bebas akses
 $freeAccess = [
@@ -54,6 +55,12 @@ try {
     // Buat koneksi database
     $database = new Database();
     $pdo = $database->getConnection();
+
+    // ✅ ACTIVITY LOG: catat SETELAH request selesai (shutdown) supaya tetap
+    // tercatat walaupun controller melakukan redirect/exit.
+    register_shutdown_function(function () use ($pdo, $controller, $method) {
+        activityLogCatat($pdo, $controller, $method);
+    });
 
     if (class_exists($controllerName)) {
         // Sekarang $pdo sudah ada isinya saat dikirim ke controller

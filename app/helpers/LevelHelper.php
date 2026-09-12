@@ -287,6 +287,9 @@ function autoTitle($controller, $method)
         'kalender' => [
             'index' => 'Kalender'
         ],
+        'activityLog' => [
+            'index' => 'Activity Log'
+        ],
         'auth' => [
             'logout' => 'Logout'
         ]
