@@ -91,7 +91,7 @@ class Konseling
         }
 
         $sql = "
-            SELECT s.id_siswa, s.nama_siswa 
+            SELECT DISTINCT s.id_siswa, s.nama_siswa 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
@@ -105,7 +105,7 @@ class Konseling
             $params[] = $id_tahun;
         }
 
-        $sql .= " GROUP BY s.id_siswa ORDER BY s.nama_siswa ASC";
+        $sql .= " ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -372,8 +372,11 @@ class Konseling
             $id_tahun = $this->getTahunAktif();
         }
 
+        // DISTINCT (bukan GROUP BY) agar hasil tetap valid saat MySQL/MariaDB
+        // memakai sql_mode ONLY_FULL_GROUP_BY. Deduplikasi tetap sama: satu siswa
+        // hanya muncul sekali walau punya beberapa baris ploting di kelas yang sama.
         $sql = "
-            SELECT s.id_siswa, s.nama_siswa 
+            SELECT DISTINCT s.id_siswa, s.nama_siswa 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             WHERE ps.id_kelas = ? 
@@ -386,7 +389,7 @@ class Konseling
             $params[] = $id_tahun;
         }
 
-        $sql .= " GROUP BY s.id_siswa ORDER BY s.nama_siswa ASC";
+        $sql .= " ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

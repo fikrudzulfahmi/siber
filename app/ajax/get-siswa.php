@@ -20,9 +20,10 @@ if (!$id_kelas || !is_numeric($id_kelas)) {
 $id_tahun = $pdo->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1")->fetchColumn();
 
 // 3. Ambil siswa pada KELAS + TAHUN AKTIF.
-//    GROUP BY mencegah nama dobel: satu siswa bisa punya lebih dari satu baris
-//    ploting pada id_kelas yang sama (id_kelas dipakai ulang antar tahun).
-$sql = "SELECT s.id_siswa, s.nama_siswa 
+//    DISTINCT mencegah nama dobel (satu siswa bisa punya lebih dari satu baris
+//    ploting pada id_kelas yang sama) sekaligus aman untuk sql_mode
+//    ONLY_FULL_GROUP_BY — berbeda dengan GROUP BY di MySQL/MariaDB ketat.
+$sql = "SELECT DISTINCT s.id_siswa, s.nama_siswa 
         FROM ploting_siswa ps
         JOIN siswa s ON ps.id_siswa = s.id_siswa 
         WHERE ps.id_kelas = ?
@@ -34,7 +35,7 @@ if ($id_tahun) {
     $params[] = $id_tahun;
 }
 
-$sql .= " GROUP BY s.id_siswa ORDER BY s.nama_siswa ASC";
+$sql .= " ORDER BY s.nama_siswa ASC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
