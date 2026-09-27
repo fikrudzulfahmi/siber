@@ -17,8 +17,7 @@ if (!$id_kelas || !is_numeric($id_kelas)) {
 //    hanya di-set sekali saat login dan tidak pernah di-refresh, sehingga bisa
 //    BASI bila tahun pelajaran diganti tanpa login ulang. Akibatnya daftar siswa
 //    justru menampilkan rombel tahun ajaran lama (kelas lama / nama campur).
-$stmtTahun = $pdo->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1");
-$id_tahun  = $stmtTahun ? $stmtTahun->fetchColumn() : null;
+$id_tahun = $pdo->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1")->fetchColumn();
 
 // 3. Ambil siswa pada KELAS + TAHUN AKTIF.
 //    GROUP BY mencegah nama dobel: satu siswa bisa punya lebih dari satu baris
