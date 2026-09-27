@@ -116,16 +116,14 @@
         const siswaSelect = document.getElementById('siswa');
 
         if (kelasSelect && siswaSelect) {
-            // Tahun pelajaran dari sesi login (agar daftar siswa tidak mencampur tahun lama)
-            const idTahun = "<?= $_SESSION['user']['id_tahun'] ?? '' ?>";
-
             kelasSelect.addEventListener('change', function() {
                 const idKelas = this.value;
                 if (!idKelas) return;
 
                 siswaSelect.innerHTML = '<option disabled selected>Memuat...</option>';
 
-                fetch('ajax.php?action=get_siswa&id_kelas=' + idKelas + '&id_tahun=' + encodeURIComponent(idTahun))
+                // Endpoint menentukan tahun pelajaran AKTIF sendiri dari database
+                fetch('ajax.php?action=get_siswa&id_kelas=' + idKelas)
                     .then(response => {
                         if (!response.ok) throw new Error('Gagal ambil data');
                         return response.json();
@@ -163,4 +161,4 @@
 
 
 
-<?php include '../app/views/layouts/footer.php'; ?>
+<?php // Footer TIDAK di-include di sini: controller memakai view() yang sudah memuat header, sidebar, dan footer. ?>
