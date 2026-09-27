@@ -5,3 +5,4 @@ error_log
 *.log
 .env
 sessions/
+backup_siber_auto_*.sql
