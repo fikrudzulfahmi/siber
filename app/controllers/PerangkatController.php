@@ -19,8 +19,8 @@ public function index()
     $id_tahun = $tahun_aktif['id_tahun_pelajaran'] ?? null;
     $id_user = $_SESSION['user']['id'];
 
-    // Ambil mapel yang diampu guru
-    $mapel_guru = $perangkatModel->getByGuru($id_user);
+    // Ambil mapel yang diampu guru — hanya untuk TAHUN PELAJARAN AKTIF
+    $mapel_guru = $perangkatModel->getByGuru($id_user, $id_tahun);
 
     // Tangkap filter mapel-kelas
     $id_mapel_guru = $_GET['id_mapel_guru'] ?? null;
@@ -189,22 +189,4 @@ public function updateApproval()
 
     echo json_encode(['success' => true]);
 }
-public function listKurikulum()
-{
-    $tahunModel = new TahunPelajaran($this->db);
-    $perangkatModel = new Perangkat($this->db);
-    $jenisPerangkatModel = new JenisPerangkat($this->db);
-
-    $tahun_aktif = $tahunModel->getAktif();
-    $id_tahun_pelajaran = $tahun_aktif ? $tahun_aktif['id_tahun_pelajaran'] : null;
-
-    $data['judul'] = 'Daftar Perangkat Guru';
-    $data['tahun'] = $tahun_aktif;
-    $data['jenis_perangkat'] = $jenisPerangkatModel->all();
-    $data['list_perangkat'] = $perangkatModel->getAllWithGuruAndMapel($id_tahun_pelajaran);
-
-    $this->view('perangkat/list_kurikulum', $data);
-}
-
-
 }

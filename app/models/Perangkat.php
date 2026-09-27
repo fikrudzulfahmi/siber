@@ -51,9 +51,14 @@ public function insertOrUpdate($data)
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-public function getWithDeadline($id_user, $id_tahun_pelajaran, $id_mapel_guru, $tingkat)
+/**
+ * Ambil perangkat guru untuk satu mapel-guru, difilter tahun pelajaran + (opsional) tingkat.
+ * $tingkat dibuat opsional supaya pemanggil yang tidak punya konteks tingkat
+ * (mis. saat halaman dibuka lewat URL dengan id_mapel_guru) tidak fatal error.
+ */
+public function getWithDeadline($id_user, $id_tahun_pelajaran, $id_mapel_guru, $tingkat = null)
 {
-    $stmt = $this->db->prepare("
+    $sql = "
         SELECT 
             p.id_mapel_guru,
             m.nama_mapel,
@@ -75,14 +80,21 @@ public function getWithDeadline($id_user, $id_tahun_pelajaran, $id_mapel_guru, $
         WHERE p.id_employe = :id_user 
           AND p.id_tahun_pelajaran = :id_tp
           AND p.id_mapel_guru = :id_mapel_guru
-          AND k.tingkat = :tingkat
-    ");
-    $stmt->execute([
+    ";
+
+    $params = [
         ':id_user' => $id_user,
         ':id_tp' => $id_tahun_pelajaran,
-        ':id_mapel_guru' => $id_mapel_guru,
-        ':tingkat' => $tingkat
-    ]);
+        ':id_mapel_guru' => $id_mapel_guru
+    ];
+
+    if ($tingkat !== null && $tingkat !== '') {
+        $sql .= " AND k.tingkat = :tingkat";
+        $params[':tingkat'] = $tingkat;
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -111,16 +123,36 @@ public function getPerangkatByMapelKelas($id_mapel_kelas)
         return $stmt->execute([$status, $id]);
     }
 
-public function getByGuru($id_guru)
+/**
+ * Ambil kombinasi mapel + tingkat yang diampu guru PADA TAHUN PELAJARAN AKTIF.
+ * Tanpa filter tahun, penugasan mengajar tahun ajaran lama ikut muncul di dropdown
+ * (mis. tingkat 7 dari tahun lalu masih tampil bersama tingkat 8 yang berlaku).
+ */
+public function getByGuru($id_guru, $id_tahun = null)
 {
-    $stmt = $this->db->prepare("SELECT DISTINCT m.nama_mapel, k.tingkat, MIN(mg.id_mapel_guru) AS id_mapel_guru
-                                FROM mapel_guru mg
-                                JOIN mapel m ON mg.id_mapel = m.id_mapel
-                                JOIN kelas k ON mg.id_kelas = k.id_kelas
-                                WHERE mg.id_guru = ?
-                                GROUP BY m.nama_mapel, k.tingkat
-                                ORDER BY m.nama_mapel, k.tingkat");
-    $stmt->execute([$id_guru]);
+    // Tahun aktif dibaca dari database (sumber kebenaran) — jangan dari sesi,
+    // karena $_SESSION['user']['id_tahun'] hanya di-set saat login dan bisa basi.
+    if ($id_tahun === null) {
+        $id_tahun = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1")->fetchColumn();
+    }
+
+    $sql = "SELECT DISTINCT m.nama_mapel, k.tingkat, MIN(mg.id_mapel_guru) AS id_mapel_guru
+            FROM mapel_guru mg
+            JOIN mapel m ON mg.id_mapel = m.id_mapel
+            JOIN kelas k ON mg.id_kelas = k.id_kelas
+            WHERE mg.id_guru = ?";
+    $params = [$id_guru];
+
+    if ($id_tahun) {
+        $sql .= " AND mg.id_tahun_pelajaran = ?";
+        $params[] = $id_tahun;
+    }
+
+    $sql .= " GROUP BY m.nama_mapel, k.tingkat
+              ORDER BY m.nama_mapel, k.tingkat";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 public function getByMapelGuru($id_mapel_guru)
