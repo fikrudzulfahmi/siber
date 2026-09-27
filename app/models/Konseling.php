@@ -81,20 +81,34 @@ class Konseling
     }
 
     /**
-     * ✅ METHOD BARU: Ambil semua siswa dari kelas yang diampu oleh wali kelas.
+     * ✅ Ambil semua siswa dari kelas yang diampu wali kelas, untuk TAHUN PELAJARAN AKTIF.
+     * Filter tahun mencegah siswa dari kelas/tahun ajaran lama ikut tampil.
      */
-    public function getSiswaByWaliKelas($id_walikelas)
+    public function getSiswaByWaliKelas($id_walikelas, $id_tahun = null)
     {
-        $stmt = $this->db->prepare("
+        if ($id_tahun === null) {
+            $id_tahun = $this->getTahunAktif();
+        }
+
+        $sql = "
             SELECT s.id_siswa, s.nama_siswa 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
             WHERE k.wali_kelas = ?
-            GROUP BY s.id_siswa
-            ORDER BY s.nama_siswa ASC
-        ");
-        $stmt->execute([$id_walikelas]);
+              AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+        ";
+        $params = [$id_walikelas];
+
+        if ($id_tahun) {
+            $sql .= " AND ps.id_tahun = ?";
+            $params[] = $id_tahun;
+        }
+
+        $sql .= " GROUP BY s.id_siswa ORDER BY s.nama_siswa ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -305,9 +319,42 @@ class Konseling
     }
 
     // 🔹 Referensi Dropdown
-    public function getKelasList()
+    /**
+     * Ambil ID tahun pelajaran yang sedang AKTIF.
+     * Dipakai agar semua daftar siswa/kelas mengacu ke tahun berjalan,
+     * bukan mencampur data tahun ajaran lama.
+     */
+    public function getTahunAktif()
     {
-        return $this->db->query("SELECT * FROM kelas ORDER BY kelas ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $stmt = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1");
+        return $stmt->fetchColumn(); // ID atau false
+    }
+
+    /**
+     * Daftar kelas yang benar-benar dipakai pada tahun pelajaran AKTIF
+     * (diambil dari ploting siswa), supaya dropdown tidak menampilkan kelas lama.
+     */
+    public function getKelasList($id_tahun = null)
+    {
+        if ($id_tahun === null) {
+            $id_tahun = $this->getTahunAktif();
+        }
+
+        if (!$id_tahun) {
+            return $this->db->query("SELECT * FROM kelas ORDER BY kelas ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        }
+
+        // Hanya kelas yang punya siswa ter-ploting di tahun aktif
+        $stmt = $this->db->prepare("
+            SELECT DISTINCT k.*
+            FROM kelas k
+            JOIN ploting_siswa ps ON ps.id_kelas = k.id_kelas
+            WHERE ps.id_tahun = ?
+            ORDER BY k.kelas ASC
+        ");
+        $stmt->execute([$id_tahun]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function getKategoriList()
@@ -315,17 +362,34 @@ class Konseling
         return $this->db->query("SELECT * FROM kategori_permasalahan ORDER BY nama_kategori ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function getSiswaByKelas($id_kelas)
+    /**
+     * Daftar siswa pada satu kelas untuk TAHUN PELAJARAN AKTIF.
+     * Filter tahun wajib agar siswa tahun ajaran lama tidak ikut tampil.
+     */
+    public function getSiswaByKelas($id_kelas, $id_tahun = null)
     {
-        $stmt = $this->db->prepare("
+        if ($id_tahun === null) {
+            $id_tahun = $this->getTahunAktif();
+        }
+
+        $sql = "
             SELECT s.id_siswa, s.nama_siswa 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             WHERE ps.id_kelas = ? 
-            GROUP BY s.id_siswa
-            ORDER BY s.nama_siswa ASC
-        ");
-        $stmt->execute([$id_kelas]);
+              AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+        ";
+        $params = [$id_kelas];
+
+        if ($id_tahun) {
+            $sql .= " AND ps.id_tahun = ?";
+            $params[] = $id_tahun;
+        }
+
+        $sql .= " GROUP BY s.id_siswa ORDER BY s.nama_siswa ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
