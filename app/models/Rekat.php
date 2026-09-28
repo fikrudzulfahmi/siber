@@ -3,6 +3,42 @@ require_once 'Model.php';
 
 class Rekat extends Model
 {
+    /**
+     * Peta label jenis perangkat LAMA → nama jenis di master saat ini.
+     *
+     * perangkat_mengajar menyimpan NAMA jenis (bukan id), dan labelnya bergeser antar tahun
+     * ajaran (admin mengganti nama jenis). Akibatnya unggahan berlabel lama — mis. siswa/guru
+     * mengunggah 'Pengumpulan Soal STS' padahal master kini hanya punya 'Soal STS' — TIDAK
+     * PERNAH cocok saat rekap dicocokkan lewat nama, sehingga muncul sebagai "belum upload"
+     * di tahun mana pun. Peta ini membuat rekap tetap mengenali label lama TANPA mengubah
+     * satu baris data pun.
+     *
+     * Hanya label yang memang sudah HILANG dari master yang dipetakan. ('Analisis Ulangan
+     * Harian/Proyek' sengaja tidak dipetakan: padanannya ambigu antara 'Analisis Penilaian'
+     * dan 'Analisis Butir Soal'.)
+     */
+    const ALIAS_JENIS = [
+        'Pengumpulan Soal STS'           => 'Soal STS',
+        'Kaldik (APE, AHE)'              => 'Kaldik, APE, AHE',
+        'Modul Ajar (RPP)'               => 'RPP / RPM',
+        'Capaian Pembelajaran (CP)'      => 'CP, TP, ATP',
+        'Tujuan Pembelajaran (TP)'       => 'CP, TP, ATP',
+        'Alur Tujuan Pembelajaran (ATP)' => 'CP, TP, ATP',
+    ];
+
+    /**
+     * Ekspresi SQL yang menormalkan label jenis tersimpan ke nama master saat ini.
+     * Dipakai bersama oleh rekap dan detail agar aturannya hanya ada di satu tempat.
+     */
+    public function ekspresiAliasJenis($kolom = 'p.jenis_perangkat')
+    {
+        $kapan = '';
+        foreach (self::ALIAS_JENIS as $lama => $baru) {
+            $kapan .= ' WHEN ' . $this->db->quote($lama) . ' THEN ' . $this->db->quote($baru);
+        }
+        return "CASE {$kolom}{$kapan} ELSE {$kolom} END";
+    }
+
     public function getTahunPelajaran()
     {
         $stmt = $this->db->query("SELECT * FROM tahun_pelajaran ORDER BY tahun_pelajaran DESC, semester DESC");
@@ -20,10 +56,15 @@ class Rekat extends Model
         // 3. Hanya jenis perangkat AKTIF (status '1') yang dihitung, agar penyebut sama
         //    dengan yang benar-benar ditawarkan ke guru (10, bukan 17).
         // COUNT(DISTINCT ...) menggantikan SUM(...) supaya satu jenis tak terhitung berkali-kali.
+        // Pencocokan jenis memakai ekspresi alias: label lama dianggap sama dengan nama master
+        // saat ini, sehingga unggahan berlabel lama tetap terhitung (tanpa mengubah data).
+        // Yang dihitung DISTINCT adalah jp.nama (nama kanonik), bukan label mentah, agar dua
+        // label berbeda yang menunjuk jenis yang sama tidak dihitung sebagai dua.
+        $aliasJenis = $this->ekspresiAliasJenis('p.jenis_perangkat');
         $sql = "
             SELECT e.id_employe, e.nama, m.id_mapel, m.nama_mapel, src.tingkat,
                    COUNT(DISTINCT jp.id) AS total_perangkat,
-                   COUNT(DISTINCT CASE WHEN p.file IS NOT NULL THEN p.jenis_perangkat END) AS terupload
+                   COUNT(DISTINCT CASE WHEN p.file IS NOT NULL THEN jp.nama END) AS terupload
             FROM (
                 SELECT mg.id_guru, mg.id_mapel, k.tingkat
                 FROM mapel_guru mg
@@ -40,7 +81,7 @@ class Rekat extends Model
             JOIN mapel m ON m.id_mapel = src.id_mapel
             CROSS JOIN jenis_perangkat jp
             LEFT JOIN perangkat_mengajar p
-                ON p.jenis_perangkat = jp.nama
+                ON {$aliasJenis} = jp.nama
                 AND p.id_employe = e.id_employe
                 AND p.id_tahun_pelajaran = :tahun_p2
                 AND p.id_mapel_guru IN (
@@ -91,12 +132,14 @@ class Rekat extends Model
         // menempel pada baris mapel_guru tahun lama, tapi pasangan (guru, mapel, tingkat)-nya sama.
         // GROUP BY jp.id supaya satu jenis tidak muncul berkali-kali ketika guru mengunggah
         // jenis itu untuk beberapa kelas pada tingkat yang sama.
+        // Pencocokan jenis juga memakai ekspresi alias, agar label lama tetap dikenali.
+        $aliasJenis = $this->ekspresiAliasJenis('p.jenis_perangkat');
         $sql = "
             SELECT jp.nama AS nama_perangkat,
                    CASE WHEN COUNT(p.id) > 0 THEN 'Sudah Upload' ELSE 'Belum Upload' END AS status
             FROM jenis_perangkat jp
             LEFT JOIN perangkat_mengajar p 
-                ON p.jenis_perangkat = jp.nama
+                ON {$aliasJenis} = jp.nama
                 AND p.id_employe = :id_guru
                 AND p.id_tahun_pelajaran = :id_tahun_pelajaran
                 AND p.id_mapel_guru IN (
