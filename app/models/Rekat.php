@@ -60,9 +60,18 @@ class Rekat extends Model
         // saat ini, sehingga unggahan berlabel lama tetap terhitung (tanpa mengubah data).
         // Yang dihitung DISTINCT adalah jp.nama (nama kanonik), bukan label mentah, agar dua
         // label berbeda yang menunjuk jenis yang sama tidak dihitung sebagai dua.
+        // 4. Nama guru diambil dari src.id_guru (bukan e.id_employe) dengan nama pengganti
+        //    'Guru id N': baris mapel_guru bisa merujuk pegawai yang barisnya sudah tidak ada
+        //    di `employe`. Dengan JOIN biasa guru itu HILANG dari rekap, dan nama berisi string
+        //    kosong tampil sebagai sel kosong — LEFT JOIN + COALESCE menutup dua-duanya.
+        // 5. Subquery pencocokan unggahan TIDAK dikunci id_guru (hanya mapel + tingkat), karena
+        //    untuk pegawai yatim e.id_employe bernilai NULL sehingga tak ada yang cocok dan
+        //    hasilnya 0 unggahan. Tetap aman: baris p wajib milik src.id_guru.
         $aliasJenis = $this->ekspresiAliasJenis('p.jenis_perangkat');
         $sql = "
-            SELECT e.id_employe, e.nama, m.id_mapel, m.nama_mapel, src.tingkat,
+            SELECT src.id_guru AS id_employe,
+                   COALESCE(NULLIF(e.nama, ''), CONCAT('Guru id ', src.id_guru)) AS nama,
+                   m.id_mapel, m.nama_mapel, src.tingkat,
                    COUNT(DISTINCT jp.id) AS total_perangkat,
                    COUNT(DISTINCT CASE WHEN p.file IS NOT NULL THEN jp.nama END) AS terupload
             FROM (
@@ -77,24 +86,23 @@ class Rekat extends Model
                 JOIN kelas k0 ON k0.id_kelas = mg0.id_kelas
                 WHERE p0.id_tahun_pelajaran = :tahun_p
             ) src
-            JOIN employe e ON e.id_employe = src.id_guru
+            LEFT JOIN employe e ON e.id_employe = src.id_guru
             JOIN mapel m ON m.id_mapel = src.id_mapel
             CROSS JOIN jenis_perangkat jp
             LEFT JOIN perangkat_mengajar p
                 ON {$aliasJenis} = jp.nama
-                AND p.id_employe = e.id_employe
+                AND p.id_employe = src.id_guru
                 AND p.id_tahun_pelajaran = :tahun_p2
                 AND p.id_mapel_guru IN (
                     SELECT mg2.id_mapel_guru
                     FROM mapel_guru mg2
                     JOIN kelas k2 ON k2.id_kelas = mg2.id_kelas
-                    WHERE mg2.id_guru = e.id_employe
-                      AND mg2.id_mapel = src.id_mapel
+                    WHERE mg2.id_mapel = src.id_mapel
                       AND k2.tingkat = src.tingkat
                 )
             WHERE jp.status = '1'
-            GROUP BY e.id_employe, e.nama, m.id_mapel, m.nama_mapel, src.tingkat
-            ORDER BY e.nama, m.nama_mapel, src.tingkat
+            GROUP BY src.id_guru, e.nama, m.id_mapel, m.nama_mapel, src.tingkat
+            ORDER BY nama, m.nama_mapel, src.tingkat
         ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
