@@ -30,15 +30,15 @@ if (!function_exists('wa_norm_nomor')) {
             return '';
         }
         if ($s[0] === '0') {
-            return '62' . substr($s, 1);
+            $s = '62' . substr($s, 1);
+        } elseif ($s[0] === '8') {
+            $s = '62' . $s;
+        } elseif (strncmp($s, '62', 2) !== 0) {
+            $s = '62' . ltrim($s, '0');
         }
-        if ($s[0] === '8') {
-            return '62' . $s;
-        }
-        if (strncmp($s, '62', 2) !== 0) {
-            return '62' . ltrim($s, '0');
-        }
-        return $s;
+
+        // Nomor Indonesia yang sah minimal 9 digit (62 + 7); selain itu dianggap tidak valid.
+        return strlen($s) >= 9 ? $s : '';
     }
 }
 
