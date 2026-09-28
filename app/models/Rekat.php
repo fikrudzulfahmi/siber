@@ -47,27 +47,37 @@ class Rekat extends Model
         // 5. Subquery pencocokan unggahan TIDAK dikunci id_guru (hanya mapel + tingkat), karena
         //    untuk pegawai yatim e.id_employe bernilai NULL sehingga tak ada yang cocok dan
         //    hasilnya 0 unggahan. Tetap aman: baris p wajib milik src.id_guru.
+        // 6. Sel dihitung per (guru, NAMA mapel, tingkat), bukan per id_mapel: master `mapel`
+        //    menyimpan BANYAK id bernama sama (FISIKA 5 baris, BAHASA ARAB 9), dan penugasan
+        //    satu tahun bisa memakai id duplikat yang berbeda. Dulu hasilnya dua baris untuk
+        //    sel yang sama — satu terisi, satu 0 — dan pencocokan lewat id membuat unggahan
+        //    yang menempel pada id kembar tidak terhitung. Sekarang pencocokan lewat NAMA.
         $aliasJenis = $this->ekspresiAliasJenis('p.jenis_perangkat');
         $sql = "
             SELECT src.id_guru AS id_employe,
                    COALESCE(NULLIF(e.nama, ''), CONCAT('Guru id ', src.id_guru)) AS nama,
-                   m.id_mapel, m.nama_mapel, src.tingkat,
+                   MIN(src.id_mapel) AS id_mapel, src.nama_mapel, src.tingkat,
                    COUNT(DISTINCT jp.id) AS total_perangkat,
                    COUNT(DISTINCT CASE WHEN p.file IS NOT NULL THEN jp.nama END) AS terupload
             FROM (
-                SELECT mg.id_guru, mg.id_mapel, k.tingkat
+                SELECT mg.id_guru, MIN(mg.id_mapel) AS id_mapel, m.nama_mapel, k.tingkat
                 FROM mapel_guru mg
+                JOIN mapel m ON m.id_mapel = mg.id_mapel
                 JOIN kelas k ON k.id_kelas = mg.id_kelas
                 WHERE mg.id_tahun_pelajaran = :tahun_mg
+                GROUP BY mg.id_guru, m.nama_mapel, k.tingkat
+
                 UNION
-                SELECT p0.id_employe, mg0.id_mapel, k0.tingkat
+
+                SELECT p0.id_employe, MIN(mg0.id_mapel) AS id_mapel, m0.nama_mapel, k0.tingkat
                 FROM perangkat_mengajar p0
                 JOIN mapel_guru mg0 ON mg0.id_mapel_guru = p0.id_mapel_guru
+                JOIN mapel m0 ON m0.id_mapel = mg0.id_mapel
                 JOIN kelas k0 ON k0.id_kelas = mg0.id_kelas
                 WHERE p0.id_tahun_pelajaran = :tahun_p
+                GROUP BY p0.id_employe, m0.nama_mapel, k0.tingkat
             ) src
             LEFT JOIN employe e ON e.id_employe = src.id_guru
-            JOIN mapel m ON m.id_mapel = src.id_mapel
             CROSS JOIN jenis_perangkat jp
             LEFT JOIN perangkat_mengajar p
                 ON {$aliasJenis} = jp.nama
@@ -77,12 +87,13 @@ class Rekat extends Model
                     SELECT mg2.id_mapel_guru
                     FROM mapel_guru mg2
                     JOIN kelas k2 ON k2.id_kelas = mg2.id_kelas
-                    WHERE mg2.id_mapel = src.id_mapel
+                    JOIN mapel m2 ON m2.id_mapel = mg2.id_mapel
+                    WHERE m2.nama_mapel = src.nama_mapel
                       AND k2.tingkat = src.tingkat
                 )
             WHERE jp.status = '1'
-            GROUP BY src.id_guru, e.nama, m.id_mapel, m.nama_mapel, src.tingkat
-            ORDER BY nama, m.nama_mapel, src.tingkat
+            GROUP BY src.id_guru, e.nama, src.nama_mapel, src.tingkat
+            ORDER BY nama, src.nama_mapel, CAST(src.tingkat AS UNSIGNED)
         ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -118,6 +129,9 @@ class Rekat extends Model
         // Penyebut disamakan dengan rekap: hanya jenis AKTIF (status '1').
         // Subquery pencocokan sengaja TIDAK dikunci tahun: perangkat tahun aktif bisa
         // menempel pada baris mapel_guru tahun lama, tapi pasangan (guru, mapel, tingkat)-nya sama.
+        // Pencocokan mapel memakai NAMA (bukan id): master `mapel` menyimpan banyak id
+        // bernama sama, sehingga id yang dikirim badge bisa berbeda dari id yang ditempeli
+        // unggahan — kalau dikunci id, detail menampilkan "Belum Upload" padahal badge bilang sudah.
         // GROUP BY jp.id supaya satu jenis tidak muncul berkali-kali ketika guru mengunggah
         // jenis itu untuk beberapa kelas pada tingkat yang sama.
         // Pencocokan jenis juga memakai ekspresi alias, agar label lama tetap dikenali.
@@ -131,10 +145,13 @@ class Rekat extends Model
                 AND p.id_employe = :id_guru
                 AND p.id_tahun_pelajaran = :id_tahun_pelajaran
                 AND p.id_mapel_guru IN (
-                    SELECT id_mapel_guru 
+                    SELECT mg.id_mapel_guru
                     FROM mapel_guru mg
                     JOIN kelas k ON mg.id_kelas = k.id_kelas
-                    WHERE mg.id_guru = :id_guru_mapel AND mg.id_mapel = :id_mapel AND k.tingkat = :tingkat
+                    JOIN mapel m ON m.id_mapel = mg.id_mapel
+                    WHERE mg.id_guru = :id_guru_mapel
+                      AND m.nama_mapel = (SELECT m2.nama_mapel FROM mapel m2 WHERE m2.id_mapel = :id_mapel)
+                      AND k.tingkat = :tingkat
                 )
             WHERE jp.status = '1'
             GROUP BY jp.id, jp.nama
