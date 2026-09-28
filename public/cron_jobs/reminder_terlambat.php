@@ -7,6 +7,9 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
     die('Unauthorized');
 }
 
+// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+require_once __DIR__ . '/_wa_outbox.php';
+
 // File: reminder_terlambat.php
 // VERSI FINAL: Ditambahkan Fitur Debug Mode dari Database
 
@@ -15,7 +18,6 @@ $dbHost = 'localhost';
 $dbName = 'u607305378_siber';
 $dbUser = 'u607305378_siber';
 $dbPass = 'root@P4ssw0rd';
-$fonnteToken = 'ZFUkS3d6pgPT1vRgfuLV';
 $logFile = __DIR__ . '/terlambat_log.txt';
 $toleransiKeterlambatan = 1; // Menit
 $idJabatanSatpam = 3; // Jabatan yang akan diabaikan
@@ -109,19 +111,9 @@ try {
 
                 if (!$debugMode) {
                     // Mengirim pesan asli dengan cURL
-                    $curl = curl_init();
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://api.fonnte.com/send',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => ['target' => $pegawai['no_wa'], 'message' => $pesan],
-                        CURLOPT_HTTPHEADER => ["Authorization: {$fonnteToken}"],
-                    ));
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-
-                    write_log("STATUS: Pesan dikirim ke {$pegawai['no_wa']}. Respons: {$response}");
-                    sleep(2); // Delay sedikit untuk menghindari rate limit API
+                    // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
+                    $hasilAntre = wa_enqueue($pdo, $pegawai['no_wa'], $pesan);
+                    write_log("STATUS: " . wa_enqueue_hasil_log($hasilAntre));
                 } else {
                     write_log("STATUS: Simulasi (Pesan tidak dikirim karena Mode Debug Aktif)");
                     write_log("ISI PESAN:\n{$pesan}");

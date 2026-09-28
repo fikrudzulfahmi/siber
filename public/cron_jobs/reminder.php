@@ -6,12 +6,14 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
     die('Unauthorized');
 }
 
+// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+require_once __DIR__ . '/_wa_outbox.php';
+
 // ------------------- KONFIGURASI -------------------
 $dbHost = 'localhost';
 $dbName = 'u607305378_siber';
 $dbUser = 'u607305378_siber';
 $dbPass = 'root@P4ssw0rd'; // Gunakan password asli Anda di sini
-$fonnteToken = 'ZFUkS3d6pgPT1vRgfuLV'; // Gunakan token asli Anda di sini
 $debugMode = true; // SET KE FALSE UNTUK MULAI MENGIRIM PESAN ASLI
 // ---------------------------------------------------
 
@@ -136,18 +138,9 @@ foreach ($guruUntukDiingatkan as $id => $guru) {
     echo "ISI PESAN:\n\n$pesan\n";
 
     if (!$debugMode) {
-        // Blok pengiriman asli
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => 'https://api.fonnte.com/send',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => ['target' => $guru['no_wa'], 'message' => $pesan, 'delay' => '5'],
-            CURLOPT_HTTPHEADER => ["Authorization: $fonnteToken"],
-        ]);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        echo "\n[STATUS KIRIM]: $response\n";
+        // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
+        $hasilAntre = wa_enqueue($pdo, $guru['no_wa'], $pesan);
+        echo "[STATUS KIRIM]: " . wa_enqueue_hasil_log($hasilAntre) . PHP_EOL;
     } else {
         echo "\n[STATUS]: Berhasil disimulasikan (Pesan tidak benar-benar dikirim)\n";
     }

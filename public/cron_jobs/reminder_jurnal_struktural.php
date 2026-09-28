@@ -7,12 +7,14 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
     die('Unauthorized');
 }
 
+// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+require_once __DIR__ . '/_wa_outbox.php';
+
 // --- KONFIGURASI ---
 $dbHost = 'localhost';
 $dbName = 'u607305378_siber';
 $dbUser = 'u607305378_siber';
 $dbPass = 'root@P4ssw0rd';
-$fonnteToken = 'ZFUkS3d6pgPT1vRgfuLV';
 $idJabatanStruktural = 2; // Khusus Struktural
 $debugMode = true;
 // --------------------
@@ -76,19 +78,9 @@ try {
                 "Terima kasih,\n*SIBER PPRM*";
 
             if (!$debugMode) {
-                // Pengiriman asli via Fonnte
-                $curl = curl_init();
-                curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://api.fonnte.com/send',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => ['target' => $pegawai['no_wa'], 'message' => $pesan],
-                    CURLOPT_HTTPHEADER => ["Authorization: $fonnteToken"],
-                ]);
-                $response = curl_exec($curl);
-                curl_close($curl);
-                echo "STATUS: Pesan dikirim ke {$pegawai['no_wa']}. Respon: $response\n";
-                sleep(2);
+                // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
+                $hasilAntre = wa_enqueue($pdo, $pegawai['no_wa'], $pesan);
+                echo "STATUS: " . wa_enqueue_hasil_log($hasilAntre) . PHP_EOL;
             } else {
                 echo "STATUS: [SIMULASI] Pesan tidak dikirim ke {$pegawai['no_wa']}\n";
                 echo "ISI PESAN:\n$pesan\n";

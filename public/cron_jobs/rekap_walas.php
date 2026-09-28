@@ -7,6 +7,9 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
     die('Unauthorized');
 }
 
+// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+require_once __DIR__ . '/_wa_outbox.php';
+
 // File: rekap_walas.php
 // Versi Final: Integrasi Tahun Pelajaran Aktif & Plotting Siswa
 
@@ -15,7 +18,6 @@ $dbHost = 'localhost';
 $dbName = 'u607305378_siber';
 $dbUser = 'u607305378_siber';
 $dbPass = 'root@P4ssw0rd';
-$fonnteToken = 'ZFUkS3d6pgPT1vRgfuLV';
 $logFile = __DIR__ . '/rekap_walas_log.txt';
 $debugMode = true; // Default awal
 // ---------------------------------------------------
@@ -176,19 +178,9 @@ try {
         write_log("--- Memproses {$counter}: {$walas['nama']} ({$walas['nama_kelas']}) | Status: {$status_laporan} ---");
 
         if (!$debugMode) {
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.api.fonnte.com/send' ? 'https://api.fonnte.com/send' : 'https://api.fonnte.com/send',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => ['target' => $nomorTujuan, 'message' => $pesan],
-                CURLOPT_HTTPHEADER => ["Authorization: {$fonnteToken}"],
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-            write_log("STATUS: Terkirim ke {$nomorTujuan}. Respons: {$response}");
-            sleep(2); // Jeda agar API stabil
+            // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
+            $hasilAntre = wa_enqueue($pdo, $nomorTujuan, $pesan);
+            write_log("STATUS: " . wa_enqueue_hasil_log($hasilAntre));
         } else {
             write_log("STATUS: [SIMULASI] Pesan tidak dikirim ke {$nomorTujuan}");
             write_log("ISI PESAN:\n{$pesan}\n");
