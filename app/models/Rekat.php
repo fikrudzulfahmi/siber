@@ -1,30 +1,14 @@
 <?php
 require_once 'Model.php';
+require_once 'JenisPerangkatAlias.php';
 
 class Rekat extends Model
 {
     /**
      * Peta label jenis perangkat LAMA → nama jenis di master saat ini.
-     *
-     * perangkat_mengajar menyimpan NAMA jenis (bukan id), dan labelnya bergeser antar tahun
-     * ajaran (admin mengganti nama jenis). Akibatnya unggahan berlabel lama — mis. siswa/guru
-     * mengunggah 'Pengumpulan Soal STS' padahal master kini hanya punya 'Soal STS' — TIDAK
-     * PERNAH cocok saat rekap dicocokkan lewat nama, sehingga muncul sebagai "belum upload"
-     * di tahun mana pun. Peta ini membuat rekap tetap mengenali label lama TANPA mengubah
-     * satu baris data pun.
-     *
-     * Hanya label yang memang sudah HILANG dari master yang dipetakan. ('Analisis Ulangan
-     * Harian/Proyek' sengaja tidak dipetakan: padanannya ambigu antara 'Analisis Penilaian'
-     * dan 'Analisis Butir Soal'.)
+     * Definisi aslinya ada di JenisPerangkatAlias agar dipakai bersama Verifikasi juga.
      */
-    const ALIAS_JENIS = [
-        'Pengumpulan Soal STS'           => 'Soal STS',
-        'Kaldik (APE, AHE)'              => 'Kaldik, APE, AHE',
-        'Modul Ajar (RPP)'               => 'RPP / RPM',
-        'Capaian Pembelajaran (CP)'      => 'CP, TP, ATP',
-        'Tujuan Pembelajaran (TP)'       => 'CP, TP, ATP',
-        'Alur Tujuan Pembelajaran (ATP)' => 'CP, TP, ATP',
-    ];
+    const ALIAS_JENIS = JenisPerangkatAlias::PETA;
 
     /**
      * Ekspresi SQL yang menormalkan label jenis tersimpan ke nama master saat ini.
@@ -32,11 +16,7 @@ class Rekat extends Model
      */
     public function ekspresiAliasJenis($kolom = 'p.jenis_perangkat')
     {
-        $kapan = '';
-        foreach (self::ALIAS_JENIS as $lama => $baru) {
-            $kapan .= ' WHEN ' . $this->db->quote($lama) . ' THEN ' . $this->db->quote($baru);
-        }
-        return "CASE {$kolom}{$kapan} ELSE {$kolom} END";
+        return JenisPerangkatAlias::ekspresi($this->db, $kolom);
     }
 
     public function getTahunPelajaran()
