@@ -43,6 +43,7 @@ $peta = [
     'sent'      => 'sent',
     'delivered' => 'sent',
     'read'      => 'sent',
+    'played'    => 'sent',   // pesan suara sudah diputar (Baileys ack 5)
     'failed'    => 'failed',
 ];
 
