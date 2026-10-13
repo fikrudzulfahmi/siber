@@ -6,3 +6,6 @@ error_log
 .env
 sessions/
 backup_siber_auto_*.sql
+
+# snapshot lokal (Hermes)
+backup/
