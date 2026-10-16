@@ -35,7 +35,16 @@ if (!is_array($input)) {
     $input = $_POST; // toleransi bila dikirim sebagai form-urlencoded
 }
 
-$ref    = (int) preg_replace('/\D/', '', (string) ($input['ref'] ?? $input['id'] ?? '0'));
+$refMentah = (string) ($input['ref'] ?? $input['id'] ?? '0');
+// Format ref: "OUTBOX-<id>-<sidik>" (versi baru) atau "OUTBOX-<id>" / "<id>" (lama).
+// Ambil HANYA angka setelah "OUTBOX-", supaya sidik heksadesimal di belakangnya
+// tidak ikut terbaca sebagai bagian dari id.
+$ref = 0;
+if (preg_match('/^OUTBOX-(\d+)/i', trim($refMentah), $m)) {
+    $ref = (int) $m[1];
+} else {
+    $ref = (int) preg_replace('/\D/', '', $refMentah);
+}
 $status = (string) ($input['status'] ?? '');
 
 $peta = [
@@ -54,10 +63,20 @@ if ($ref <= 0 || !isset($peta[$status])) {
 $statusDb = $peta[$status];
 
 try {
-    $pdo = wa_pdo($WA_DB);
+    $pdo = wa_pdo();
 
-    $stmt = $pdo->prepare('UPDATE outbox_wa SET status = ? WHERE id = ?');
-    $stmt->execute([$statusDb, $ref]);
+    // Laporan 'queued' (klaim) hanya boleh menaikkan pending -> in_queue.
+    // Ack yang datang terlambat TIDAK boleh menurunkan baris yang sudah 'sent',
+    // supaya status di SIBER tidak berbalik jadi 'in_queue' padahal sudah terkirim.
+    if ($statusDb === 'in_queue') {
+        $stmt = $pdo->prepare(
+            "UPDATE outbox_wa SET status = 'in_queue' WHERE id = ? AND status IN ('pending','in_queue')"
+        );
+        $stmt->execute([$ref]);
+    } else {
+        $stmt = $pdo->prepare('UPDATE outbox_wa SET status = ? WHERE id = ?');
+        $stmt->execute([$statusDb, $ref]);
+    }
 
     if ($stmt->rowCount() === 0) {
         // Bisa jadi baris tidak ada, atau statusnya memang sudah sama (idempoten)

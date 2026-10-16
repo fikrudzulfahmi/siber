@@ -7,6 +7,22 @@ if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
     die('Unauthorized');
 }
 
+// --- Kunci anti-tumpang-tindih ---------------------------------------------
+// Sebelumnya dua eksekusi berbarengan (cron dobel / klik manual saat cron jalan)
+// membuat pesan yang sama dimasukkan dua kali ke antrean -> terkirim dobel.
+$__lockBerkas = __DIR__ . '/.lock_' . basename(__FILE__); // dipatok ke folder skrip: path pasti sama untuk cron (CLI) maupun akses web
+$__lockFp = @fopen($__lockBerkas, 'c');
+if ($__lockFp !== false && !flock($__lockFp, LOCK_EX | LOCK_NB)) {
+    echo 'SKIP: ' . basename(__FILE__) . " masih berjalan (lock aktif).\n";
+    exit;
+}
+register_shutdown_function(function () use ($__lockFp) {
+    if (is_resource($__lockFp)) {
+        flock($__lockFp, LOCK_UN);
+        fclose($__lockFp);
+    }
+});
+
 // Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
 require_once __DIR__ . '/_wa_outbox.php';
 

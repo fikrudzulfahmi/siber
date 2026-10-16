@@ -5,18 +5,25 @@
  * ----------------------------------------------------------------------------
  *  Dipanggil oleh engine WA Gateway lokal (mode PULL) setiap beberapa detik.
  *  Header wajib : X-Gateway-Token
- *  Query opsional: limit (1..50, default 20)
+ *  Query opsional: limit (1..50, default 20), peek=1 (lihat saja, tanpa klaim)
  *
  *  Respons: { "ok": true, "data": [ {id, to, type, body}, ... ] }
- *     id   -> "OUTBOX-<id outbox_wa>", dipakai gateway saat melapor balik (ack)
+ *     id   -> "OUTBOX-<id outbox_wa>-<sidik>", dipakai gateway saat melapor balik
  *     to   -> nomor tujuan format 62xx
  *     body -> isi pesan
  *
- *  Setelah ditarik, gateway langsung mem-POST status "queued" ke ack.php,
- *  yang mengubah status baris menjadi 'in_queue' sehingga TIDAK ditarik lagi
- *  pada siklus berikutnya (anti dobel-kirim).
+ *  PERUBAHAN PENTING (perbaikan antrean macet / dobel):
+ *  Sejak versi ini endpoint MELAKUKAN KLAIM: baris yang diserahkan langsung
+ *  diubah statusnya menjadi 'in_queue' + claimed_at diisi, di dalam satu
+ *  transaksi (SELECT ... FOR UPDATE lalu UPDATE).
+ *    1. Baris yang sama tidak lagi disajikan berulang tiap siklus -> tidak
+ *       dobel-kirim walaupun ack gateway telat/gagal.
+ *    2. Baris yang tidak pernah dilaporkan balik TIDAK lagi menyumbat 20 slot
+ *       pertama antrean (dulu itu membuat pesan baru tidak pernah tertarik).
+ *    3. Baris yang mandek dikembalikan ke 'pending' oleh requeue.php setelah
+ *       WA_LEASE_MENIT menit (lihat _config.php).
  *
- *  Catatan: endpoint ini hanya membaca. Amankan dengan token di _config.php.
+ *  Catatan: endpoint ini hanya membaca + mengklaim; aman dengan token.
  * ============================================================================
  */
 declare(strict_types=1);
@@ -29,38 +36,47 @@ $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
 $limit = max(1, min(50, $limit));   // dibatasi supaya hosting tidak berat
 
 try {
-    $pdo = wa_pdo($WA_DB);
+    $pdo = wa_pdo();
 
-    $stmt = $pdo->prepare(
-        "SELECT id, nomor, pesan, created_at
-           FROM outbox_wa
-          WHERE status = 'pending'
-            AND created_at >= :mulai
-          ORDER BY id ASC
-          LIMIT {$limit}"
-    );
-    $stmt->execute([':mulai' => WA_MULAI_DARI]);
+    if (!empty($_GET['peek'])) {
+        // Mode intip untuk pemeriksaan manual di browser: TIDAK mengklaim apa pun.
+        $rows = wa_baris_pending($pdo, $limit);
+        $data = [];
+        foreach ($rows as $row) {
+            $data[] = [
+                'id'   => wa_ref_baris($row),
+                'to'   => $row['nomor'],
+                'type' => 'text',
+                'body' => $row['pesan'],
+            ];
+        }
+        wa_json_out([
+            'ok'         => true,
+            'peek'       => true,
+            'data'       => $data,
+            'total'      => count($data),
+            'rekap'      => wa_rekap_antrean($pdo),
+            'mulai_dari' => WA_MULAI_DARI,
+        ]);
+    }
+
+    $rows = wa_klaim_antrean($pdo, $limit);
 
     $data = [];
-    foreach ($stmt->fetchAll() as $row) {
+    foreach ($rows as $row) {
         $data[] = [
-            'id'    => 'OUTBOX-' . $row['id'],
-            'to'    => $row['nomor'],
-            'type'  => 'text',
-            'body'  => $row['pesan'],
+            'id'   => wa_ref_baris($row),
+            'to'   => $row['nomor'],
+            'type' => 'text',
+            'body' => $row['pesan'],
         ];
     }
 
-    // Ringkasan kondisi antrean (membantu saat memeriksa di browser)
-    $rekap = $pdo->query(
-        "SELECT status, COUNT(*) AS jumlah FROM outbox_wa GROUP BY status"
-    )->fetchAll();
-
     wa_json_out([
-        'ok'      => true,
-        'data'    => $data,
-        'total'   => count($data),
-        'rekap'   => $rekap,
+        'ok'         => true,
+        'data'       => $data,
+        'total'      => count($data),
+        'rekap'      => wa_rekap_antrean($pdo),
         'mulai_dari' => WA_MULAI_DARI,
     ]);
 } catch (Throwable $e) {

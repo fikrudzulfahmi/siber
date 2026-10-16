@@ -9,3 +9,12 @@ backup_siber_auto_*.sql
 
 # snapshot lokal (Hermes)
 backup/
+
+# kredensial WA gateway (di luar webroot)
+config/wa_gateway.php
+
+# berkas kunci anti-tumpang-tindih cronjob
+public/cron_jobs/.lock_*
+
+# log laporan balik gateway
+public/wa-gateway/ack_log.txt
