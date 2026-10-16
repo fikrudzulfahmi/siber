@@ -150,6 +150,14 @@ if (!defined('WA_MULAI_DARI')) {
 if (!defined('WA_LEASE_MENIT')) {
     define('WA_LEASE_MENIT', (int) $WA_KONFIG['lease_menit']);
 }
+// Masa tenggang untuk baris 'in_queue' yang macet SEBELUM kolom claimed_at
+// ada (nilainya NULL). Dipakai created_at sebagai perkiraan, dengan tenggang
+// lebar supaya perbedaan zona waktu sesi MySQL (hosting sering UTC) tidak
+// membuat baris baru ikut dilepas.
+if (!defined('WA_LEGACY_GRACE_JAM')) {
+    define('WA_LEGACY_GRACE_JAM', (int) (getenv('WA_LEGACY_GRACE_JAM') !== false ? getenv('WA_LEGACY_GRACE_JAM') : 24));
+}
+
 if (!defined('WA_MAX_ATTEMPT')) {
     define('WA_MAX_ATTEMPT', (int) $WA_KONFIG['max_attempt']);
 }
@@ -374,29 +382,43 @@ if (!function_exists('wa_lepas_klaim_mandek')) {
 
         $batas = date('Y-m-d H:i:s', time() - (WA_LEASE_MENIT * 60));
 
+        // Baris 'in_queue' yang macet SEBELUM kolom claimed_at ada memiliki
+        // claimed_at NULL. Tanpa memakai created_at sebagai perkiraan, baris
+        // lama itu tidak akan pernah dilepas maupun ditutup — macet permanen.
+        // Dua nama parameter berbeda untuk nilai yang sama: PDO dengan
+        // ATTR_EMULATE_PREPARES=false menolak satu nama dipakai dua kali
+        // (SQLSTATE[HY093] Invalid parameter number).
+        $batasLama     = date('Y-m-d H:i:s', time() - (WA_LEGACY_GRACE_JAM * 3600));
+        $kondisiMandek = '(claimed_at IS NOT NULL AND claimed_at < :batasA)'
+            . ' OR (claimed_at IS NULL AND created_at < :batasB)';
+
         // Yang sudah kehabisan percobaan ditutup dulu sebagai 'failed' (tidak
         // dikembalikan ke 'pending'), supaya tidak berputar tanpa akhir.
         $sqlGagal = "UPDATE outbox_wa
                         SET status = 'failed'
                       WHERE status = 'in_queue'
-                        AND claimed_at IS NOT NULL
-                        AND claimed_at < :batas";
+                        AND ({$kondisiMandek})";
         if (wa_kolom_ada($pdo, 'outbox_wa', 'attempt')) {
             $sqlGagal .= ' AND attempt >= ' . WA_MAX_ATTEMPT;
         }
         $stmt = $pdo->prepare($sqlGagal);
-        $stmt->execute([':batas' => $batas]);
+        $stmt->execute([':batasA' => $batas, ':batasB' => $batasLama]);
         $jmlGagal = $stmt->rowCount();
 
         $stmt = $pdo->prepare(
             "UPDATE outbox_wa
                 SET status = 'pending', claimed_at = NULL
               WHERE status = 'in_queue'
-                AND claimed_at IS NOT NULL
-                AND claimed_at < :batas"
+                AND ({$kondisiMandek})"
         );
-        $stmt->execute([':batas' => $batas]);
+        $stmt->execute([':batasA' => $batas, ':batasB' => $batasLama]);
 
-        return ['dilepas' => $stmt->rowCount(), 'gagal' => $jmlGagal, 'pesan' => 'ok'];
+        return [
+            'dilepas'         => $stmt->rowCount(),
+            'gagal'           => $jmlGagal,
+            'lease_menit'     => WA_LEASE_MENIT,
+            'tenggang_lama_jam' => WA_LEGACY_GRACE_JAM,
+            'pesan'           => 'ok',
+        ];
     }
 }

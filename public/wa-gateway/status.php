@@ -52,10 +52,12 @@ try {
         $stmt = $pdo->prepare(
             "SELECT COUNT(*) FROM outbox_wa
               WHERE status = 'in_queue'
-                AND claimed_at IS NOT NULL
-                AND claimed_at < :batas"
+                AND ((claimed_at IS NOT NULL AND claimed_at < :batasA)
+                     OR (claimed_at IS NULL AND created_at < :batasB))"
         );
-        $stmt->execute([':batas' => date('Y-m-d H:i:s', time() - (WA_LEASE_MENIT * 60))]);
+        $batasLease = date('Y-m-d H:i:s', time() - (WA_LEASE_MENIT * 60));
+        $batasLama  = date('Y-m-d H:i:s', time() - (WA_LEGACY_GRACE_JAM * 3600));
+        $stmt->execute([':batasA' => $batasLease, ':batasB' => $batasLama]);
         $lewatLease = (int) $stmt->fetchColumn();
     }
 
@@ -139,6 +141,7 @@ try {
         'in_queue_lewat_lease'  => $lewatLease,
         'mulai_dari'     => WA_MULAI_DARI,
         'lease_menit'    => WA_LEASE_MENIT,
+        'tenggang_lama_jam' => WA_LEGACY_GRACE_JAM,
         'max_attempt'    => WA_MAX_ATTEMPT,
         'kolom_claimed_at' => wa_kolom_ada($pdo, 'outbox_wa', 'claimed_at'),
         'kolom_attempt'    => wa_kolom_ada($pdo, 'outbox_wa', 'attempt'),
