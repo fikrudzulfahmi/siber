@@ -37,12 +37,9 @@ if (!defined('API_DEVICE_KEY')) {
     define('API_DEVICE_KEY', 'YOUR_API_DEVICE_KEY');
 }
 
-// Nomor WhatsApp penerima rekap & notifikasi sistem
-if (!defined('WHATSAPP_RECIPIENTS')) {
-    define('WHATSAPP_RECIPIENTS', [
-        '6281234567890',
-    ]);
-}
+// CATATAN: WHATSAPP_RECIPIENTS sengaja TIDAK didefinisikan di sini.
+// Nomor penerima memakai daftar default di app/config.php; isi di sini hanya
+// bila ingin mengganti daftar tersebut (format array nomor 62...).
 
 // Kredensial database (config/database.php memakai ini bila env SIBER_DB_* kosong)
 if (!defined('SIBER_DB_HOST')) {

@@ -107,7 +107,9 @@ class SettingController
                 exit;
             }
 
-            $configFile = __DIR__ . '/../config.php';
+            // Simpan ke config/secrets.php (di luar webroot, gitignored) bila ada.
+            $secretsFile = dirname(__DIR__) . '/config/secrets.php';
+            $configFile = is_file($secretsFile) ? $secretsFile : __DIR__ . '/../config.php';
             if (file_exists($configFile) && is_writable($configFile)) {
                 $configContent = file_get_contents($configFile);
 
