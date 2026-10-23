@@ -135,7 +135,7 @@ git log --oneline -1
 
 Yang diharapkan: folder `.../siber`, branch `main`, dan commit terakhir **`2bc7196`**.
 
-Kalau `git log` sudah menampilkan `5625c06` (atau lebih baru), berarti sudah pernah ter-update — lanjut ke langkah 4.
+Kalau `git log --oneline -8` sudah memuat `security(hardening)`, berarti sudah pernah ter-update — lanjut ke langkah 4.
 
 ### 3b. Pastikan tidak ada perubahan lokal
 
@@ -175,7 +175,7 @@ git log --oneline -1
 ls app/helpers/Security.php app/helpers/Upload.php public/assets/js/csrf.js
 ```
 
-Yang diharapkan: commit **`5625c06`** (atau lebih baru) dan ketiga file itu **ada** (tidak ada tulisan `No such file`).
+Yang diharapkan: `git log --oneline -8` memuat baris **`security(hardening)`**, dan ketiga file itu **ada** (tidak ada tulisan `No such file`).
 
 > Kalau `ls` bilang file tidak ada, berarti docroot/repo Anda bukan di `~/siber`. Cari dengan:
 > `find ~ -maxdepth 3 -name Security.php -path "*helpers*" 2>/dev/null`
@@ -355,7 +355,7 @@ ls ~/logs 2>/dev/null | head
 | Upload foto ditolak | Bukan JPG/PNG/WEBP/GIF, atau > 8 MB | Kecilkan/konversi file. SVG memang ditolak |
 | Cron balas 403 | `CRON_KEY` beda dengan URL panel | Samakan nilainya |
 | WA tidak terkirim | Token Fonnte salah / saldo habis | Cek `FONNTE_TOKEN` + dashboard Fonnte |
-| Guru masih bisa buka halaman admin | `public/index.php` belum ter-update | `git log --oneline -1` harus `5625c06` atau lebih baru; ulangi langkah 3 |
+| Guru masih bisa buka halaman admin | `public/index.php` belum ter-update | `git log --oneline -8` harus memuat `security(hardening)`; ulangi langkah 3 |
 | Tombol Backup gagal | `backups/` tidak writable atau `mysqldump` tidak ada | `chmod 750 backups`, cek `which mysqldump` |
 | Halaman 500 setelah login | Cek error log; kirim 20 baris terakhir ke saya | `tail -30 ~/siber/public/error_log` |
 
