@@ -20,13 +20,14 @@ akses, memvalidasi input, dan menyimpan berkas.
 | Upload | nama & ekstensi dari user, folder bisa mengeksekusi PHP | `Upload::store()`: daftar putih ekstensi + MIME, nama acak, `.htaccess` penolak eksekusi per folder |
 | Backup | dump `.sql` di `public/backups/`, bisa diunduh user login biasa | dump di `backups/` (di luar webroot), `.htaccess` deny, hanya level 1, `realpath` containment, token `hash_equals` |
 | API presensi | tanpa autentikasi, kredensial DB literal, SQLi | kredensial dari `config/database.php`, prepared statement, opsional `X-Device-Key`, error tidak ditampilkan |
-| Kredensial | literal di `app/config.php`, `cron_jobs/*.php` | `config/secrets.php` (di luar webroot) + `config/secrets.example.php` |
+| Kredensial | literal di `app/config.php`, `config/database.php`, `cron_jobs/*.php` | seluruhnya dari `config/secrets.php` (di luar webroot, `0600`, gitignored) atau env `SIBER_DB_*`; contoh di `config/secrets.example.php` |
 | Cron | kunci di URL GET dibandingkan `!==` | `hash_equals()` terhadap konstanta dari `config/secrets.php` |
+| XSS | 1.161 dari 1.466 echo mencetak data DB tanpa escape | 90 view admin + dashboard peran memakai `sec_e()`; flash di `<script>` memakai `sec_js()` |
 | Eksposur berkas | `.sql`, `.log`, `.template`, `.ini`, sesi, dump | diblokir `.htaccess`; 20 berkas uji/debug dihapus; `sessions/sess_*` keluar dari Git |
 | Header | `X-Powered-By` bocor | HSTS, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` |
 | Error | `display_errors=1` dipaksa | `display_errors=0`, `log_errors=1` |
 | Ekspor | rumus Excel bisa disuntik dari nama siswa | sel teks memakai `setCellValueExplicit(TYPE_STRING)` |
-| PDF | Dompdf `isRemoteEnabled=true` | dimatikan (cegah SSRF) |
+| PDF | Dompdf `isRemoteEnabled=true` di hampir semua cetak | cetak kegiatan (`EkstraController`) dimatikan; cetak lain tetap `true` karena memuat gambar lokal, risiko SSRF ditekan lewat escaping output |
 
 ## 2. Berkas baru
 
@@ -41,7 +42,9 @@ akses, memvalidasi input, dan menyimpan berkas.
 1. Backup: dump database + salin seluruh `public/` dan `app/` ke folder bertanggal.
 2. Pastikan `mysqldump` tersedia bagi user PHP (`which mysqldump`).
 3. Siapkan `config/secrets.php` di server (di luar `public/`), isi:
-   `FONNTE_TOKEN`, `GOOGLE_DRIVE_*`, `CRON_KEY`, `API_DEVICE_KEY`.
+   `FONNTE_TOKEN`, `GOOGLE_DRIVE_*`, `CRON_KEY`, `API_DEVICE_KEY`, dan `SIBER_DB_HOST/PORT/NAME/USERNAME/PASSWORD`.
+   Tanpa berkas ini aplikasi berhenti dengan pesan "Koneksi database gagal" — jadi unggah
+   `config/secrets.php` **sebelum** `config/database.php`.
 4. Catat nilai `CRON_KEY` lama untuk membandingkan dengan URL cron yang terpasang.
 5. Deploy di luar jam KBM. Perkiraan waktu uji: 10–15 menit.
 
@@ -94,7 +97,7 @@ akses, memvalidasi input, dan menyimpan berkas.
 
 ## 7. Catatan operasional
 
-- `stock`/`storage` throttle login ditulis di `storage/` (di luar webroot).
+- Throttle login & CSRF disimpan di `storage/` (di luar webroot, `0750`), bukan di sesi.
 - Folder `sessions/` sebaiknya `0700` dan tidak pernah masuk Git.
 - Bila ada tautan "hapus" yang dibuka dari luar situs (mis. dari WhatsApp),
   sistem menolak dengan halaman "Permintaan ditolak" — ini disengaja.
