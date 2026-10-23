@@ -190,6 +190,22 @@ class RaporController extends BaseController
 
     public function update_terpadu()
     {
+        if (!sec_has_level([1, 5])) {
+            $id_rapor_siswa = $_POST['id_rapor_siswa'] ?? null;
+            $stmt = $this->db->prepare("SELECT ps.id_kelas
+                FROM rapor_siswa rs
+                JOIN rapor_setting rset ON rs.id_rapor = rset.id_rapor
+                JOIN ploting_siswa ps ON rs.id_siswa = ps.id_siswa AND ps.id_tahun = rset.id_tahun_pelajaran
+                WHERE rs.id_rapor_siswa = ?");
+            $stmt->execute([$id_rapor_siswa]);
+            $targetKelas = $stmt->fetchColumn();
+
+            $userKelas = $_SESSION['user']['id_kelas'] ?? null;
+            if (!$userKelas || !$targetKelas || (int)$targetKelas !== (int)$userKelas) {
+                sec_require_level([1, 5], 'Anda tidak memiliki hak akses untuk mengubah rapor kelas ini.');
+            }
+        }
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Mengambil ID Rapor Siswa dari form (Pastikan nilainya bukan 0)
             $id_rapor_siswa = $_POST['id_rapor_siswa'];
