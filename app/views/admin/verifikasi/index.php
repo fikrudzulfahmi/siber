@@ -81,6 +81,7 @@
     </div> <!-- row -->
 </div> <!-- container-fluid -->
 <script>
+    const escHtml = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 function statusBadgeClass(status) {
     if (!status) return 'bg-secondary';
     switch (status.trim().toLowerCase()) {
@@ -178,7 +179,7 @@ document.getElementById('mapel_guru').addEventListener('change', function() {
             data.forEach(item => {
                 const statusApproval = (item.status_approval || '').trim().toLowerCase();
                 const fileCell = item.file
-                    ? `<a href="uploads/perangkat/${item.file}" target="_blank" rel="noopener noreferrer" class="badge bg-success text-decoration-none">Lihat File</a>`
+                    ? `<a href="uploads/perangkat/${escHtml(item.file)}" target="_blank" rel="noopener noreferrer" class="badge bg-success text-decoration-none">Lihat File</a>`
                     : '<span class="badge bg-secondary">Belum Upload</span>';
 
                 const statusText = statusApproval === 'belum upload'
@@ -189,11 +190,11 @@ document.getElementById('mapel_guru').addEventListener('change', function() {
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${item.jenis_perangkat}</td>
+                    <td>${escHtml(item.jenis_perangkat)}</td>
                     <td>${fileCell}</td>
                     <td><span class="badge ${statusBadgeClass(statusApproval)}">${statusText}</span></td>
                     <td>
-                        <select data-id="${item.id || ''}" class="form-select form-select-sm status-select" ${selectDisabled}>
+                        <select data-id="${escHtml(item.id || '')}" class="form-select form-select-sm status-select" ${selectDisabled}>
                             <option value="pending" ${statusApproval === 'pending' ? 'selected' : ''}>Pending</option>
                             <option value="disetujui" ${statusApproval === 'disetujui' ? 'selected' : ''}>Disetujui</option>
                             <option value="ditolak" ${statusApproval === 'ditolak' ? 'selected' : ''}>Ditolak</option>
@@ -201,7 +202,7 @@ document.getElementById('mapel_guru').addEventListener('change', function() {
                     </td>
                     <td>
                         <input type="text" class="form-control form-control-sm catatan-input" 
-                            data-id="${item.id || ''}" value="${item.catatan || ''}">
+                            data-id="${escHtml(item.id || '')}" value="${escHtml(item.catatan || '')}">
                     </td>
                 `;
                 tbody.appendChild(tr);

@@ -70,15 +70,15 @@
         <table>
             <tr>
                 <td class="label">Nama Siswa</td>
-                <td><?= $izin['nama_siswa'] ?></td>
+                <td><?= sec_e($izin['nama_siswa']) ?></td>
             </tr>
             <tr>
                 <td class="label">Kelas</td>
-                <td><?= $izin['kelas'] ?></td>
+                <td><?= sec_e($izin['kelas']) ?></td>
             </tr>
             <tr>
                 <td class="label">Keperluan</td>
-                <td><?= $izin['keperluan'] ?></td>
+                <td><?= sec_e($izin['keperluan']) ?></td>
             </tr>
             <tr>
                 <td class="label">Waktu Meninggalkan</td>
@@ -120,7 +120,7 @@
 
         <div class="ttd">
             Blitar, <?= formatTanggalIndo($tanggalCetak) ?><br><br><br><br>
-            <u><?= $izin['nama_rekom'] ?></u><br>
+            <u><?= sec_e($izin['nama_rekom']) ?></u><br>
             Pemberi Rekomendasi
         </div>
     </div>
@@ -137,15 +137,15 @@
         <table>
             <tr>
                 <td class="label">Nama Siswa</td>
-                <td><?= $izin['nama_siswa'] ?></td>
+                <td><?= sec_e($izin['nama_siswa']) ?></td>
             </tr>
             <tr>
                 <td class="label">Kelas</td>
-                <td><?= $izin['kelas'] ?></td>
+                <td><?= sec_e($izin['kelas']) ?></td>
             </tr>
             <tr>
                 <td class="label">Keperluan</td>
-                <td><?= $izin['keperluan'] ?></td>
+                <td><?= sec_e($izin['keperluan']) ?></td>
             </tr>
             <tr>
                 <td class="label">Waktu Meninggalkan</td>
@@ -187,7 +187,7 @@
 
         <div class="ttd">
             Blitar, <?= formatTanggalIndo($tanggalCetak) ?><br><br><br><br>
-            <u><?= $izin['nama_rekom'] ?></u><br>
+            <u><?= sec_e($izin['nama_rekom']) ?></u><br>
             Pemberi Rekomendasi
         </div>
     </div>

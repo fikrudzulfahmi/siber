@@ -7,7 +7,7 @@
         Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
-            text: '<?= $msg ?>',
+            text: <?= sec_js($msg) ?>,
             timer: 3000,
             showConfirmButton: false
         });
@@ -17,7 +17,7 @@
         Swal.fire({
             icon: 'error',
             title: 'Gagal!',
-            text: '<?= $msg ?>',
+            text: <?= sec_js($msg) ?>,
             timer: 3000,
             showConfirmButton: false
         });

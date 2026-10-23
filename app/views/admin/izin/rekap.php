@@ -35,7 +35,7 @@
                 <td><?= $no++ ?></td>
                 <td><?= sec_e($row['nama_siswa']) ?></td>
                 <td><?= sec_e($row['nama_kelas']) ?></td>
-                <td><?= $row['keperluan'] ?></td>
+                <td><?= sec_e($row['keperluan']) ?></td>
                 <td><?= formatTanggalIndo($row['waktu_meninggalkan'], true) ?></td>
                 <td><?= formatTanggalIndo($row['waktu_kembali'], true) ?></td>
                 <td><?= sec_e($row['nama_rekom']) ?></td>

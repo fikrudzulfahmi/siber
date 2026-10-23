@@ -101,7 +101,7 @@
                                         // ✅ LOGIKA BARU DI SINI
                                         if ($jadwal['sudah_isi_jurnal']) {
                                             // Jika jurnal sudah terisi
-                                            echo empty($siswa_tidak_hadir) ? '<span class="text-success">- Hadir Semua -</span>' : implode('<br>', $siswa_tidak_hadir);
+                                            echo empty($siswa_tidak_hadir) ? '<span class="text-success">- Hadir Semua -</span>' : implode('<br>', array_map('sec_e', $siswa_tidak_hadir));
                                         } else {
                                             // Jika jurnal masih kosong
                                             echo '<span class="text-danger">Belum ada data jurnal</span>';
