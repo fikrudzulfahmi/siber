@@ -108,13 +108,14 @@ if (!defined('SIBER_DB_PASSWORD')) define('SIBER_DB_PASSWORD', 'ISI_PASSWORD_DB'
 5. Klik kanan `secrets.php` → **Change Permissions** → centang hanya **Read** dan **Write** untuk Owner (angka `600`) → **Change**.
 6. **Jangan** menambahkan `WHATSAPP_RECIPIENTS` ke file ini. Nomor WA penerima tetap dibaca dari `app/config.php`.
 
-Uji file ini langsung (harus muncul `secrets-ok`):
+Uji file ini langsung — perintah ini memeriksa semua nilai dan menyebut mana yang masih kosong (tanpa menampilkan isinya):
 
 ```bash
-php -r 'require "/home/$USER/siber/config/secrets.php"; echo SIBER_DB_PASSWORD !== "" && defined("CRON_KEY") ? "secrets-ok\n" : "secrets-KURANG\n";'
+php ~/siber/config/secrets.php
 ```
 
-Kalau muncul `secrets-KURANG` → ada nilai yang masih kosong, perbaiki dulu sebelum lanjut.
+Yang diharapkan di baris terakhir: **`Semua wajib terisi. Aman untuk lanjut ke git pull.`**
+Kalau ada baris `[!] ... BELUM DIISI` → lengkapi dulu, jangan lanjut ke langkah 3.
 
 > Kalau repo Anda bukan di `/home/$USER/siber`, ganti path-nya. Cek dengan `cd ~ && ls`.
 
