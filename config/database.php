@@ -2,10 +2,14 @@
 /**
  * Koneksi database.
  *
- * Nilai bawaan di bawah dipakai di server produksi. Untuk pengujian lokal,
- * set variabel lingkungan SIBER_DB_HOST / SIBER_DB_NAME / SIBER_DB_USER /
- * SIBER_DB_PASS agar tidak menyentuh database produksi.
+ * Kredensial diambil dari variabel lingkungan SIBER_DB_* bila ada, atau dari
+ * config/secrets.php (di luar public/) yang tidak ikut Git. Tidak ada password
+ * literal di dalam file ini.
  */
+
+if (is_file(__DIR__ . '/secrets.php')) {
+    require_once __DIR__ . '/secrets.php';
+}
 
 class Database
 {
@@ -18,11 +22,11 @@ class Database
 
     public function __construct()
     {
-        $this->host     = getenv('SIBER_DB_HOST') ?: 'localhost';
-        $this->port     = getenv('SIBER_DB_PORT') ?: '';
-        $this->db_name  = getenv('SIBER_DB_NAME') ?: 'u607305378_siber';
-        $this->username = getenv('SIBER_DB_USER') ?: 'u607305378_siber';
-        $this->password = getenv('SIBER_DB_PASS') !== false ? getenv('SIBER_DB_PASS') : 'root@P4ssw0rd';
+        $this->host     = getenv('SIBER_DB_HOST') ?: (defined('SIBER_DB_HOST') ? SIBER_DB_HOST : 'localhost');
+        $this->port     = getenv('SIBER_DB_PORT') ?: (defined('SIBER_DB_PORT') ? SIBER_DB_PORT : '');
+        $this->db_name  = getenv('SIBER_DB_NAME') ?: (defined('SIBER_DB_NAME') ? SIBER_DB_NAME : '');
+        $this->username = getenv('SIBER_DB_USER') ?: (defined('SIBER_DB_USERNAME') ? SIBER_DB_USERNAME : '');
+        $this->password = getenv('SIBER_DB_PASS') !== false ? getenv('SIBER_DB_PASS') : (defined('SIBER_DB_PASSWORD') ? SIBER_DB_PASSWORD : '');
     }
 
     public function getConnection()

@@ -11,7 +11,11 @@ RewriteRule ^ index.php [L]
 Options -Indexes
 
 # Jangan pernah menyajikan berkas konfigurasi, dump, template, atau log.
-<FilesMatch "\.(template|sql|log|ini|bak|old|orig|sh|yml|yaml|env|dist|lock|gitignore|htaccess)$">
+<FilesMatch "\.(template|sql|log|ini|bak|old|orig|sh|yml|yaml|env|dist|lock|lock_[a-z0-9_]+\.php|gitignore|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^.*(log|Log)\.txt$">
     Require all denied
 </FilesMatch>
 

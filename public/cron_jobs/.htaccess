@@ -4,3 +4,8 @@ Options -Indexes
 <FilesMatch "^(_|test|tes|reminder_repo|rekap_terlambat_copy|reminder \(1\)).*\.php$">
     Require all denied
 </FilesMatch>
+<IfModule mod_authz_core.c>
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+</IfModule>

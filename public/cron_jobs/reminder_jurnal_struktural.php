@@ -2,9 +2,33 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Cek akses via key
-if (!isset($_GET['key']) || $_GET['key'] !== 'SiberRM_svbndks987839432') {
-    die('Unauthorized');
+// Muat konfigurasi database & rahasia
+require_once __DIR__ . '/../../config/database.php';
+if (is_file(__DIR__ . '/../../config/secrets.php')) {
+    require_once __DIR__ . '/../../config/secrets.php';
+}
+require_once __DIR__ . '/../../app/config.php';
+
+// Cek akses via key (CLI dibebaskan atau mencocokkan key bila diberikan)
+$isCli = (PHP_SAPI === 'cli' || php_sapi_name() === 'cli');
+$providedKey = $_GET['key'] ?? null;
+if ($isCli && $providedKey === null && isset($_SERVER['argv'])) {
+    foreach ($_SERVER['argv'] as $arg) {
+        if (str_starts_with($arg, '--key=')) {
+            $providedKey = substr($arg, 6);
+        } elseif (str_starts_with($arg, 'key=')) {
+            $providedKey = substr($arg, 4);
+        }
+    }
+}
+
+if (!$isCli || $providedKey !== null) {
+    if (!isset($providedKey) || !defined('CRON_KEY') || CRON_KEY === '' || !hash_equals(CRON_KEY, (string) $providedKey)) {
+        if (PHP_SAPI !== 'cli') {
+            http_response_code(403);
+        }
+        die('Unauthorized');
+    }
 }
 
 // --- Kunci anti-tumpang-tindih ---------------------------------------------
@@ -27,10 +51,6 @@ register_shutdown_function(function () use ($__lockFp) {
 require_once __DIR__ . '/_wa_outbox.php';
 
 // --- KONFIGURASI ---
-$dbHost = 'localhost';
-$dbName = 'u607305378_siber';
-$dbUser = 'u607305378_siber';
-$dbPass = 'root@P4ssw0rd';
 $idJabatanStruktural = 2; // Khusus Struktural
 $debugMode = true;
 // --------------------
@@ -39,7 +59,8 @@ header('Content-Type: text/plain');
 date_default_timezone_set('Asia/Jakarta');
 
 try {
-    $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass);
+    $database = new Database();
+    $pdo = $database->getConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // --- AMBIL SETTING DEBUG MODE ---
