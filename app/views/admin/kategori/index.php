@@ -11,7 +11,7 @@ include '../app/views/layouts/sidebar.php';
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50'
                 });
             });
@@ -23,7 +23,7 @@ include '../app/views/layouts/sidebar.php';
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#d33'
                 });
             });
@@ -106,13 +106,13 @@ include '../app/views/layouts/sidebar.php';
                                             <td class="text-sm"><?= htmlspecialchars($row['semester']) ?></td>
                                             <td class="text-center text-sm"><?= htmlspecialchars($row['banyak_ns']) ?></td>
                                             <td class="align-middle">
-                                                <a href="?controller=kategori&method=nilai&id=<?= $row['id_kategori'] ?>&id_mapel_guru=<?= $row['id_mapel_guru'] ?>"
+                                                <a href="?controller=kategori&method=nilai&id=<?= sec_e($row['id_kategori']) ?>&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>"
                                                     class="btn btn-success btn-sm px-3 mb-0">Input Nilai</a>
 
-                                                <a href="?controller=kategori&method=edit&id=<?= $row['id_kategori'] ?>"
+                                                <a href="?controller=kategori&method=edit&id=<?= sec_e($row['id_kategori']) ?>"
                                                     class="btn btn-info btn-sm px-3 mb-0">Edit</a>
 
-                                                <a href="?controller=kategori&method=delete&id=<?= $row['id_kategori'] ?>&id_mapel_guru=<?= $row['id_mapel_guru'] ?>"
+                                                <a href="?controller=kategori&method=delete&id=<?= sec_e($row['id_kategori']) ?>&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>"
                                                     class="btn btn-danger btn-sm px-3 mb-0 btn-hapus">Hapus</a>
                                             </td>
                                         </tr>

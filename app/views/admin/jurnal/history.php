@@ -8,7 +8,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50'
                 });
             });
@@ -73,7 +73,7 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                         <h6 class="text-white text-capitalize ps-3 mb-0">Riwayat Jurnal Pembelajaran</h6>
                         <span class="badge bg-white text-success me-3">
-                            Tahun: <?= $nama_tahun ?>
+                            Tahun: <?= sec_e($nama_tahun) ?>
                         </span>
                     </div>
                 </div>
@@ -137,9 +137,9 @@
                                     <?php foreach ($jurnalList as $j): ?>
                                         <tr>
                                             <td class="align-middle"><?= date('d-m-Y', strtotime($j['tanggal'])) ?></td>
-                                            <td class="align-middle fw-bold"><?= $j['kelas'] ?></td>
-                                            <td class="align-middle"><?= $j['nama_mapel'] ?></td>
-                                            <td class="align-middle text-center"><?= $j['jam_mulai'] ?> - <?= $j['jam_akhir'] ?></td>
+                                            <td class="align-middle fw-bold"><?= sec_e($j['kelas']) ?></td>
+                                            <td class="align-middle"><?= sec_e($j['nama_mapel']) ?></td>
+                                            <td class="align-middle text-center"><?= sec_e($j['jam_mulai']) ?> - <?= sec_e($j['jam_akhir']) ?></td>
                                             <td class="align-middle text-sm">
                                                 <?php
                                                 if (!empty($j['tujuan_pembelajaran_list'])) {
@@ -150,12 +150,12 @@
                                                 ?>
                                             </td>
                                             <td class="align-middle text-xs">
-                                                <?= !empty($j['catatan_pembelajaran']) ? $j['catatan_pembelajaran'] : '-' ?>
+                                                <?= !empty($j['catatan_pembelajaran']) ? sec_e($j['catatan_pembelajaran']) : '-' ?>
                                             </td>
                                             <td class="text-center align-middle">
                                                 <div class="d-flex flex-column gap-1">
-                                                    <a href="?controller=jurnal&method=edit&id=<?= $j['id_jurnal'] ?>" class="btn btn-xs btn-warning mb-0">Edit</a>
-                                                    <a href="?controller=jurnal&method=hapus&id=<?= $j['id_jurnal'] ?>" class="btn btn-xs btn-dark mb-0 delete-btn">Hapus</a>
+                                                    <a href="?controller=jurnal&method=edit&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-warning mb-0">Edit</a>
+                                                    <a href="?controller=jurnal&method=hapus&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-dark mb-0 delete-btn">Hapus</a>
                                                 </div>
                                             </td>
                                         </tr>

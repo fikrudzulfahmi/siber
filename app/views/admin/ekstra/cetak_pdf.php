@@ -55,7 +55,7 @@
             </tr>
             <tr style="border: none;">
                 <td style="border: none;">Kegiatan</td>
-                <td style="border: none;">: <?= $detail['nama_kegiatan'] ?></td>
+                <td style="border: none;">: <?= sec_e($detail['nama_kegiatan']) ?></td>
             </tr>
         </table>
 
@@ -79,9 +79,9 @@
                 foreach ($detail['presensi'] as $p): ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= $p['nama_siswa'] ?></td>
-                        <td><?= $p['kelas'] ?></td>
-                        <td><?= $p['status'] ?></td>
+                        <td><?= sec_e($p['nama_siswa']) ?></td>
+                        <td><?= sec_e($p['kelas']) ?></td>
+                        <td><?= sec_e($p['status']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

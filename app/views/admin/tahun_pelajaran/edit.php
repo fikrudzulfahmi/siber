@@ -21,7 +21,7 @@
                             <input type="hidden" name="id_tahun_pelajaran" value="">
                             <input type="text" name="tahun_pelajaran"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $tahun['tahun_pelajaran'] ?>" required>
+                                value="<?= sec_e($tahun['tahun_pelajaran']) ?>" required>
                         </div>
 
                         <!-- Tingkat -->
@@ -29,7 +29,7 @@
                             <label class="form-label text-dark fw-bold">Semester</label>
                             <input type="text" name="semester"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $tahun['semester'] ?>" required>
+                                value="<?= sec_e($tahun['semester']) ?>" required>
                         </div>
 
                         <!-- Tombol -->

@@ -17,7 +17,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -33,7 +33,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Edit <?= $user['nama'] ?></h6>
+                        <h6 class="text-white text-capitalize ps-3">Edit <?= sec_e($user['nama']) ?></h6>
                     </div>
                 </div>
 
@@ -44,19 +44,19 @@
                         <!-- Nama -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Nama</label>
-                            <input type="text" name="nama" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $user['nama'] ?>" required>
+                            <input type="text" name="nama" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($user['nama']) ?>" required>
                         </div>
 
                         <!-- PIN -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">PIN</label>
-                            <input type="text" name="pin" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $user['pin'] ?>" required>
+                            <input type="text" name="pin" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($user['pin']) ?>" required>
                         </div>
 
                         <!-- Jabatan -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Jabatan</label>
-                            <input type="text" name="jabatan" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $user['jabatan'] ?>" required>
+                            <input type="text" name="jabatan" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($user['jabatan']) ?>" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Kategori Jabatan</label>
@@ -73,13 +73,13 @@
                         <!-- No WA -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">No WA</label>
-                            <input type="text" name="no_wa" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $user['no_wa'] ?>" required>
+                            <input type="text" name="no_wa" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($user['no_wa']) ?>" required>
                         </div>
 
                         <!-- Username -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Username</label>
-                            <input type="text" name="username" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $user['username'] ?>" required>
+                            <input type="text" name="username" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($user['username']) ?>" required>
                         </div>
 
                         <!-- Password -->

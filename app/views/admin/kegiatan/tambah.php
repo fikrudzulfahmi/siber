@@ -63,7 +63,7 @@
                                                 <input class="form-check-input check-item" type="checkbox" name="peserta[]" value="<?= $guru['pin'] ?>" id="guru_<?= $guru['pin'] ?>">
                                                 <label class="form-check-label" for="guru_<?= $guru['pin'] ?>">
                                                     <span class="d-block font-weight-bold text-dark text-sm"><?= htmlspecialchars($guru['nama']) ?></span>
-                                                    <small class="text-xs text-secondary"><?= htmlspecialchars($guru['jabatan']) ?> (PIN: <?= $guru['pin'] ?>)</small>
+                                                    <small class="text-xs text-secondary"><?= htmlspecialchars($guru['jabatan']) ?> (PIN: <?= sec_e($guru['pin']) ?>)</small>
                                                 </label>
                                             </div>
                                         </div>

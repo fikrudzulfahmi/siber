@@ -24,7 +24,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Kelas</label>
-                            <input type="text" class="form-control" value="<?= $kelas ?>" disabled>
+                            <input type="text" class="form-control" value="<?= sec_e($kelas) ?>" disabled>
                             <input type="hidden" name="id_perizinan" value="<?= $izin['id_perizinan'] ?>">
                             <input type="hidden" name="id_kelas" value="<?= $_SESSION['user']['id_kelas'] ?? '' ?>">
                         </div>
@@ -38,7 +38,7 @@
 
                         <div class="mb-3">
                             <label for="keperluan" class="form-label">Keperluan</label>
-                            <textarea name="keperluan" class="form-control border focus-ring focus-ring-success rounded-3" rows="3" required><?= $izin['keperluan'] ?></textarea>
+                            <textarea name="keperluan" class="form-control border focus-ring focus-ring-success rounded-3" rows="3" required><?= sec_e($izin['keperluan']) ?></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -55,7 +55,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Rekomendasi Oleh</label>
-                            <input type="text" class="form-control" value="<?= $izin['nama_rekom'] ?>" disabled>
+                            <input type="text" class="form-control" value="<?= sec_e($izin['nama_rekom']) ?>" disabled>
                         </div>
 
                         <div class="mb-3">
@@ -75,7 +75,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Tindakan</label>
-                            <input type="text" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $izin['tindakan'] ?>" name="tindakan">
+                            <input type="text" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($izin['tindakan'] ?? '') ?>" name="tindakan">
                         </div>
 
                         <button type="submit" class="btn btn-success">Perbarui</button>

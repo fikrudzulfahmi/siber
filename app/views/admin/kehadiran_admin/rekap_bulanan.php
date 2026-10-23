@@ -55,7 +55,7 @@
 
                     <div>
                         <label class="form-label">Tahun</label>
-                        <input type="number" name="tahun" value="<?= $tahun_terpilih ?>" class="form-control border">
+                        <input type="number" name="tahun" value="<?= sec_e($tahun_terpilih) ?>" class="form-control border">
                     </div>
 
                     <?php if ($_SESSION['user']['level'] != 3): ?>
@@ -64,7 +64,7 @@
                             <select name="id_kelas" class="form-control border">
                                 <option value="">-- Pilih Kelas --</option>
                                 <?php foreach ($daftar_kelas as $kelas): ?>
-                                    <option value="<?= $kelas['id_kelas'] ?>" <?= ($id_kelas_terpilih == $kelas['id_kelas']) ? 'selected' : '' ?>><?= $kelas['kelas'] ?></option>
+                                    <option value="<?= $kelas['id_kelas'] ?>" <?= ($id_kelas_terpilih == $kelas['id_kelas']) ? 'selected' : '' ?>><?= sec_e($kelas['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -109,7 +109,7 @@
                             foreach ($rekap_bulanan['siswa'] as $siswa): ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
-                                    <td class="text-start"><?= $siswa['nama_siswa'] ?></td>
+                                    <td class="text-start"><?= sec_e($siswa['nama_siswa']) ?></td>
                                     <?php foreach ($siswa['kehadiran'] as $status): ?>
                                         <td>
                                             <?php

@@ -8,7 +8,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -44,8 +44,8 @@
                                     <td class="text-xs" style="white-space: pre-line;"><?= htmlspecialchars($r['isi_kegiatan']) ?></td>
                                     <td>
                                         <?php if ($r['nama_file']): ?>
-                                            <a href="../public/uploads/ekstra/<?= $r['nama_file'] ?>" target="_blank">
-                                                <img src="../public/uploads/ekstra/<?= $r['nama_file'] ?>" class="avatar avatar-sm me-3 border-radius-lg">
+                                            <a href="../public/uploads/ekstra/<?= sec_e($r['nama_file']) ?>" target="_blank">
+                                                <img src="../public/uploads/ekstra/<?= sec_e($r['nama_file']) ?>" class="avatar avatar-sm me-3 border-radius-lg">
                                             </a>
                                         <?php else: ?>
                                             <span class="text-xxs text-secondary">Tidak ada foto</span>
@@ -53,11 +53,11 @@
                                     </td>
                                     <td class="text-center">
 
-                                        <a href="?controller=ekstra&method=editJurnal&id_kegiatan=<?= $r['id_ekstra_kegiatan'] ?>&id_ekstra=<?= $id_ekstra ?>"
+                                        <a href="?controller=ekstra&method=editJurnal&id_kegiatan=<?= sec_e($r['id_ekstra_kegiatan']) ?>&id_ekstra=<?= $id_ekstra ?>"
                                             class="btn btn-link text-warning mb-0 px-2">
                                             <i class="material-icons text-sm">edit</i>
                                         </a>
-                                        <a href="?controller=ekstra&method=hapusJurnal&id_kegiatan=<?= $r['id_ekstra_kegiatan'] ?>&id_ekstra=<?= $id_ekstra ?>"
+                                        <a href="?controller=ekstra&method=hapusJurnal&id_kegiatan=<?= sec_e($r['id_ekstra_kegiatan']) ?>&id_ekstra=<?= $id_ekstra ?>"
                                             onclick="return confirm('Hapus jurnal ini? Data presensi juga akan terhapus.')"
                                             class="btn btn-link text-danger mb-0 px-2">
                                             <i class="material-icons text-sm">delete</i>

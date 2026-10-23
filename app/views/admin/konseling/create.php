@@ -16,7 +16,7 @@
                             <select id="kelas" name="id_kelas" class="form-control select2 border focus-ring focus-ring-success rounded-3" required>
                                 <option value="" disabled selected>-- Pilih Kelas --</option>
                                 <?php foreach ($kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -87,7 +87,7 @@
                                         <label class="form-check-label d-flex align-items-center gap-2 ps-4" for="emp<?= $e['id_employe'] ?>">
                                             <span class="mdi mdi-checkbox-blank-outline unchecked-icon position-absolute start-0 text-muted"></span>
                                             <span class="mdi mdi-checkbox-marked checked-icon position-absolute start-0 text-success d-none"></span>
-                                            <?= $e['nama'] ?>
+                                            <?= sec_e($e['nama']) ?>
                                         </label>
                                     </div>
                                 <?php endforeach; ?>

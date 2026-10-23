@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -57,14 +57,14 @@
                                 <?php foreach ($kelas as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['id_kelas'] ?></td>
-                                        <td><?= $row['kelas'] ?></td>
+                                        <td><?= sec_e($row['id_kelas']) ?></td>
+                                        <td><?= sec_e($row['kelas']) ?></td>
                                         <td><?= $row['tingkat'] ?></td>
-                                        <td><?= $row['nama'] ?></td>
+                                        <td><?= sec_e($row['nama']) ?></td>
                                         <?php if (!isLevel($id_level, 7)): ?>
                                             <td>
-                                                <a href="?controller=kelas&method=edit&id=<?= $row['id_kelas'] ?>" class="btn btn-success btn-sm">Edit</a>
-                                                <a href="?controller=kelas&method=delete&id=<?= $row['id_kelas'] ?>"
+                                                <a href="?controller=kelas&method=edit&id=<?= sec_e($row['id_kelas']) ?>" class="btn btn-success btn-sm">Edit</a>
+                                                <a href="?controller=kelas&method=delete&id=<?= sec_e($row['id_kelas']) ?>"
                                                     class="btn btn-dark btn-sm delete-btn">
                                                     Hapus
                                                 </a>

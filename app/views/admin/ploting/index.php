@@ -46,7 +46,7 @@
                             <select id="th_asal" class="form-control border px-2">
                                 <option value="">Pilih Tahun</option>
                                 <?php foreach ($tahun_ajaran as $t): ?>
-                                    <option value="<?= $t['id_tahun_pelajaran'] ?>"><?= $t['tahun_pelajaran'] ?> (<?= $t['semester'] ?>)</option>
+                                    <option value="<?= $t['id_tahun_pelajaran'] ?>"><?= sec_e($t['tahun_pelajaran']) ?> (<?= sec_e($t['semester']) ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -55,7 +55,7 @@
                             <select id="kls_asal" class="form-control border px-2">
                                 <option value="">Pilih Kelas</option>
                                 <?php foreach ($daftar_kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -110,7 +110,7 @@
                             <select id="th_tujuan" class="form-control border px-2">
                                 <option value="">Pilih Tahun</option>
                                 <?php foreach ($tahun_ajaran as $t): ?>
-                                    <option value="<?= $t['id_tahun_pelajaran'] ?>"><?= $t['tahun_pelajaran'] ?> (<?= $t['semester'] ?>)</option>
+                                    <option value="<?= $t['id_tahun_pelajaran'] ?>"><?= sec_e($t['tahun_pelajaran']) ?> (<?= sec_e($t['semester']) ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -119,7 +119,7 @@
                             <select id="kls_tujuan" class="form-control border px-2" onchange="loadSiswaTujuan()">
                                 <option value="">Pilih Kelas</option>
                                 <?php foreach ($daftar_kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

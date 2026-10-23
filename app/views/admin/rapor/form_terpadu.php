@@ -8,7 +8,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -21,7 +21,7 @@
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Input Detail Rapor: <?= htmlspecialchars($dataSiswa['nama_siswa']) ?></h6>
-                        <p class="text-white text-xs ps-3 mb-0">NISN: <?= $dataSiswa['nisn'] ?></p>
+                        <p class="text-white text-xs ps-3 mb-0">NISN: <?= sec_e($dataSiswa['nisn']) ?></p>
                     </div>
                 </div>
 
@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="input-group input-group-static mb-3">
                                     <label>Catatan Wali Kelas</label>
-                                    <textarea name="catatan_walikelas" class="form-control" rows="4"><?= $rapor['catatan_walikelas'] ?? '' ?></textarea>
+                                    <textarea name="catatan_walikelas" class="form-control" rows="4"><?= sec_e($rapor['catatan_walikelas'] ?? '') ?></textarea>
                                 </div>
                                 <div class="alert alert-light border p-2 mt-2">
                                     <small class="text-info">

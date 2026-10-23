@@ -33,13 +33,13 @@
             <?php $no=1; foreach ($izin as $row): ?>
             <tr>
                 <td><?= $no++ ?></td>
-                <td><?= $row['nama_siswa'] ?></td>
-                <td><?= $row['nama_kelas'] ?></td>
+                <td><?= sec_e($row['nama_siswa']) ?></td>
+                <td><?= sec_e($row['nama_kelas']) ?></td>
                 <td><?= $row['keperluan'] ?></td>
                 <td><?= formatTanggalIndo($row['waktu_meninggalkan'], true) ?></td>
                 <td><?= formatTanggalIndo($row['waktu_kembali'], true) ?></td>
-                <td><?= $row['nama_rekom'] ?></td>
-                <td><?= $row['keterangan'] ?></td>
+                <td><?= sec_e($row['nama_rekom']) ?></td>
+                <td><?= sec_e($row['keterangan']) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

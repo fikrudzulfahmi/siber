@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -20,7 +20,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -33,7 +33,7 @@
             Swal.fire({
                 icon: 'danger',
                 title: 'Gagal',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -139,7 +139,7 @@
                                 <input class="form-control border focus-ring focus-ring-success"
                                     type="date"
                                     name="tanggal"
-                                    value="<?= $tanggal ?>"
+                                    value="<?= sec_e($tanggal) ?>"
                                     style="width: 180px;">
                             </div>
                             <div class="col-md-2 col-6 mb-3">
@@ -179,12 +179,12 @@
                                             endif; ?>
 
                                                 <?php if ($row['status_jurnal'] == 'Sudah'): ?>
-                                                    <button type="button" class="btn btn-sm btn-success detail-jurnal-btn m-1" data-id-jurnal="<?= $row['id_jurnal'] ?>">
-                                                        <i class="mdi mdi-book-open-page-variant"></i> <?= htmlspecialchars($row['nama_mapel']) ?> (<?= $row['kelas'] ?>)
+                                                    <button type="button" class="btn btn-sm btn-success detail-jurnal-btn m-1" data-id-jurnal="<?= sec_e($row['id_jurnal']) ?>">
+                                                        <i class="mdi mdi-book-open-page-variant"></i> <?= htmlspecialchars($row['nama_mapel']) ?> (<?= sec_e($row['kelas']) ?>)
                                                     </button>
                                                 <?php else: ?>
                                                     <span class="badge rounded-pill bg-light text-dark border m-1">
-                                                        <?= htmlspecialchars($row['nama_mapel']) ?> (<?= $row['kelas'] ?>) - Belum Isi
+                                                        <?= htmlspecialchars($row['nama_mapel']) ?> (<?= sec_e($row['kelas']) ?>) - Belum Isi
                                                     </span>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>

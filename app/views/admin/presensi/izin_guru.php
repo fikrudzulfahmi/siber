@@ -30,7 +30,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -42,7 +42,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#f44336',
                 confirmButtonText: 'OK'
             });
@@ -251,11 +251,11 @@
 
                     <div class="mb-3">
                         <label class="form-label">Tanggal Mulai</label>
-                        <input type="date" name="tanggal_mulai" class="form-control" value="<?= $izin['tanggal_mulai'] ?>" required>
+                        <input type="date" name="tanggal_mulai" class="form-control" value="<?= sec_e($izin['tanggal_mulai']) ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tanggal Selesai</label>
-                        <input type="date" name="tanggal_selesai" class="form-control" value="<?= $izin['tanggal_selesai'] ?>" required>
+                        <input type="date" name="tanggal_selesai" class="form-control" value="<?= sec_e($izin['tanggal_selesai']) ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Jenis Izin</label>
@@ -289,7 +289,7 @@
                             <textarea name="catatan_approval" class="form-control" rows="2" placeholder="Catatan saat menyetujui..."><?= htmlspecialchars($izin['catatan_approval'] ?? '') ?></textarea>
                         </div>
                     <?php else: ?>
-                        <input type="hidden" name="status_approval" value="<?= $izin['status_approval'] ?>">
+                        <input type="hidden" name="status_approval" value="<?= sec_e($izin['status_approval']) ?>">
                         <input type="hidden" name="catatan_approval" value="<?= htmlspecialchars($izin['catatan_approval'] ?? '') ?>">
                     <?php endif; ?>
                 </div>

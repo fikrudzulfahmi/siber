@@ -40,7 +40,7 @@
                             <select id="filter_kelas" class="form-control border px-2">
                                 <option value="">-- Pilih Kelas --</option>
                                 <?php foreach ($daftar_kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= htmlspecialchars($k['kelas']) ?></option>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"><?= htmlspecialchars($k['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

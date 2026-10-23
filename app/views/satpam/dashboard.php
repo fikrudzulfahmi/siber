@@ -21,7 +21,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <h5 class="text-white mb-0">
-                            Selamat Datang, <strong><?= $_SESSION['user']['nama'] ?? 'Pengguna' ?></strong>
+                            Selamat Datang, <strong><?= sec_e($_SESSION['user']['nama'] ?? 'Pengguna') ?></strong>
                         </h5>
                         <p class="text-white mb-0">
                             Anda login sebagai <strong><?= levelDisplay($_SESSION['user']['level']) ?></strong>.
@@ -72,12 +72,12 @@
                                 foreach ($izin as $row): ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $row['nama_siswa'] ?></td>
-                                        <td><?= $row['nama_kelas'] ?></td>
-                                        <td><?= $row['keperluan'] ?></td>
+                                        <td><?= sec_e($row['nama_siswa']) ?></td>
+                                        <td><?= sec_e($row['nama_kelas']) ?></td>
+                                        <td><?= sec_e($row['keperluan']) ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_meninggalkan'], true, true) ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_kembali'], true, true) ?></td>
-                                        <td><?= $row['nama_rekom'] ?></td>
+                                        <td><?= sec_e($row['nama_rekom']) ?></td>
                                         <td>
                                             <?php
                                             $info = [];

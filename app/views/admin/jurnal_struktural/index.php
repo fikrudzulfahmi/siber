@@ -8,7 +8,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50'
             });
         });
@@ -21,7 +21,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#e53935'
             });
         });
@@ -139,7 +139,7 @@
                                             <option value="">-- Pilih Program Kerja --</option>
                                             <?php foreach ($programKerja as $pk): ?>
                                                 <option value="<?= $pk['id_program'] ?>">
-                                                    <?= $pk['nama_program'] ?>
+                                                    <?= sec_e($pk['nama_program']) ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>

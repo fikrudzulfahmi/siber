@@ -11,13 +11,13 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-warning shadow-warning border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white ps-3 mb-0">Edit Jurnal: <?= $ekstra['nama_ekstra'] ?></h6>
+                            <h6 class="text-white ps-3 mb-0">Edit Jurnal: <?= sec_e($ekstra['nama_ekstra']) ?></h6>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="input-group input-group-static mb-4">
                             <label>Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control" value="<?= $jurnal['tanggal'] ?>" required>
+                            <input type="date" name="tanggal" class="form-control" value="<?= sec_e($jurnal['tanggal']) ?>" required>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Nama Kegiatan</label>
@@ -30,7 +30,7 @@
                         <div class="mb-3">
                             <label class="form-label text-xs">Foto Saat Ini:</label><br>
                             <?php if ($jurnal['nama_file']): ?>
-                                <img src="../public/uploads/ekstra/<?= $jurnal['nama_file'] ?>" class="img-thumbnail mb-2" style="height: 100px;">
+                                <img src="../public/uploads/ekstra/<?= sec_e($jurnal['nama_file']) ?>" class="img-thumbnail mb-2" style="height: 100px;">
                             <?php endif; ?>
                             <input type="file" name="foto" class="form-control border p-2" accept="image/*">
                         </div>
@@ -54,7 +54,7 @@
                                     ?>
                                         <tr>
                                             <td class="ps-4">
-                                                <p class="text-xs font-weight-bold mb-0"><?= $ang['nama_siswa'] ?></p>
+                                                <p class="text-xs font-weight-bold mb-0"><?= sec_e($ang['nama_siswa']) ?></p>
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm">

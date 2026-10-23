@@ -60,24 +60,24 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= date('d-m-Y', strtotime($j['tanggal'])) ?></td>
-                    <td><?= $j['kelas'] ?><br><small>(Jam: <?= $j['jam_mulai'] ?>-<?= $j['jam_akhir'] ?>)</small></td>
-                    <td><?= $j['nama_mapel'] ?></td>
+                    <td><?= sec_e($j['kelas']) ?><br><small>(Jam: <?= sec_e($j['jam_mulai']) ?>-<?= $j['jam_akhir'] ?>)</small></td>
+                    <td><?= sec_e($j['nama_mapel']) ?></td>
                     <td>
-                        <strong>Materi:</strong> <?= $j['materi'] ?><br>
+                        <strong>Materi:</strong> <?= sec_e($j['materi']) ?><br>
                         <strong>Tujuan:</strong> <?= $j['tujuan_pembelajaran'] ?>
                     </td>
                     <td>
                         <?php if (!empty($j['rekap_siswa'])): ?>
                             <ul style="margin:0; padding-left:12px;">
                                 <?php foreach ($j['rekap_siswa'] as $s): ?>
-                                    <li><?= $s['nama_siswa'] ?> (<?= $s['status'] ?>)</li>
+                                    <li><?= sec_e($s['nama_siswa']) ?> (<?= sec_e($s['status']) ?>)</li>
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
                             Nihil (Hadir Semua)
                         <?php endif; ?>
                     </td>
-                    <td><?= $j['catatan_pembelajaran'] ?></td>
+                    <td><?= sec_e($j['catatan_pembelajaran']) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

@@ -8,7 +8,7 @@
         </div>
         <div class="card-body p-4">
             <form action="?controller=ekstra&method=cetakLaporan" method="POST" target="_blank">
-                <input type="hidden" name="id_ekstra" value="<?= $_GET['id_ekstra'] ?>">
+                <input type="hidden" name="id_ekstra" value="<?= sec_e($_GET['id_ekstra'] ?? '') ?>">
 
                 <div class="row">
                     <div class="col-md-12 mb-4">

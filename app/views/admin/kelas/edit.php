@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -42,7 +42,7 @@
                             <label class="form-label text-dark fw-bold">Nama Kelas</label>
                             <input type="text" name="kelas"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $kelas['kelas'] ?>" required>
+                                value="<?= sec_e($kelas['kelas']) ?>" required>
                         </div>
 
                         <!-- Tingkat -->

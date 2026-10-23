@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -79,8 +79,8 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Tambah Kelas & Guru</h6>
                         <p class="text-white text-sm ps-3 mb-0">
-                            Tahun Pelajaran: <strong><?= $tahun_aktif['tahun_pelajaran'] ?></strong> |
-                            Semester: <strong><?= $tahun_aktif['semester'] ?></strong>
+                            Tahun Pelajaran: <strong><?= sec_e($tahun_aktif['tahun_pelajaran']) ?></strong> |
+                            Semester: <strong><?= sec_e($tahun_aktif['semester']) ?></strong>
                         </p>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                                 required>
                                 <option value="" disabled selected>-- Pilih Kelas --</option>
                                 <?php foreach ($kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -108,7 +108,7 @@
                                 required>
                                 <option value="" disabled selected>-- Pilih Guru --</option>
                                 <?php foreach ($users as $u): ?>
-                                    <option value="<?= $u['id_employe'] ?>"><?= $u['nama'] ?></option>
+                                    <option value="<?= $u['id_employe'] ?>"><?= sec_e($u['nama']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

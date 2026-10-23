@@ -9,7 +9,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -109,7 +109,7 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <a href="?controller=jurnalStruktural&method=edit&id=<?= $j['id_jurnal'] ?>"
+                                                <a href="?controller=jurnalStruktural&method=edit&id=<?= sec_e($j['id_jurnal']) ?>"
                                                     class="btn btn-sm btn-warning">
                                                     Edit
                                                 </a>

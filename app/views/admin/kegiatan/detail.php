@@ -30,7 +30,7 @@
                         ?>
                                 <div class="col-md-6 mb-3">
                                     <div class="card shadow-none border">
-                                        <img src="public/uploads/kegiatan/<?= $f['nama_file'] ?>" class="img-fluid border-radius-lg">
+                                        <img src="public/uploads/kegiatan/<?= sec_e($f['nama_file']) ?>" class="img-fluid border-radius-lg">
                                     </div>
                                 </div>
                             <?php
@@ -114,7 +114,7 @@
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm"><?= htmlspecialchars($row['nama']) ?></h6>
-                                                    <p class="text-xs text-secondary mb-0">PIN: <?= $row['pin'] ?></p>
+                                                    <p class="text-xs text-secondary mb-0">PIN: <?= sec_e($row['pin']) ?></p>
                                                 </div>
                                             </div>
                                         </td>

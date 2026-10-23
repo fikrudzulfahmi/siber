@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -77,7 +77,7 @@
                             <label class="form-label text-dark fw-bold">Nama Siswa</label>
                             <input type="text" name="nama_siswa"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['nama_siswa'] ?>" required>
+                                value="<?= sec_e($siswa['nama_siswa']) ?>" required>
                         </div>
 
                         <!-- NISN -->
@@ -85,21 +85,21 @@
                             <label class="form-label text-dark fw-bold">NISN</label>
                             <input type="number" name="nisn"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['nisn'] ?>" required>
+                                value="<?= sec_e($siswa['nisn']) ?>" required>
                         </div>
                         <!-- Tempat Lahir -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Tempat Lahir</label>
                             <input type="text" name="tempat_lhr"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['tempat_lhr'] ?>" required>
+                                value="<?= sec_e($siswa['tempat_lhr']) ?>" required>
                         </div>
                         <!-- Tgl Lahir -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Tanggal Lahir</label>
                             <input type="date" name="tgl_lhr"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['tgl_lhr'] ?>" required>
+                                value="<?= sec_e($siswa['tgl_lhr']) ?>" required>
                         </div>
 
                         <div class="mb-4">
@@ -107,9 +107,9 @@
                             <select name="id_kelas" class="form-control border focus-ring focus-ring-success rounded-3 select2">
                                 <option value="">-- Belum Masuk Kelas --</option>
                                 <?php foreach ($kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>"
+                                    <option value="<?= sec_e($k['id_kelas']) ?>"
                                         <?= ($siswa['current_id_kelas'] == $k['id_kelas']) ? 'selected' : '' ?>>
-                                        <?= $k['kelas'] ?>
+                                        <?= sec_e($k['kelas']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -121,7 +121,7 @@
                             <label class="form-label text-dark fw-bold">Alamat</label>
                             <input type="text" name="alamat"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['alamat'] ?>" required>
+                                value="<?= sec_e($siswa['alamat']) ?>" required>
                         </div>
 
                         <!-- Nama Wali -->
@@ -129,7 +129,7 @@
                             <label class="form-label text-dark fw-bold">Nama Wali</label>
                             <input type="text" name="nama_wali"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['nama_wali'] ?>" required>
+                                value="<?= sec_e($siswa['nama_wali']) ?>" required>
                         </div>
 
                         <!-- No HP Wali -->
@@ -137,7 +137,7 @@
                             <label class="form-label text-dark fw-bold">No HP Wali</label>
                             <input type="text" name="hp_wali"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $siswa['hp_wali'] ?>" required>
+                                value="<?= sec_e($siswa['hp_wali']) ?>" required>
                         </div>
 
                         <!-- Tombol -->

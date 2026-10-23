@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -18,7 +18,7 @@
 <div class="container-fluid py-4">
 
     <?php if ($msg = getFlash('success')): ?>
-        <div class="alert alert-success"><?= $msg ?></div>
+        <div class="alert alert-success"><?= sec_e($msg) ?></div>
     <?php endif; ?>
 
     <div class="row">
@@ -81,7 +81,7 @@
 
                             sort($kelasUnik);
                             foreach ($kelasUnik as $k) {
-                                echo "<option value='{$k}'>{$k}</option>";
+                                echo "<option value='" . sec_e($k) . "'>" . sec_e($k) . "</option>";
                             }
                             ?>
                         </select>
@@ -107,20 +107,20 @@
                                 <?php foreach ($siswa as $row): ?>
                                     <tr>
                                         <td class="text-center"></td>
-                                        <td class="fw-bold"><?= $row['nama_siswa'] ?></td>
-                                        <td><?= $row['nisn'] ?></td>
-                                        <td><?= $row['tempat_lhr'] ?>, <?= date('d-m-Y', strtotime($row['tgl_lhr'])) ?></td>
+                                        <td class="fw-bold"><?= sec_e($row['nama_siswa']) ?></td>
+                                        <td><?= sec_e($row['nisn']) ?></td>
+                                        <td><?= sec_e($row['tempat_lhr']) ?>, <?= date('d-m-Y', strtotime($row['tgl_lhr'])) ?></td>
 
                                         <td class="text-center">
                                             <?php if (!empty($row['nama_kelas'])): ?>
-                                                <span class="badge bg-gradient-info"><?= $row['nama_kelas'] ?></span>
+                                                <span class="badge bg-gradient-info"><?= sec_e($row['nama_kelas']) ?></span>
                                             <?php else: ?>
                                                 <span class="badge bg-gradient-secondary">Belum Bagi Kelas</span>
                                             <?php endif; ?>
                                         </td>
 
-                                        <td><?= $row['nama_wali'] ?></td>
-                                        <td><a href="https://wa.me/<?= preg_replace('/^0/', '62', $row['hp_wali']) ?>" target="_blank" class="text-success fw-bold"><i class="fab fa-whatsapp"></i> <?= $row['hp_wali'] ?></a></td>
+                                        <td><?= sec_e($row['nama_wali']) ?></td>
+                                        <td><a href="https://wa.me/<?= sec_e(preg_replace('/^0/', '62', $row['hp_wali'])) ?>" target="_blank" class="text-success fw-bold"><i class="fab fa-whatsapp"></i> <?= sec_e($row['hp_wali']) ?></a></td>
 
                                         <?php if (!isLevel($id_level, 7)): ?>
                                             <td class="text-center">

@@ -7,7 +7,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });

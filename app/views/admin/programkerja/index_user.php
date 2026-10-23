@@ -9,7 +9,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50'
                 });
             });
@@ -61,13 +61,13 @@
                                                     <?= nl2br(htmlspecialchars($row['deskripsi_default'])) ?>
                                                 </small>
                                             </td>
-                                            <td><?= $row['nama'] ?? '-' ?></td>
+                                            <td><?= sec_e($row['nama'] ?? '-') ?></td>
                                             <td>
-                                                <a href="?controller=programKerja&method=edit&id=<?= $row['id_program'] ?>"
+                                                <a href="?controller=programKerja&method=edit&id=<?= sec_e($row['id_program']) ?>"
                                                     class="btn btn-success btn-sm">
                                                     Edit
                                                 </a>
-                                                <a href="?controller=programKerja&method=delete&id=<?= $row['id_program'] ?>"
+                                                <a href="?controller=programKerja&method=delete&id=<?= sec_e($row['id_program']) ?>"
                                                     class="btn btn-dark btn-sm delete-btn">
                                                     Hapus
                                                 </a>

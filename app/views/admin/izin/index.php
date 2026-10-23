@@ -4,7 +4,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -86,12 +86,12 @@
                                 foreach ($izin as $row): ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $row['nama_siswa'] ?></td>
-                                        <td><?= $row['nama_kelas'] ?></td>
-                                        <td><?= $row['keperluan'] ?></td>
+                                        <td><?= sec_e($row['nama_siswa']) ?></td>
+                                        <td><?= sec_e($row['nama_kelas']) ?></td>
+                                        <td><?= sec_e($row['keperluan']) ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_meninggalkan'], true, true) ?></td>
                                         <td><?= formatTanggalIndo($row['waktu_kembali'], true, true) ?></td>
-                                        <td><?= $row['nama_rekom'] ?></td>
+                                        <td><?= sec_e($row['nama_rekom']) ?></td>
                                         <td>
                                             <?php
                                             $info = [];

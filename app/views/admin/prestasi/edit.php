@@ -56,7 +56,7 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label font-weight-bold">Tanggal Kegiatan</label>
-                                        <input type="date" name="tgl_kegiatan" class="form-control border ps-2" value="<?= $prestasi['tgl_kegiatan']; ?>" required>
+                                        <input type="date" name="tgl_kegiatan" class="form-control border ps-2" value="<?= sec_e($prestasi['tgl_kegiatan']); ?>" required>
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label font-weight-bold">Penyelenggara</label>
@@ -66,7 +66,7 @@
                                         <label class="form-label font-weight-bold">Update Sertifikat</label>
                                         <?php if ($prestasi['file_sertifikat']): ?>
                                             <div class="mb-2">
-                                                <small class="text-success">File saat ini: <a href="../public/uploads/sertifikat/<?= $prestasi['file_sertifikat'] ?>" target="_blank" class="text-decoration-underline"><?= $prestasi['file_sertifikat'] ?></a></small>
+                                                <small class="text-success">File saat ini: <a href="../public/uploads/sertifikat/<?= sec_e($prestasi['file_sertifikat']) ?>" target="_blank" class="text-decoration-underline"><?= sec_e($prestasi['file_sertifikat']) ?></a></small>
                                             </div>
                                         <?php endif; ?>
                                         <input type="file" name="sertifikat" class="form-control border ps-2">

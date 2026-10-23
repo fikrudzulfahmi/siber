@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h6 class="mb-0">Konseling per Bulan</h6>
                     <p class="text-sm">
-                        Tahun Pelajaran <?= $tpAktif['tahun_pelajaran'] ?> - Semester <?= ucfirst($tpAktif['semester']) ?>
+                        Tahun Pelajaran <?= sec_e($tpAktif['tahun_pelajaran']) ?> - Semester <?= sec_e(ucfirst($tpAktif['semester'])) ?>
                     </p>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                 <div class="card-body">
                     <h6 class="mb-0">Konseling per Kategori</h6>
                     <p class="text-sm">
-                        Tahun Pelajaran <?= $tpAktif['tahun_pelajaran'] ?> - Semester <?= ucfirst($tpAktif['semester']) ?>
+                        Tahun Pelajaran <?= sec_e($tpAktif['tahun_pelajaran']) ?> - Semester <?= sec_e(ucfirst($tpAktif['semester'])) ?>
                     </p>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                 <div class="card-body">
                     <h6 class="mb-0">Konseling per Kelas</h6>
                     <p class="text-sm">
-                        Tahun Pelajaran <?= $tpAktif['tahun_pelajaran'] ?> - Semester <?= ucfirst($tpAktif['semester']) ?>
+                        Tahun Pelajaran <?= sec_e($tpAktif['tahun_pelajaran']) ?> - Semester <?= sec_e(ucfirst($tpAktif['semester'])) ?>
                     </p>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                                     <option value="">-- Semua Semester --</option>
                                     <?php foreach ($tahunPelajaran as $tp): ?>
                                         <option value="<?= $tp['id_tahun_pelajaran'] ?>">
-                                            <?= $tp['tahun_pelajaran'] ?> (<?= ucfirst($tp['semester']) ?>)
+                                            <?= sec_e($tp['tahun_pelajaran']) ?> (<?= sec_e(ucfirst($tp['semester'])) ?>)
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -114,7 +114,7 @@
                                 <label class="form-label mb-1">Kategori:</label>
                                 <select name="id_kategori" class="form-control">
                                     <?php foreach ($kategoriList as $kat): ?>
-                                        <option value="<?= $kat['id_kategori'] ?>"><?= $kat['nama_kategori'] ?></option>
+                                        <option value="<?= $kat['id_kategori'] ?>"><?= sec_e($kat['nama_kategori']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -124,7 +124,7 @@
                                 <label class="form-label mb-1">Kelas:</label>
                                 <select name="id_kelas" class="form-control kelas-select">
                                     <?php foreach ($kelasList as $k): ?>
-                                        <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                        <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -136,7 +136,7 @@
                                         <label class="form-label mb-1">Kelas:</label>
                                         <select name="id_kelas" class="form-control kelas-select siswa-kelas">
                                             <?php foreach ($kelasList as $k): ?>
-                                                <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                                <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

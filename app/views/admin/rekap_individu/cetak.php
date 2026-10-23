@@ -93,10 +93,10 @@
                 <?php foreach ($rekapData['rincian'] as $i => $d) : ?>
                     <tr>
                         <td class="text-center"><?= $i + 1 ?></td>
-                        <td><?= $d['tanggal_formatted'] ?></td>
+                        <td><?= sec_e($d['tanggal_formatted']) ?></td>
                         <td class="text-center"><?= $d['datang'] ?></td>
                         <td class="text-center"><?= $d['pulang'] ?></td>
-                        <td class="text-center"><?= $d['keterangan'] ?></td>
+                        <td class="text-center"><?= sec_e($d['keterangan']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

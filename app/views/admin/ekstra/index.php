@@ -23,7 +23,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -63,7 +63,7 @@
                                                 <div class="d-flex px-3 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?= htmlspecialchars($ex['nama_ekstra']) ?></h6>
-                                                        <p class="text-xs text-secondary mb-0">TP: <?= $activeTahun['tahun_pelajaran'] ?? '-' ?> | Semester <?= $activeTahun['semester'] ?? '-' ?></p>
+                                                        <p class="text-xs text-secondary mb-0">TP: <?= sec_e($activeTahun['tahun_pelajaran'] ?? '-') ?> | Semester <?= sec_e($activeTahun['semester'] ?? '-') ?></p>
                                                     </div>
                                                 </div>
                                             </td>

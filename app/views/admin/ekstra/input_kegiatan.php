@@ -8,7 +8,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -23,7 +23,7 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white ps-3 mb-0">Jurnal: <?= $ekstra['nama_ekstra'] ?></h6>
+                            <h6 class="text-white ps-3 mb-0">Jurnal: <?= sec_e($ekstra['nama_ekstra']) ?></h6>
                         </div>
                     </div>
                     <div class="card-body">
@@ -136,8 +136,8 @@
                                     <?php foreach ($anggota as $ang): ?>
                                         <tr>
                                             <td class="ps-4">
-                                                <p class="text-xs font-weight-bold mb-0"><?= $ang['nama_siswa'] ?></p>
-                                                <p class="text-xxs text-secondary mb-0"><?= $ang['kelas'] ?></p>
+                                                <p class="text-xs font-weight-bold mb-0"><?= sec_e($ang['nama_siswa']) ?></p>
+                                                <p class="text-xxs text-secondary mb-0"><?= sec_e($ang['kelas']) ?></p>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <div class="btn-group btn-group-sm">

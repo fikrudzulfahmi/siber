@@ -79,7 +79,7 @@
                             <label class="form-label fw-bold">Tanggal</label>
                             <input type="date"
                                 class="form-control"
-                                value="<?= $jurnal['tanggal'] ?>"
+                                value="<?= sec_e($jurnal['tanggal']) ?>"
                                 readonly>
                         </div>
 

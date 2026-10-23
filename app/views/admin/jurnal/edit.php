@@ -83,8 +83,8 @@
                                 <select id="kelas" name="id_kelas" class="form-control border focus-ring focus-ring-warning rounded-3 select2" required>
                                     <option disabled>-- Pilih Kelas --</option>
                                     <?php foreach ($kelas as $k): ?>
-                                        <option value="<?= $k['id_kelas'] ?>" <?= $k['id_kelas'] == $jurnal['id_kelas'] ? 'selected' : '' ?>>
-                                            <?= $k['kelas'] ?>
+                                        <option value="<?= sec_e($k['id_kelas']) ?>" <?= $k['id_kelas'] == $jurnal['id_kelas'] ? 'selected' : '' ?>>
+                                            <?= sec_e($k['kelas']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -94,8 +94,8 @@
                                 <select id="mapel" name="id_mapel_guru" class="form-control border focus-ring focus-ring-warning rounded-3 select2" required>
                                     <option value="">-- Pilih Kelas Dahulu --</option>
                                     <?php foreach ($mapelList as $m): ?>
-                                        <option value="<?= $m['id_mapel_guru'] ?>" <?= $m['id_mapel_guru'] == $jurnal['id_mapel_guru'] ? 'selected' : '' ?>>
-                                            <?= $m['nama_mapel'] ?>
+                                        <option value="<?= sec_e($m['id_mapel_guru']) ?>" <?= $m['id_mapel_guru'] == $jurnal['id_mapel_guru'] ? 'selected' : '' ?>>
+                                            <?= sec_e($m['nama_mapel']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -110,7 +110,7 @@
                                         <option value="">-- Pilih Tujuan --</option>
                                         <?php foreach ($tpList as $tp): ?>
                                             <option value="<?= $tp['id_tp'] ?>" <?= $tp['id_tp'] == $jurnal['id_tp'] ? 'selected' : '' ?>>
-                                                <?= $tp['tujuan_pembelajaran'] ?>
+                                                <?= sec_e($tp['tujuan_pembelajaran']) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -140,7 +140,7 @@
 
                         <div class="mb-4">
                             <label class="fw-bold">Materi Pembelajaran</label>
-                            <textarea name="materi" class="form-control border focus-ring focus-ring-warning rounded-3 p-2" rows="2" required><?= $jurnal['materi'] ?></textarea>
+                            <textarea name="materi" class="form-control border focus-ring focus-ring-warning rounded-3 p-2" rows="2" required><?= sec_e($jurnal['materi']) ?></textarea>
                         </div>
 
                         <div class="card mb-4 border">
@@ -165,7 +165,7 @@
                                         }
                                         ?>
                                         <div class="d-flex justify-content-between align-items-center border-bottom py-2 flex-wrap">
-                                            <span class="text-sm fw-bold mb-2 mb-md-0"><?= $idx + 1 ?>. <?= $s['nama_siswa'] ?></span>
+                                            <span class="text-sm fw-bold mb-2 mb-md-0"><?= $idx + 1 ?>. <?= sec_e($s['nama_siswa']) ?></span>
                                             <div class="btn-group" role="group" aria-label="Kehadiran Siswa">
                                                 <input type="radio" class="btn-check" name="kehadiran[<?= $s['id_siswa'] ?>]" id="H_<?= $s['id_siswa'] ?>" value="H" autocomplete="off" <?= $status == 'H' ? 'checked' : '' ?>>
                                                 <label class="btn btn-presensi btn-p-h" for="H_<?= $s['id_siswa'] ?>">H</label>
@@ -191,11 +191,11 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label class="fw-bold">Catatan Kehadiran</label>
-                                <textarea name="catatan_kehadiran" class="form-control border focus-ring focus-ring-warning rounded-3 p-2"><?= $jurnal['catatan_kehadiran'] ?></textarea>
+                                <textarea name="catatan_kehadiran" class="form-control border focus-ring focus-ring-warning rounded-3 p-2"><?= sec_e($jurnal['catatan_kehadiran']) ?></textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="fw-bold">Catatan Pembelajaran</label>
-                                <textarea name="catatan_pembelajaran" class="form-control border focus-ring focus-ring-warning rounded-3 p-2"><?= $jurnal['catatan_pembelajaran'] ?></textarea>
+                                <textarea name="catatan_pembelajaran" class="form-control border focus-ring focus-ring-warning rounded-3 p-2"><?= sec_e($jurnal['catatan_pembelajaran']) ?></textarea>
                             </div>
                         </div>
 

@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -20,7 +20,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -33,7 +33,7 @@
             Swal.fire({
                 icon: 'danger',
                 title: 'Gagal',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -126,8 +126,8 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Rekapitulasi Tujuan Pembelajaran (TP)</h6>
                         <p class="text-white text-sm ps-3 mb-0">
-                            Tahun Pelajaran: <strong><?= $tahun_info['tahun_pelajaran'] ?></strong> |
-                            Semester: <strong><?= $tahun_info['semester'] ?></strong>
+                            Tahun Pelajaran: <strong><?= sec_e($tahun_info['tahun_pelajaran']) ?></strong> |
+                            Semester: <strong><?= sec_e($tahun_info['semester']) ?></strong>
                         </p>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                                             <span class="badge bg-dark"><?= htmlspecialchars($row['jumlah_tp']) ?> TP</span>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <button class="btn btn-sm btn-success mb-0 btn-lihat-tp" data-id="<?= $row['id_mapel_guru'] ?>" data-mapel="<?= htmlspecialchars($row['nama_mapel']) ?>">
+                                            <button class="btn btn-sm btn-success mb-0 btn-lihat-tp" data-id="<?= sec_e($row['id_mapel_guru']) ?>" data-mapel="<?= htmlspecialchars($row['nama_mapel']) ?>">
                                                 <i class="fas fa-eye"></i>&nbsp; Lihat TP
                                             </button>
                                         </td>

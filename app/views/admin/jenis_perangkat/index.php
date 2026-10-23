@@ -9,7 +9,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -23,7 +23,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#d33',
                     confirmButtonText: 'OK'
                 });
@@ -73,7 +73,7 @@
                                             <button type="button" class="btn btn-success btn-sm edit-btn" 
                                                 data-id="<?= $row['id'] ?>" 
                                                 data-nama="<?= htmlspecialchars($row['nama']) ?>" 
-                                                data-status="<?= $row['status'] ?>" 
+                                                data-status="<?= sec_e($row['status']) ?>" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#editModal">
                                                 Edit

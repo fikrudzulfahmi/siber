@@ -18,21 +18,21 @@
                             <label class="form-label fw-bold">Kode Mapel</label>
                             <input type="text" name="kode_mapel"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $mapel['kode_mapel'] ?>" required>
+                                value="<?= sec_e($mapel['kode_mapel']) ?>" required>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">Mata Pelajaran</label>
                             <input type="text" name="mapel"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                value="<?= $mapel['nama_mapel'] ?>" required>
+                                value="<?= sec_e($mapel['nama_mapel']) ?>" required>
                         </div>
                         <!-- Tingkat -->
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Tingkat</label>
                             <input type="number" name="tingkat"
                                 class="form-control border focus-ring focus-ring-success rounded-3"
-                                min="7" max="12" value="<?= $mapel['tingkat_mapel'] ?>" required>
+                                min="7" max="12" value="<?= sec_e($mapel['tingkat_mapel']) ?>" required>
                         </div>
 
 

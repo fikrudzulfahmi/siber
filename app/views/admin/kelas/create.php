@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -96,7 +96,7 @@
                                 required>
                                 <option value="" disabled selected>-- Pilih Walikelas --</option>
                                 <?php foreach ($users as $u): ?>
-                                    <option value="<?= $u['id_employe'] ?>"><?= $u['nama'] ?></option>
+                                    <option value="<?= $u['id_employe'] ?>"><?= sec_e($u['nama']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

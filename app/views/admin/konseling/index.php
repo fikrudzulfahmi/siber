@@ -6,7 +6,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -51,10 +51,10 @@
                                 <?php foreach ($konseling as $k): ?>
                                     <tr>
                                         <td><?= $k['id_konseling'] ?></td>
-                                        <td style="white-space: normal; word-wrap: break-word; max-width: 200px;"><?= $k['nama_siswa'] ?></td>
+                                        <td style="white-space: normal; word-wrap: break-word; max-width: 200px;"><?= sec_e($k['nama_siswa']) ?></td>
                                         <td style="white-space: normal; word-wrap: break-word; max-width: 200px;"><?= htmlspecialchars($k['nama_kategori']) ?></td>
                                         <td style="white-space: normal; word-wrap: break-word; max-width: 500px;">
-                                            <?= $k['permasalahan'] ?>
+                                            <?= sec_e($k['permasalahan']) ?>
                                         </td>
 
                                         <td><?= formatTanggalIndo($k['tanggal_masalah'], false, false) ?></td>

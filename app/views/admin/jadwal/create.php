@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -20,7 +20,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -33,7 +33,7 @@
             Swal.fire({
                 icon: 'danger',
                 title: 'Gagal',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -156,8 +156,8 @@
                         <h6 class="text-white text-capitalize ps-3">Input Jadwal Pelajaran</h6>
                         
                          <p class="text-white text-sm ps-3 mb-0">
-                            Tahun Pelajaran: <strong><?= $tahun_aktif['tahun_pelajaran'] ?></strong> |
-                            Semester: <strong><?= $tahun_aktif['semester'] ?></strong>
+                            Tahun Pelajaran: <strong><?= sec_e($tahun_aktif['tahun_pelajaran']) ?></strong> |
+                            Semester: <strong><?= sec_e($tahun_aktif['semester']) ?></strong>
                         </p>
                     </div>
                 </div>
@@ -169,9 +169,9 @@
                 <select name="id_kelas" id="id_kelas" class="form-control border focus-ring focus-ring-success rounded-3" required onchange="loadMapelAndJam()">
                     <option value="">-- Pilih Kelas --</option>
                     <?php foreach ($kelasList as $k): ?>
-                        <option value="<?= $k['id_kelas'] ?>" 
+                        <option value="<?= sec_e($k['id_kelas']) ?>" 
                             <?= ($id_kelas_terpilih == $k['id_kelas']) ? 'selected' : '' ?>>
-                            <?= $k['kelas'] ?>
+                            <?= sec_e($k['kelas']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

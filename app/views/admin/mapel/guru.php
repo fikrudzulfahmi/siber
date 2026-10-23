@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -26,10 +26,10 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Daftar Kelas & Guru Mapel <?= $mapel['nama_mapel'] ?> Tingkat <?= $mapel['tingkat_mapel'] ?></h6>
+                        <h6 class="text-white text-capitalize ps-3">Daftar Kelas & Guru Mapel <?= sec_e($mapel['nama_mapel']) ?> Tingkat <?= sec_e($mapel['tingkat_mapel']) ?></h6>
                         <p class="text-white text-sm ps-3 mb-0">
-                            Tahun Pelajaran: <strong><?= $tahun_aktif['tahun_pelajaran'] ?></strong> |
-                            Semester: <strong><?= $tahun_aktif['semester'] ?></strong>
+                            Tahun Pelajaran: <strong><?= sec_e($tahun_aktif['tahun_pelajaran']) ?></strong> |
+                            Semester: <strong><?= sec_e($tahun_aktif['semester']) ?></strong>
                         </p>
                     </div>
                 </div>
@@ -57,12 +57,12 @@
                                 <?php foreach ($guruList as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['kelas'] ?></td>
-                                        <td><?= $row['nama'] ?></td>
+                                        <td><?= sec_e($row['kelas']) ?></td>
+                                        <td><?= sec_e($row['nama']) ?></td>
                                         <?php if (!isLevel($id_level, 7)): ?>
                                             <td>
-                                                <a href="?controller=mapel&method=edit_guru&id=<?= $row['id_mapel_guru'] ?>" class="btn btn-success btn-sm">Edit</a>
-                                                <a href="?controller=mapel&method=delete_guru&id=<?= $row['id_mapel_guru'] ?>&id_mapel=<?= $row['id_mapel'] ?>"
+                                                <a href="?controller=mapel&method=edit_guru&id=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-success btn-sm">Edit</a>
+                                                <a href="?controller=mapel&method=delete_guru&id=<?= sec_e($row['id_mapel_guru']) ?>&id_mapel=<?= sec_e($row['id_mapel']) ?>"
                                                     class="btn btn-dark btn-sm delete-btn">
                                                     Hapus
                                                 </a>

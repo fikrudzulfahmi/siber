@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -26,10 +26,10 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Daftar Tujuan Pembelajaran <?= $_SESSION['user']['id'] ?></h6>
+                        <h6 class="text-white text-capitalize ps-3">Daftar Tujuan Pembelajaran <?= sec_e($_SESSION['user']['id'] ?? '') ?></h6>
                         <p class="text-white text-sm ps-3 mb-0">
-                            Tahun Pelajaran: <strong><?= $nama_tahun ?></strong> |
-                            Semester: <strong><?= $semester ?></strong>
+                            Tahun Pelajaran: <strong><?= sec_e($nama_tahun) ?></strong> |
+                            Semester: <strong><?= sec_e($semester) ?></strong>
                         </p>
                     </div>
                 </div>
@@ -53,13 +53,13 @@
                                 <?php foreach ($kelasList1 as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['kelas'] ?></td>
-                                        <td><?= $row['kode_mapel'] ?></td>
-                                        <td><?= $row['nama_mapel'] ?></td>
-                                        <td><?= $row['tingkat_mapel'] ?></td>
-                                        <td><?= $row['jumlah_tp'] ?></td>
+                                        <td><?= sec_e($row['kelas']) ?></td>
+                                        <td><?= sec_e($row['kode_mapel']) ?></td>
+                                        <td><?= sec_e($row['nama_mapel']) ?></td>
+                                        <td><?= sec_e($row['tingkat_mapel']) ?></td>
+                                        <td><?= sec_e($row['jumlah_tp']) ?></td>
                                         <td>
-                                            <a href="?controller=tp&method=tujuan&id_mapel_guru=<?= $row['id_mapel_guru'] ?>" class="btn btn-success btn-sm">Tujuan Pembelajaran</a>
+                                            <a href="?controller=tp&method=tujuan&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-success btn-sm">Tujuan Pembelajaran</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

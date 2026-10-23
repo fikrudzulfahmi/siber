@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -48,12 +48,12 @@
                                 <?php foreach ($kelasList as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['kelas'] ?></td>
-                                        <td><?= $row['kode_mapel'] ?></td>
-                                        <td><?= $row['nama_mapel'] ?></td>
-                                        <td><?= $row['tingkat_mapel'] ?></td>
+                                        <td><?= sec_e($row['kelas']) ?></td>
+                                        <td><?= sec_e($row['kode_mapel']) ?></td>
+                                        <td><?= sec_e($row['nama_mapel']) ?></td>
+                                        <td><?= sec_e($row['tingkat_mapel']) ?></td>
                                         <td>
-                                            <a href="?controller=kategori&method=index&id_mapel_guru=<?= $row['id_mapel_guru'] ?>" class="btn btn-success btn-sm">Detail</a>
+                                            <a href="?controller=kategori&method=index&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-success btn-sm">Detail</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

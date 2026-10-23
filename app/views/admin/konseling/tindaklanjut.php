@@ -4,7 +4,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -54,7 +54,7 @@
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                                             </div>
                                                             <div class="modal-body text-center">
-                                                                <img src="uploads/tindaklanjut/<?= $tl['bukti'] ?>" class="img-fluid rounded shadow">
+                                                                <img src="uploads/tindaklanjut/<?= sec_e($tl['bukti']) ?>" class="img-fluid rounded shadow">
                                                             </div>
                                                         </div>
                                                     </div>

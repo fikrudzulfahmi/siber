@@ -80,7 +80,7 @@
 
     <td>
         <?php if (isset($uploaded[$jenis])): ?>
-            <a href="uploads/program_struktural/<?= $uploaded[$jenis]['file'] ?>" target="_blank" class="badge bg-success">Lihat File</a>
+            <a href="uploads/program_struktural/<?= sec_e($uploaded[$jenis]['file']) ?>" target="_blank" class="badge bg-success">Lihat File</a>
         <?php else: ?>
             <span class="badge bg-secondary">Belum ada</span>
         <?php endif; ?>
@@ -96,7 +96,7 @@
             default => 'secondary'
         };
         ?>
-        <span class="badge bg-<?= $badge ?>"><?= ucfirst($status) ?></span>
+        <span class="badge bg-<?= $badge ?>"><?= sec_e(ucfirst($status)) ?></span>
     </td>
 
     <td>

@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -38,7 +38,7 @@
                                 <?php foreach ($tahun_pelajaran as $tp): ?>
                                     <?php $selected = ($is_edit && $edit_setting['id_tahun_pelajaran'] == $tp['id_tahun_pelajaran']) ? 'selected' : ''; ?>
                                     <option value="<?= $tp['id_tahun_pelajaran'] ?>" <?= $selected ?>>
-                                        <?= $tp['tahun_pelajaran'] ?> - <?= $tp['semester'] ?>
+                                        <?= sec_e($tp['tahun_pelajaran']) ?> - <?= sec_e($tp['semester']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -52,7 +52,7 @@
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label for="tanggal_pembagian" class="ms-0">Tanggal Pembagian Rapor</label>
-                            <input type="date" class="form-control" id="tgl_pembagian" name="tgl_pembagian" value="<?= $is_edit ? $edit_setting['tgl_pembagian'] : '' ?>" required>
+                            <input type="date" class="form-control" id="tgl_pembagian" name="tgl_pembagian" value="<?= sec_e($is_edit ? $edit_setting['tgl_pembagian'] : '') ?>" required>
                         </div>
 
                         <div class="form-check form-switch d-flex align-items-center mb-3">
@@ -97,17 +97,17 @@
                                         <td>
                                             <div class="d-flex px-3 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm"><?= $s['tahun_pelajaran'] ?></h6>
-                                                    <p class="text-xs text-secondary mb-0">Semester <?= $s['semester'] ?></p>
+                                                    <h6 class="mb-0 text-sm"><?= sec_e($s['tahun_pelajaran']) ?></h6>
+                                                    <p class="text-xs text-secondary mb-0">Semester <?= sec_e($s['semester']) ?></p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-secondary"><?= $s['jenis_rapor'] ?></span>
+                                            <span class="badge badge-sm bg-gradient-secondary"><?= sec_e($s['jenis_rapor']) ?></span>
                                             <?= $s['is_kenaikan'] ? '<br><small class="text-info">Fitur Kenaikan ON</small>' : '' ?>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <p class="text-xs text-secondary mb-0"><?= $s['tgl_pembagian'] ?></p>
+                                            <p class="text-xs text-secondary mb-0"><?= sec_e($s['tgl_pembagian']) ?></p>
                                         </td>
                                         <td class="align-middle text-center">
                                             <?php if ($s['is_active']): ?>

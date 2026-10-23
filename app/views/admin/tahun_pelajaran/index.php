@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -51,8 +51,8 @@
                                 <?php foreach ($tahun as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['tahun_pelajaran'] ?></td>
-                                        <td><?= $row['semester'] ?></td>
+                                        <td><?= sec_e($row['tahun_pelajaran']) ?></td>
+                                        <td><?= sec_e($row['semester']) ?></td>
                                         <td>
                                             <div class="d-flex align-items-center justify-content-center" style="gap: 5px;">
                                                 <?php if ($row['status'] == 'Aktif'): ?>
@@ -66,12 +66,12 @@
                                             <div class="d-flex align-items-center justify-content-center" style="gap: 5px;">
 
                                                 <?php if ($row['status'] != 'Aktif'): ?>
-                                                    <a href="?controller=tahunPelajaran&method=activate&id=<?= $row['id_tahun_pelajaran'] ?>" class="btn btn-info btn-sm activate-btn">Aktifkan</a>
+                                                    <a href="?controller=tahunPelajaran&method=activate&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-info btn-sm activate-btn">Aktifkan</a>
                                                 <?php endif; ?>
 
-                                                <a href="?controller=tahunPelajaran&method=edit&id=<?= $row['id_tahun_pelajaran'] ?>" class="btn btn-success btn-sm">Edit</a>
+                                                <a href="?controller=tahunPelajaran&method=edit&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-success btn-sm">Edit</a>
 
-                                                <a href="?controller=tahunPelajaran&method=delete&id=<?= $row['id_tahun_pelajaran'] ?>" class="btn btn-dark btn-sm delete-btn">Hapus</a>
+                                                <a href="?controller=tahunPelajaran&method=delete&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-dark btn-sm delete-btn">Hapus</a>
 
                                             </div>
                                         </td>

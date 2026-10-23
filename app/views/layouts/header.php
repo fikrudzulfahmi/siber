@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="assets/img/favicon2.png">
-    <title><?= autoTitle($_GET['controller'] ?? '', $_GET['method'] ?? '') ?> | SiBer PPRM</title>
+    <title><?= sec_e(autoTitle($_GET['controller'] ?? '', $_GET['method'] ?? '')) ?> | SiBer PPRM</title>
 
 
     <!-- Fonts and icons -->

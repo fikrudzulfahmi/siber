@@ -9,7 +9,7 @@
     </div>
 
     <?php if (!empty($pesanLibur)): ?>
-        <div class="alert alert-info"><?= $pesanLibur; ?></div>
+        <div class="alert alert-info"><?= sec_e($pesanLibur); ?></div>
     <?php else: ?>
         <div class="row mb-4">
             <!-- Hadir -->
@@ -126,7 +126,7 @@
                                                 'Dinas-Luar' => 'primary'
                                             ];
                                             ?>
-                                            <span class="badge bg-<?= $badge[$g['keterangan']] ?? 'secondary' ?>"><?= $g['keterangan'] ?></span>
+                                            <span class="badge bg-<?= $badge[$g['keterangan']] ?? 'secondary' ?>"><?= sec_e($g['keterangan']) ?></span>
                                         </td>
                                         <td><?= htmlspecialchars($g['waktu_datang']) ?></td>
                                         <td><?= htmlspecialchars($g['waktu_pulang']) ?></td>
@@ -165,7 +165,7 @@
                                         <td><?= $i + 1 ?></td>
                                         <td><?= htmlspecialchars($t['nama']) ?></td>
                                         <td>
-                                            <span class="badge bg-<?= $badge[$t['keterangan']] ?? 'secondary' ?>"><?= $t['keterangan'] ?></span>
+                                            <span class="badge bg-<?= $badge[$t['keterangan']] ?? 'secondary' ?>"><?= sec_e($t['keterangan']) ?></span>
                                         </td>
                                         <td><?= htmlspecialchars($t['waktu_datang']) ?></td>
                                         <td><?= htmlspecialchars($t['waktu_pulang']) ?></td>

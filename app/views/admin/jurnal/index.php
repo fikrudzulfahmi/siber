@@ -6,7 +6,7 @@
         Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
-            text: <?= json_encode($msg) ?>,
+            text: <?= sec_js($msg) ?>,
             confirmButtonColor: '#4caf50'
         });
     </script>
@@ -16,7 +16,7 @@
         Swal.fire({
             icon: 'warning',
             title: 'Perhatian',
-            text: <?= json_encode($msg) ?>,
+            text: <?= sec_js($msg) ?>,
             confirmButtonColor: '#ff9800'
         });
     </script>
@@ -84,7 +84,7 @@
                                 <select id="kelas" name="id_kelas" class="form-control border focus-ring focus-ring-success rounded-3 select2" required>
                                     <option disabled selected>-- Pilih Kelas --</option>
                                     <?php foreach ($kelas as $k): ?>
-                                        <option value="<?= $k['id_kelas'] ?>"><?= $k['kelas'] ?></option>
+                                        <option value="<?= sec_e($k['id_kelas']) ?>"><?= sec_e($k['kelas']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

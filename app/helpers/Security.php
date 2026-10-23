@@ -282,6 +282,16 @@ function sec_policy_methods(): array
     ];
 }
 
+/**
+ * Escape nilai untuk disisipkan ke dalam blok <script> (JSON aman).
+ * Mencegah "</script>" atau karakter khusus memutus konteks skrip.
+ */
+function sec_js($value): string
+{
+    $json = json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+    return $json === false ? 'null' : $json;
+}
+
 /** Berlakukan kebijakan untuk controller+method yang sedang dipanggil. */
 function sec_enforce_policy(string $controller, string $method): void
 {

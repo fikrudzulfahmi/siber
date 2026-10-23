@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -26,7 +26,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Daftar Tujuan Pembelajaran Mapel <?= $info['nama_mapel'] ?> Kelas <?= $info['kelas'] ?></h6>
+                        <h6 class="text-white text-capitalize ps-3">Daftar Tujuan Pembelajaran Mapel <?= sec_e($info['nama_mapel']) ?> Kelas <?= sec_e($info['kelas']) ?></h6>
                     </div>
                 </div>
 
@@ -51,10 +51,10 @@
                                 <?php foreach ($tujuanList as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['tujuan_pembelajaran'] ?></td>
+                                        <td><?= sec_e($row['tujuan_pembelajaran']) ?></td>
                                         <td>
                                             <a href="?controller=tp&method=edit&id=<?= $row['id_tp'] ?>" class="btn btn-success btn-sm">Edit</a>
-                                            <a href="?controller=tp&method=delete&id=<?= $row['id_tp'] ?>&id_mapel_guru=<?= $row['id_mapel_guru'] ?>" class="btn btn-dark btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                                            <a href="?controller=tp&method=delete&id=<?= $row['id_tp'] ?>&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-dark btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

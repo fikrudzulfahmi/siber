@@ -38,7 +38,7 @@
                                             class="form-control border focus-ring focus-ring-success rounded-3" required>
                                             <option value="">-- Pilih Kelas --</option>
                                             <?php foreach ($kelas_list as $k): ?>
-                                                <option value="<?= $k['id_kelas'] ?>"
+                                                <option value="<?= sec_e($k['id_kelas']) ?>"
                                                     <?= (isset($filter_terpilih['id_kelas']) && $filter_terpilih['id_kelas'] == $k['id_kelas']) ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($k['kelas']) ?>
                                                 </option>

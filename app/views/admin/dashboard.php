@@ -6,7 +6,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <h5 class="text-white mb-0">
-                            Selamat Datang, <strong><?= $_SESSION['user']['nama'] ?? 'Pengguna' ?></strong>
+                            Selamat Datang, <strong><?= sec_e($_SESSION['user']['nama'] ?? 'Pengguna') ?></strong>
                         </h5>
                         <p class="text-white mb-0">
                             Anda login sebagai <strong><?= levelDisplay($_SESSION['user']['level']) ?></strong>.
@@ -66,7 +66,7 @@
                                     <p class="text-white text-sm mb-1 opacity-8">Waktu Datang</p>
                                     <div class="d-flex align-items-center">
                                         <h6 class="text-white mb-0 me-2">
-                                            <?= $presensiHariIni['waktu_datang'] ?>
+                                            <?= sec_e($presensiHariIni['waktu_datang']) ?>
                                         </h6>
 
                                         <?php if ($presensiHariIni['status_datang'] == 'Terlambat'): ?>
@@ -88,11 +88,11 @@
                                     <div class="d-flex align-items-center">
                                         <?php if (isset($presensiHariIni['is_blinking']) && $presensiHariIni['is_blinking']): ?>
                                             <h6 class="text-danger mb-0 me-2 text-blink font-weight-bold" style="text-shadow: 1px 1px 2px rgba(255,255,255,0.8);">
-                                                <?= $presensiHariIni['waktu_pulang'] ?>
+                                                <?= sec_e($presensiHariIni['waktu_pulang']) ?>
                                             </h6>
                                         <?php else: ?>
                                             <h6 class="text-white mb-0 me-2">
-                                                <?= $presensiHariIni['waktu_pulang'] ?>
+                                                <?= sec_e($presensiHariIni['waktu_pulang']) ?>
                                             </h6>
                                         <?php endif; ?>
 

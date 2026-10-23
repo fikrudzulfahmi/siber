@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -20,7 +20,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#f44336',
                 confirmButtonText: 'OK'
             });
@@ -82,7 +82,7 @@
                                 ?>
                                     <tr>
                                         <td><?= $i ?></td>
-                                        <td><?= $days[$j['day']] ?? $j['day'] ?></td>
+                                        <td><?= sec_e($days[$j['day']] ?? $j['day']) ?></td>
                                         <td><?= htmlspecialchars($j['waktu_datang']) ?></td>
                                         <td><?= htmlspecialchars($j['waktu_pulang']) ?></td>
                                         <td>
@@ -97,7 +97,7 @@
                                             <div class="modal-content">
                                                 <form action="?controller=user&method=updateJadwal" method="POST">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Edit Jadwal <?= $days[$j['day']] ?? $j['day'] ?></h5>
+                                                        <h5 class="modal-title">Edit Jadwal <?= sec_e($days[$j['day']] ?? $j['day']) ?></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -140,7 +140,7 @@
                                                     <div class="modal-body">
                                                         <div class="text-center">
                                                             <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                                                            <p class="fw-bold mb-1">Apakah Anda yakin ingin menghapus jadwal pada hari <strong><?= $j['day'] ?></strong>?</p>
+                                                            <p class="fw-bold mb-1">Apakah Anda yakin ingin menghapus jadwal pada hari <strong><?= sec_e($j['day']) ?></strong>?</p>
                                                             <p class="text-muted mb-0">Tindakan ini tidak bisa dibatalkan!</p>
                                                         </div>
 

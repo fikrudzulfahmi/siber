@@ -92,16 +92,16 @@
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm"><?= $set['keterangan'] ?></h6>
+                                                    <h6 class="mb-0 text-sm"><?= sec_e($set['keterangan']) ?></h6>
                                                     <p class="text-xs text-secondary mb-0">Otomatisasi pengiriman pesan via Fonnte</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0"><code><?= $set['key_setting'] ?></code></p>
+                                            <p class="text-xs font-weight-bold mb-0"><code><?= sec_e($set['key_setting']) ?></code></p>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm badge-indicator" data-key="<?= $set['key_setting'] ?>">
+                                            <span class="badge badge-sm badge-indicator" data-key="<?= sec_e($set['key_setting']) ?>">
                                                 <?= ($set['status'] === 'true') ? 'AKTIF' : 'NON-AKTIF' ?>
                                             </span>
                                         </td>
@@ -109,7 +109,7 @@
                                             <div class="form-check form-switch d-inline-block">
                                                 <input class="form-check-input btn-toggle-wa"
                                                     type="checkbox"
-                                                    data-key="<?= $set['key_setting'] ?>"
+                                                    data-key="<?= sec_e($set['key_setting']) ?>"
                                                     <?= ($set['status'] === 'true') ? 'checked' : '' ?>>
                                             </div>
                                         </td>

@@ -37,13 +37,13 @@
                                     <?php
                                     $stmt = $this->db->query("SELECT id_kelas, kelas FROM kelas ORDER BY kelas ASC");
                                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                                        <option value="<?= $row['id_kelas'] ?>"><?= htmlspecialchars($row['kelas']) ?></option>
+                                        <option value="<?= sec_e($row['id_kelas']) ?>"><?= htmlspecialchars($row['kelas']) ?></option>
                                     <?php endwhile; ?>
                                 </select>
 
                             <?php elseif (!empty($id_kelas) && !empty($kelas)): ?>
                                 <!-- Wali kelas -->
-                                <input type="text" class="form-control" value="<?= $kelas ?>" disabled>
+                                <input type="text" class="form-control" value="<?= sec_e($kelas) ?>" disabled>
                                 <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
 
                             <?php else: ?>
@@ -83,7 +83,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Rekomendasi Oleh</label>
-                            <input type="text" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= $_SESSION['user']['nama'] ?? 'Pengguna' ?>" disabled>
+                            <input type="text" class="form-control border focus-ring focus-ring-success rounded-3" value="<?= sec_e($_SESSION['user']['nama'] ?? 'Pengguna') ?>" disabled>
                         </div>
 
 

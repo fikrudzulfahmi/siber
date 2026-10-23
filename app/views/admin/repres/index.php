@@ -93,7 +93,7 @@
                                     <tr>
                                         <td style="text-align: left;"><?= htmlspecialchars($row['nama']) ?></td>
                                         <td><?= htmlspecialchars($row['jabatan']) ?></td>
-                                        <td><span class="badge bg-info"><?= $row['Hari_Efektif'] ?></span></td>
+                                        <td><span class="badge bg-info"><?= sec_e($row['Hari_Efektif']) ?></span></td>
                                         <td><span class="badge bg-success"><?= $row['Kehadiran'] ?></span></td>
                                         <td><span class="badge bg-dark"><?= $row['Alpa'] ?></span></td>
                                         <td><span class="badge bg-secondary"><?= $row['Terlambat'] ?></span></td>

@@ -49,7 +49,7 @@ foreach ($perangkat as $item) {
                             <?php if (!isset($uploadedFiles[$jenis])): ?>
                                 <span class="badge bg-secondary">Tidak ada</span>
                             <?php else: ?>
-                                <a href="uploads/perangkat/<?= $uploadedFiles[$jenis]['file_name'] ?>" class="badge bg-success" target="_blank">
+                                <a href="uploads/perangkat/<?= sec_e($uploadedFiles[$jenis]['file_name']) ?>" class="badge bg-success" target="_blank">
                                     Lihat
                                 </a>
                             <?php endif; ?>
@@ -73,7 +73,7 @@ foreach ($perangkat as $item) {
                             }
                             ?>
                             <span class="badge bg-<?= $badgeClass ?>">
-                                <?= ucfirst($status) ?>
+                                <?= sec_e(ucfirst($status)) ?>
                             </span>
                         </td>
 

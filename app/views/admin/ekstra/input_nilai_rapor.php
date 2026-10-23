@@ -59,7 +59,7 @@
                                                     </h6>
                                                 </div>
                                             </td>
-                                            <td class="text-sm"><?= $s['kelas'] ?></td>
+                                            <td class="text-sm"><?= sec_e($s['kelas']) ?></td>
                                             <td class="align-middle text-center">
                                                 <select name="nilai_siswa[<?= $s['id_siswa'] ?>][nilai]"
                                                     class="form-select border px-2 text-center text-sm <?= $is_filled ? 'border-success' : '' ?>"

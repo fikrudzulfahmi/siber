@@ -7,7 +7,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -20,7 +20,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Gagal!',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -33,7 +33,7 @@
             Swal.fire({
                 icon: 'danger',
                 title: 'Gagal',
-                text: <?= json_encode($msg) ?>,
+                text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -157,8 +157,8 @@
             
             <select name="id_kelas" class="form-control border focus-ring focus-ring-success rounded-3 me-2 mb-3" onchange="this.form.submit()">
                 <?php foreach ($kelasList as $k): ?>
-                    <option value="<?= $k['id_kelas'] ?>" <?= ($id_kelas == $k['id_kelas']) ? 'selected' : '' ?>>
-                        <?= $k['kelas'] ?>
+                    <option value="<?= sec_e($k['id_kelas']) ?>" <?= ($id_kelas == $k['id_kelas']) ? 'selected' : '' ?>>
+                        <?= sec_e($k['kelas']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -212,9 +212,9 @@
                                         foreach ($jadwal as $j):
                                             if ($j['hari'] == $hari): $found = true; ?>
                                                 <tr>
-                                                    <td><?= $j['jam_mulai'] ?> - <?= $j['jam_selesai'] ?></td>
-                                                    <td><?= $j['nama_mapel'] ?></td>
-                                                    <td><?= $j['nama_guru'] ?></td>
+                                                    <td><?= sec_e($j['jam_mulai']) ?> - <?= sec_e($j['jam_selesai']) ?></td>
+                                                    <td><?= sec_e($j['nama_mapel']) ?></td>
+                                                    <td><?= sec_e($j['nama_guru']) ?></td>
                                                     <?php if (!isLevel($id_level, 7)): ?>
                                                         <td>
                                                             <a href="?controller=jadwal&method=delete&id=<?= $j['id_jadwal'] ?>&id_kelas=<?= $id_kelas ?>&hari=<?= $hari; ?>"

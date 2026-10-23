@@ -114,8 +114,8 @@
                 <tr>
                     <td><?= date('d/m/Y', strtotime($j['tanggal'])) ?></td>
                     <td class="text-left">
-                        <strong><?= $j['nama_kegiatan'] ?></strong><br>
-                        <?= $j['isi_kegiatan'] ?>
+                        <strong><?= sec_e($j['nama_kegiatan']) ?></strong><br>
+                        <?= sec_e($j['isi_kegiatan']) ?>
                     </td>
                     <td>
                         <?php

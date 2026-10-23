@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -80,15 +80,15 @@
                         <h6 class="text-white text-capitalize ps-3">Tambah Kelas & Guru</h6>
                     </div>
                     <p class="text-white text-sm ps-3 mb-0">
-                        Tahun Pelajaran: <strong><?= $nama_tahun ?></strong> |
-                        Semester: <strong><?= $semester ?></strong>
+                        Tahun Pelajaran: <strong><?= sec_e($nama_tahun) ?></strong> |
+                        Semester: <strong><?= sec_e($semester) ?></strong>
                     </p>
                 </div>
 
                 <div class="card-body px-4 py-4">
                     <form action="?controller=mapel&method=update_guru" method="POST">
                         <input type="hidden" name="id_mapel" value="<?= $mapel['id_mapel'] ?>">
-                        <input type="hidden" name="id_mapel_guru" value="<?= $data['id_mapel_guru'] ?>">
+                        <input type="hidden" name="id_mapel_guru" value="<?= sec_e($data['id_mapel_guru']) ?>">
                         <input type="hidden" name="id_tahun_pelajaran" value="<?= $id_tahun_aktif ?>">
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">Kelas</label>
@@ -96,8 +96,8 @@
                                 class="form-control select2 border focus-ring focus-ring-success rounded-3"
                                 required>
                                 <?php foreach ($kelas as $k): ?>
-                                    <option value="<?= $k['id_kelas'] ?>" <?= $k['id_kelas'] == $data['id_kelas'] ? 'selected' : '' ?>>
-                                        <?= $k['kelas'] ?>
+                                    <option value="<?= sec_e($k['id_kelas']) ?>" <?= $k['id_kelas'] == $data['id_kelas'] ? 'selected' : '' ?>>
+                                        <?= sec_e($k['kelas']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -110,7 +110,7 @@
                                 required>
                                 <?php foreach ($users as $u): ?>
                                     <option value="<?= $u['id_employe'] ?>" <?= $u['id_employe'] == $data['id_guru'] ? 'selected' : '' ?>>
-                                        <?= $u['nama'] ?>
+                                        <?= sec_e($u['nama']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>

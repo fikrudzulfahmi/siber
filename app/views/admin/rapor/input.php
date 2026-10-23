@@ -8,7 +8,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -58,7 +58,7 @@
                                             <div class="d-flex px-3 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm"><?= htmlspecialchars($s['nama_siswa']) ?></h6>
-                                                    <p class="text-xs text-secondary mb-0"><?= $s['nisn'] ?></p>
+                                                    <p class="text-xs text-secondary mb-0"><?= sec_e($s['nisn']) ?></p>
                                                 </div>
                                             </div>
                                         </td>

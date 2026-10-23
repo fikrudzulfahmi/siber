@@ -25,7 +25,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -54,7 +54,7 @@
                             <select name="id_tahun" class="form-control form-control-sm border ps-2 w-20" onchange="this.form.submit()">
                                 <?php foreach ($list_tahun as $tp) : ?>
                                     <option value="<?= $tp['id_tahun_pelajaran']; ?>" <?= ($id_tahun_aktif == $tp['id_tahun_pelajaran']) ? 'selected' : ''; ?>>
-                                        <?= $tp['tahun_pelajaran']; ?> - <?= $tp['semester']; ?>
+                                        <?= sec_e($tp['tahun_pelajaran']); ?> - <?= sec_e($tp['semester']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -100,7 +100,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <?php if ($p['file_sertifikat']) : ?>
-                                                    <a href="../public/uploads/sertifikat/<?= $p['file_sertifikat'] ?>" target="_blank" class="text-secondary font-weight-bold text-xs">
+                                                    <a href="../public/uploads/sertifikat/<?= sec_e($p['file_sertifikat']) ?>" target="_blank" class="text-secondary font-weight-bold text-xs">
                                                         <i class="fas fa-file-pdf text-danger me-1"></i> Lihat
                                                     </a>
                                                 <?php else : ?>
@@ -109,11 +109,11 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <div class="btn-group shadow-none">
-                                                    <a href="?controller=prestasi&method=edit&id=<?= $p['id_prestasi_kegiatan'] ?>"
+                                                    <a href="?controller=prestasi&method=edit&id=<?= sec_e($p['id_prestasi_kegiatan']) ?>"
                                                         class="btn btn-link text-warning font-weight-bold text-xs mb-0">
                                                         <i class="fas fa-edit me-1"></i> Edit
                                                     </a>
-                                                    <a href="?controller=prestasi&method=hapus&id=<?= $p['id_prestasi_kegiatan'] ?>"
+                                                    <a href="?controller=prestasi&method=hapus&id=<?= sec_e($p['id_prestasi_kegiatan']) ?>"
                                                         class="btn btn-link text-danger font-weight-bold text-xs mb-0"
                                                         onclick="return confirm('Hapus data prestasi ini? Daftar peserta terkait akan otomatis terhapus secara logis.')">
                                                         <i class="fas fa-trash me-1"></i> Hapus

@@ -9,7 +9,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>,
+                    text: <?= sec_js($msg) ?>,
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -72,18 +72,18 @@
                     <div class="col-md-3">
                         <label class="form-label fw-bold text-xs">Dari Tanggal</label>
                         <input type="date" name="tanggal_awal"
-                            value="<?= $tanggalAwal ?>"
+                            value="<?= sec_e($tanggalAwal) ?>"
                             class="form-control border focus-ring focus-ring-success rounded-3">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold text-xs">Sampai Tanggal</label>
                         <input type="date" name="tanggal_akhir"
-                            value="<?= $tanggalAkhir ?>"
+                            value="<?= sec_e($tanggalAkhir) ?>"
                             class="form-control border focus-ring focus-ring-success rounded-3">
                     </div>
                     <div class="col-md-4 d-flex gap-2">
                         <button class="btn btn-success">Tampilkan</button>
-                        <a href="?controller=jurnalStruktural&method=cetakLaporan&tanggal_awal=<?= $tanggalAwal ?>&tanggal_akhir=<?= $tanggalAkhir ?>"
+                        <a href="?controller=jurnalStruktural&method=cetakLaporan&tanggal_awal=<?= sec_e($tanggalAwal) ?>&tanggal_akhir=<?= sec_e($tanggalAkhir) ?>"
                             class="btn btn-dark" target="_blank">
                             <i class="fas fa-print me-1"></i> Cetak Laporan
                         </a>

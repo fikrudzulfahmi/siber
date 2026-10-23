@@ -6,7 +6,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                 confirmButtonColor: '#4caf50',
                 confirmButtonText: 'OK'
             });
@@ -63,7 +63,7 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Tambah Tujuan Pembelajaran</h6>
                         <p class="text-white text-sm ps-3 mb-0">
-                            Periode: <strong><?= $tahun_aktif['tahun_pelajaran'] ?></strong> (<?= $tahun_aktif['semester'] ?>)
+                            Periode: <strong><?= sec_e($tahun_aktif['tahun_pelajaran']) ?></strong> (<?= sec_e($tahun_aktif['semester']) ?>)
                         </p>
                     </div>
                 </div>

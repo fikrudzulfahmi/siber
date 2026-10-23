@@ -52,18 +52,18 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label font-weight-bold">Tanggal</label>
-                                <input type="date" class="form-control border px-3" name="tanggal" value="<?= $kegiatan['tanggal'] ?>" required>
+                                <input type="date" class="form-control border px-3" name="tanggal" value="<?= sec_e($kegiatan['tanggal']) ?>" required>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label font-weight-bold">Jam Mulai</label>
-                                <input type="time" class="form-control border px-3" name="jam_mulai" value="<?= $kegiatan['jam_mulai'] ?>" required>
+                                <input type="time" class="form-control border px-3" name="jam_mulai" value="<?= sec_e($kegiatan['jam_mulai']) ?>" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label font-weight-bold">Jam Selesai</label>
-                                <input type="time" class="form-control border px-3" name="jam_selesai" value="<?= $kegiatan['jam_selesai'] ?>" required>
+                                <input type="time" class="form-control border px-3" name="jam_selesai" value="<?= sec_e($kegiatan['jam_selesai']) ?>" required>
                             </div>
                         </div>
 
@@ -98,7 +98,7 @@
                                                 <input class="form-check-input check-item" type="checkbox" name="peserta[]" value="<?= $guru['pin'] ?>" id="guru_<?= $guru['pin'] ?>" <?= $checked ?>>
                                                 <label class="form-check-label" for="guru_<?= $guru['pin'] ?>">
                                                     <span class="d-block font-weight-bold text-dark text-sm"><?= htmlspecialchars($guru['nama']) ?></span>
-                                                    <small class="text-xs text-secondary"><?= htmlspecialchars($guru['jabatan']) ?> (PIN: <?= $guru['pin'] ?>)</small>
+                                                    <small class="text-xs text-secondary"><?= htmlspecialchars($guru['jabatan']) ?> (PIN: <?= sec_e($guru['pin']) ?>)</small>
                                                 </label>
                                             </div>
                                         </div>

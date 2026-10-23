@@ -10,7 +10,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: <?= json_encode($msg) ?>, // agar aman dari karakter khusus
+                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
                     confirmButtonColor: '#4caf50',
                     confirmButtonText: 'OK'
                 });
@@ -54,16 +54,16 @@
                                 <?php foreach ($mapel as $row): ?>
                                     <tr>
                                         <td></td>
-                                        <td><?= $row['kode_mapel'] ?></td>
-                                        <td><?= $row['nama_mapel'] ?></td>
-                                        <td><?= $row['tingkat_mapel'] ?></td>
+                                        <td><?= sec_e($row['kode_mapel']) ?></td>
+                                        <td><?= sec_e($row['nama_mapel']) ?></td>
+                                        <td><?= sec_e($row['tingkat_mapel']) ?></td>
                                         <td>
-                                            <a href="?controller=mapel&method=guru&id=<?= $row['id_mapel'] ?>" class="btn btn-secondary btn-sm">Lihat</a>
+                                            <a href="?controller=mapel&method=guru&id=<?= sec_e($row['id_mapel']) ?>" class="btn btn-secondary btn-sm">Lihat</a>
                                         </td>
                                         <?php if (!isLevel($id_level, 7)): ?>
                                             <td>
-                                                <a href="?controller=mapel&method=edit&id=<?= $row['id_mapel'] ?>" class="btn btn-success btn-sm">Edit</a>
-                                                <a href="?controller=mapel&method=delete&id=<?= $row['id_mapel'] ?>"
+                                                <a href="?controller=mapel&method=edit&id=<?= sec_e($row['id_mapel']) ?>" class="btn btn-success btn-sm">Edit</a>
+                                                <a href="?controller=mapel&method=delete&id=<?= sec_e($row['id_mapel']) ?>"
                                                     class="btn btn-dark btn-sm delete-btn">
                                                     Hapus
                                                 </a>

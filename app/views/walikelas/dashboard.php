@@ -7,7 +7,7 @@
         <div class="card-body d-flex align-items-center justify-content-between">
           <div>
             <h5 class="text-white mb-0">
-              Selamat Datang, <strong><?= $_SESSION['user']['nama'] ?? 'Pengguna' ?></strong>
+              Selamat Datang, <strong><?= sec_e($_SESSION['user']['nama'] ?? 'Pengguna') ?></strong>
             </h5>
             <p class="text-white mb-0">
     Anda login sebagai <strong><?= levelDisplay($_SESSION['user']['level']) ?></strong>.

@@ -45,11 +45,11 @@
                     <tr>
                         <td><?= $i+1 ?></td>
                         <td><?= date('d-m-Y', strtotime($row['tanggal_masalah'])) ?></td>
-                        <td><?= $row['nama_siswa'] ?></td>
+                        <td><?= sec_e($row['nama_siswa']) ?></td>
                         <td><?= $row['kelas'] ?? '-' ?></td>
                         <td><?= $row['nama_kategori'] ?? '-' ?></td>
                         <td><?= $row['permasalahan'] ?></td>
-                        <td><?= $row['status'] ?></td>
+                        <td><?= sec_e($row['status']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
