@@ -66,15 +66,20 @@ class UserController extends BaseController
         // 1. Update data dasar di tabel 'employe'
         $this->model->update($_POST);
 
-        // 2. Hapus semua level LAMA milik user ini
-        $deleteStmt = $this->db->prepare("DELETE FROM user_level WHERE id_employe = ?");
-        $deleteStmt->execute([$id_employe]);
+        // 2. Kelola level hanya bila pengguna berhak (pertahanan berlapis:
+        //    mencegah eskalasi hak akses lewat parameter levels[]).
+        $bolehKelolaLevel = !function_exists('sec_has_level') || sec_has_level(1);
+        if ($bolehKelolaLevel) {
+            $deleteStmt = $this->db->prepare("DELETE FROM user_level WHERE id_employe = ?");
+            $deleteStmt->execute([$id_employe]);
 
-        // 3. Masukkan semua level BARU yang dipilih
-        if (!empty($selectedLevels)) {
-            $insertStmt = $this->db->prepare("INSERT INTO user_level (id_employe, id_level) VALUES (?, ?)");
-            foreach ($selectedLevels as $id_level) {
-                $insertStmt->execute([$id_employe, $id_level]);
+            if (!empty($selectedLevels) && is_array($selectedLevels)) {
+                $insertStmt = $this->db->prepare("INSERT INTO user_level (id_employe, id_level) VALUES (?, ?)");
+                foreach ($selectedLevels as $id_level) {
+                    if (ctype_digit((string) $id_level)) {
+                        $insertStmt->execute([$id_employe, (int) $id_level]);
+                    }
+                }
             }
         }
 

@@ -35,7 +35,7 @@ class SettingController
         $data['last_ping'] = $data_server['last_ping'];
         
         // --- LOGIKA RIWAYAT BACKUP ---
-        $backupDir = __DIR__ . '/../../public/backups/';
+        $backupDir = SIBER_ROOT . '/backups/';
         $riwayat_backup = [];
         if (is_dir($backupDir)) {
             $files = array_diff(scandir($backupDir), array('.', '..'));
@@ -78,16 +78,17 @@ class SettingController
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
-        if (isset($data['key']) && isset($data['status'])) {
+        $key = isset($data['key']) && is_string($data['key']) ? $data['key'] : '';
+        if ($key !== '' && preg_match('/^wa_[a-z0-9_]{1,40}$/', $key) && isset($data['status'])) {
             $model = new Setting($this->db);
             $status_str = ($data['status'] === true) ? 'true' : 'false';
 
-            $result = $model->updateByKey($data['key'], $status_str);
+            $result = $model->updateByKey($key, $status_str);
 
             echo json_encode([
                 'success' => $result,
                 'db_value' => $status_str,
-                'key' => $data['key']
+                'key' => $key
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Data tidak lengkap']);
@@ -98,7 +99,13 @@ class SettingController
     public function updateFolderIdConfig()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $folder_id = $_POST['folder_id'] ?? '';
+            $folder_id = isset($_POST['folder_id']) && is_string($_POST['folder_id']) ? trim($_POST['folder_id']) : '';
+
+            // Hanya ID folder Google Drive yang aman (huruf, angka, -, _).
+            if (!preg_match('/^[A-Za-z0-9_\-]{1,120}$/', $folder_id)) {
+                echo "<script>alert('ID Folder tidak valid. Gunakan huruf, angka, tanda hubung, atau garis bawah.'); window.location.href='?controller=setting&method=index';</script>";
+                exit;
+            }
 
             $configFile = __DIR__ . '/../config.php';
             if (file_exists($configFile) && is_writable($configFile)) {
@@ -108,14 +115,14 @@ class SettingController
                 if (strpos($configContent, "define('GOOGLE_DRIVE_FOLDER_ID'") !== false) {
                     $configContent = preg_replace(
                         "/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'.*?'\);/",
-                        "define('GOOGLE_DRIVE_FOLDER_ID', '" . addslashes($folder_id) . "');",
+                        "define('GOOGLE_DRIVE_FOLDER_ID', '" . $folder_id . "');",
                         $configContent
                     );
                 } else {
                     // Jika belum ada, tambahkan di baris baru setelah GOOGLE_DRIVE_SECRET_KEY
                     $configContent = preg_replace(
                         "/(define\('GOOGLE_DRIVE_SECRET_KEY',\s*'.*?'\);)/",
-                        "$1\ndefine('GOOGLE_DRIVE_FOLDER_ID', '" . addslashes($folder_id) . "');",
+                        "$1\ndefine('GOOGLE_DRIVE_FOLDER_ID', '" . $folder_id . "');",
                         $configContent
                     );
                 }

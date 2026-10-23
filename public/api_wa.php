@@ -25,8 +25,6 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
 
 require __DIR__ . '/wa-gateway/_config.php';
 
@@ -106,5 +104,6 @@ try {
         'mulai_dari' => WA_MULAI_DARI,
     ]);
 } catch (Throwable $e) {
-    wa_json_out(['status' => false, 'message' => 'Gagal: ' . $e->getMessage()], 500);
+    error_log('[SIBER api_wa] ' . $e->getMessage());
+    wa_json_out(['status' => false, 'message' => 'Permintaan gagal diproses'], 500);
 }

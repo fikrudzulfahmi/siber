@@ -2,9 +2,15 @@
 // ✅ TAMBAHKAN FUNGSI INI
 function log_message($message)
 {
+    // Nonaktif secara default: mencegah bocornya data ke berkas log dan
+    // menghindari tulis-disk pada setiap request. Aktifkan lewat
+    // define('SIBER_DEBUG_LOG', true) saat benar-benar mendiagnosis.
+    if (!defined('SIBER_DEBUG_LOG') || SIBER_DEBUG_LOG !== true) {
+        return;
+    }
     $log_file = dirname(__DIR__, 2) . '/debug.log'; // Simpan file log di folder root proyek
     $timestamp = date('Y-m-d H:i:s');
-    file_put_contents($log_file, "[$timestamp] " . $message . "\n", FILE_APPEND);
+    @file_put_contents($log_file, "[$timestamp] " . $message . "\n", FILE_APPEND | LOCK_EX);
 }
 
 // Level Mapping
@@ -335,18 +341,11 @@ function view($path, $data = [])
 // Guard Login
 function authGuard()
 {
-    if (session_status() === PHP_SESSION_NONE) {
+    if (function_exists('sec_session_start')) {
+        sec_session_start();
+    } elseif (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-
-    // // --- KODE DEBUGGING UNTUK MELIHAT SESSION DI HALAMAN DASHBOARD ---
-    // echo "<h1>DEBUG: Sedang Memeriksa Hak Akses (authGuard)</h1>";
-    // echo "Isi dari \$_SESSION saat tiba di halaman ini:";
-    // echo "<pre>";
-    // print_r($_SESSION);
-    // echo "</pre>";
-    // die("Script dihentikan di dalam authGuard() untuk pemeriksaan.");
-    // // --- AKHIR KODE DEBUGGING ---
 
     if (!isset($_SESSION['user'])) {
         redirect('index.php');
@@ -356,11 +355,15 @@ function authGuard()
 // Logout Helper
 function logoutUser()
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+    if (function_exists('sec_session_destroy')) {
+        sec_session_destroy();
+    } else {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_unset();
+        session_destroy();
     }
-    session_unset();
-    session_destroy();
 
     header("Location: index.php");
     exit;

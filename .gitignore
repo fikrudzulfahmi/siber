@@ -10,6 +10,9 @@ backup_siber_auto_*.sql
 # snapshot lokal (Hermes)
 backup/
 
+# berkas rahasia lokal (di luar webroot)
+config/secrets.php
+
 # kredensial WA gateway (di luar webroot)
 config/wa_gateway.php
 
@@ -18,3 +21,9 @@ public/cron_jobs/.lock_*
 
 # log laporan balik gateway
 public/wa-gateway/ack_log.txt
+
+# dump backup database (di luar webroot)
+/backups/
+
+# log runtime cron (berisi PII)
+public/cron_jobs/*_log.txt

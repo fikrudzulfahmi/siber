@@ -66,8 +66,33 @@ class IzinGuruController extends BaseController
 
     public function update()
     {
+        $id = $_POST['id'] ?? null;
+        $statusKunci = null;
+        if (!sec_has_level(1)) {
+            $stmt = $this->db->prepare("SELECT ip.pin, ip.status, e.id_employe FROM izin_pegawai ip LEFT JOIN employe e ON ip.pin = e.pin WHERE ip.id = ?");
+            $stmt->execute([$id]);
+            $izin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $isOwner = false;
+            if ($izin) {
+                if (!empty($_SESSION['user']['id']) && (int)$izin['id_employe'] === (int)$_SESSION['user']['id']) {
+                    $isOwner = true;
+                } elseif (!empty($_SESSION['user']['pin']) && (string)$izin['pin'] === (string)$_SESSION['user']['pin']) {
+                    $isOwner = true;
+                }
+            }
+
+            if (!$isOwner) {
+                sec_require_level(1, 'Anda tidak memiliki hak akses untuk mengubah izin ini.');
+            }
+            // Hanya administrator yang boleh mengubah status persetujuan.
+            $statusKunci = $izin['status'] ?? null;
+        }
+
         $id = $_POST['id'];
-        $status = $_POST['status_approval'];
+        $status = sec_has_level(1)
+            ? ($_POST['status_approval'] ?? $statusKunci)
+            : ($statusKunci ?? $_POST['status_approval']);
         $alasan_ditolak = $_POST['alasan_ditolak'] ?? null;
         $catatan_approval = $_POST['catatan_approval'] ?? null;
 
@@ -144,6 +169,26 @@ class IzinGuruController extends BaseController
 
     public function delete()
     {
+        $id = $_GET['id'] ?? null;
+        if (!sec_has_level(1)) {
+            $stmt = $this->db->prepare("SELECT ip.pin, e.id_employe FROM izin_pegawai ip LEFT JOIN employe e ON ip.pin = e.pin WHERE ip.id = ?");
+            $stmt->execute([$id]);
+            $izin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $isOwner = false;
+            if ($izin) {
+                if (!empty($_SESSION['user']['id']) && (int)$izin['id_employe'] === (int)$_SESSION['user']['id']) {
+                    $isOwner = true;
+                } elseif (!empty($_SESSION['user']['pin']) && (string)$izin['pin'] === (string)$_SESSION['user']['pin']) {
+                    $isOwner = true;
+                }
+            }
+
+            if (!$isOwner) {
+                sec_require_level(1, 'Anda tidak memiliki hak akses untuk menghapus izin ini.');
+            }
+        }
+
         $id = $_GET['id'];
         $this->model->deleteById($id);
         setFlash('success', 'Izin berhasil dihapus.');

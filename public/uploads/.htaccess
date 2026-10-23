@@ -1,0 +1,17 @@
+# Folder unggahan: hanya berkas statis. Tidak ada eksekusi skrip.
+Options -Indexes
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .pht .shtml .cgi .pl
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .pht .shtml .cgi .pl
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule \.(php[0-9]?|phtml|phar|pht|cgi|pl|py|sh)$ - [F,L,NC]
+</IfModule>

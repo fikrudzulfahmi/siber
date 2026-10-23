@@ -47,11 +47,10 @@ class PrestasiController extends BaseController
         // 1. Handle Upload Sertifikat
         $nama_file = null;
         if (!empty($_FILES['sertifikat']['name'])) {
-            $extension = pathinfo($_FILES['sertifikat']['name'], PATHINFO_EXTENSION);
-            $nama_file = "CERT_" . time() . "_" . uniqid() . "." . $extension;
-            $target_path = "../public/uploads/sertifikat/" . $nama_file;
-
-            move_uploaded_file($_FILES['sertifikat']['tmp_name'], $target_path);
+            $nama_file = Upload::store($_FILES['sertifikat'], 'sertifikat', array_merge(Upload::IMAGE, Upload::DOC), 'CERT');
+            if ($nama_file === null) {
+                setFlash('error', 'Sertifikat tidak dapat diunggah. Gunakan gambar atau PDF/DOC/XLS/PPT maksimal 8 MB.');
+            }
         }
 
         // 2. Gabungkan logika Juara (Dropdown + Manual)

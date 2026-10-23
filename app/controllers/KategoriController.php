@@ -232,7 +232,11 @@ class KategoriController
 
         // -- Header Judul --
         $sheet->setCellValue('A1', 'DATA NILAI: ' . strtoupper($kategori['kategori']));
-        $sheet->setCellValue('A2', 'Mapel: ' . $info['nama_mapel'] . ' | Kelas: ' . $info['kelas']);
+        $sheet->setCellValueExplicit(
+            'A2',
+            'Mapel: ' . (string) $info['nama_mapel'] . ' | Kelas: ' . (string) $info['kelas'],
+            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+        );
 
         // -- Header Tabel --
         $sheet->setCellValue('A4', 'ID_NILAI');
@@ -242,7 +246,11 @@ class KategoriController
         $col = 'D';
         $banyak_ns = $kategori['banyak_ns'] ?? 0;
         for ($i = 1; $i <= $banyak_ns; $i++) {
-            $sheet->setCellValue($col . '4', $customNama['n' . $i] ?? 'N' . $i);
+            $sheet->setCellValueExplicit(
+                $col . '4',
+                (string) ($customNama['n' . $i] ?? 'N' . $i),
+                \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+            );
             $col++;
         }
         $sheet->setCellValue($col++ . '4', 'STS');
@@ -253,7 +261,11 @@ class KategoriController
         foreach ($nilaiList as $idx => $n) {
             $sheet->setCellValue('A' . $rowNum, $n['id_nilai']);
             $sheet->setCellValue('B' . $rowNum, $idx + 1);
-            $sheet->setCellValue('C' . $rowNum, $n['nama_siswa']);
+            $sheet->setCellValueExplicit(
+                'C' . $rowNum,
+                (string) $n['nama_siswa'],
+                \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+            );
 
             $colData = 'D';
             for ($i = 1; $i <= $banyak_ns; $i++) {

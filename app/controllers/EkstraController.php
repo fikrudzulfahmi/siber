@@ -239,16 +239,12 @@ class EkstraController
 
             // --- BAGIAN C: SIMPAN FOTO ---
             if (!empty($_FILES['foto']['name'])) {
-                $nama_file = "EKSTRA_" . time() . "_" . $_FILES['foto']['name'];
-                $target_dir = "../public/uploads/ekstra/";
+                $nama_file = Upload::store($_FILES['foto'], 'ekstra', Upload::IMAGE, 'EKSTRA');
 
-                // Cek folder, buat jika belum ada
-                if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0777, true);
-                }
-
-                if (move_uploaded_file($_FILES['foto']['tmp_name'], $target_dir . $nama_file)) {
+                if ($nama_file !== null) {
                     $this->model->insertFoto($id_kegiatan, $nama_file);
+                } else {
+                    setFlash('error', 'Foto tidak dapat diunggah. Gunakan gambar JPG/PNG/WEBP/GIF maksimal 8 MB.');
                 }
             }
 
@@ -362,7 +358,9 @@ class EkstraController
         $detail = $this->model->getDetailKegiatan($id_kegiatan);
 
         $options = new Options();
-        $options->set('isRemoteEnabled', true);
+        // Jangan izinkan Dompdf mengambil aset dari jaringan (cegah SSRF).
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
         $dompdf = new Dompdf($options);
 
         ob_start();
@@ -514,7 +512,9 @@ class EkstraController
 
         // 1. Buat dulu objek Options
         $options = new \Dompdf\Options();
-        $options->set('isRemoteEnabled', true);
+        // Jangan izinkan Dompdf mengambil aset dari jaringan (cegah SSRF).
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
         $options->set('chroot', realpath(''));
 
         // 2. Masukkan $options ke dalam Dompdf saat pembuatan objek

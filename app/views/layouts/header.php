@@ -36,6 +36,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <meta name="csrf-token" content="<?= sec_csrf_token() ?>">
+    <script src="assets/js/csrf.js"></script>
 </head>
 <style>
     /* Tombol aktif */

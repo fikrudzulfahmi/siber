@@ -21,10 +21,28 @@ class BackupController extends BaseController
             require_once __DIR__ . '/../config.php';
         }
         
-        $this->backupDir = __DIR__ . '/../../public/backups/';
+        $this->backupDir = SIBER_ROOT . '/backups/';
         if (!is_dir($this->backupDir)) {
-            mkdir($this->backupDir, 0777, true);
+            @mkdir($this->backupDir, 0750, true);
         }
+        if (!is_file($this->backupDir . '.htaccess')) {
+            @file_put_contents($this->backupDir . '.htaccess', "Require all denied\nDeny from all\n");
+        }
+    }
+
+    /** Cek berkas benar-benar berada di folder backup dan berakhiran .sql */
+    private function resolveBackupPath(string $file): ?string
+    {
+        $name = basename($file);
+        if ($name === '' || strtolower(pathinfo($name, PATHINFO_EXTENSION)) !== 'sql') {
+            return null;
+        }
+        $path = realpath($this->backupDir . $name);
+        $base = realpath($this->backupDir);
+        if ($path === false || $base === false || !str_starts_with($path, $base . DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+        return $path;
     }
 
     /**
@@ -85,6 +103,7 @@ class BackupController extends BaseController
      */
     public function createBackup()
     {
+        sec_require_level(1, 'Hanya administrator yang dapat membuat backup.');
         $filename = "backup_siber_" . date("Ymd_His") . ".sql";
         $sqlScript = $this->exportDb();
 
@@ -138,9 +157,11 @@ class BackupController extends BaseController
      */
     public function autoBackup()
     {
-        // Pengecekan token keamanan sederhana
-        $token = $_GET['token'] ?? '';
-        if ($token !== GOOGLE_DRIVE_SECRET_KEY) {
+        // Token backup: pakai konstanta khusus bila tersedia.
+        $expected = defined('BACKUP_CRON_TOKEN') ? (string) BACKUP_CRON_TOKEN : (string) GOOGLE_DRIVE_SECRET_KEY;
+        $token = isset($_GET['token']) && is_string($_GET['token']) ? $_GET['token'] : '';
+        if ($expected === '' || !hash_equals($expected, $token)) {
+            http_response_code(403);
             die(json_encode(['status' => 'error', 'message' => 'Token tidak valid']));
         }
 
@@ -189,10 +210,11 @@ class BackupController extends BaseController
      */
     public function downloadBackup()
     {
-        $file = $_GET['file'] ?? '';
-        $filePath = $this->backupDir . basename($file);
+        sec_require_level(1, 'Hanya administrator yang dapat mengunduh backup.');
+        $file = isset($_GET['file']) && is_string($_GET['file']) ? $_GET['file'] : '';
+        $filePath = $this->resolveBackupPath($file);
 
-        if ($file && file_exists($filePath)) {
+        if ($filePath !== null) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/sql');
             header('Content-Disposition: attachment; filename="' . basename($file) . '"');
@@ -213,10 +235,11 @@ class BackupController extends BaseController
      */
     public function deleteBackup()
     {
-        $file = $_GET['file'] ?? '';
-        $filePath = $this->backupDir . basename($file);
+        sec_require_level(1, 'Hanya administrator yang dapat menghapus backup.');
+        $file = isset($_GET['file']) && is_string($_GET['file']) ? $_GET['file'] : '';
+        $filePath = $this->resolveBackupPath($file);
 
-        if ($file && file_exists($filePath)) {
+        if ($filePath !== null) {
             unlink($filePath);
             echo "<script>alert('File backup berhasil dihapus.'); window.location.href='?controller=setting&method=index';</script>";
         } else {
@@ -230,6 +253,7 @@ class BackupController extends BaseController
      */
     public function restore()
     {
+        sec_require_level(1, 'Hanya administrator yang dapat melakukan restore database.');
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['backup_file'])) {
             $file = $_FILES['backup_file'];
             
@@ -256,8 +280,8 @@ class BackupController extends BaseController
                 $this->db->exec($sqlContent);
                 echo "<script>alert('Database berhasil direstore!'); window.location.href='?controller=setting&method=index';</script>";
             } catch (PDOException $e) {
-                $errorMsg = addslashes($e->getMessage());
-                echo "<script>alert('Gagal restore database: $errorMsg'); window.location.href='?controller=setting&method=index';</script>";
+                error_log('[SIBER restore] ' . $e->getMessage());
+                echo "<script>alert('Gagal restore database. Periksa format berkas lalu coba lagi.'); window.location.href='?controller=setting&method=index';</script>";
             }
         } else {
             header('Location: ?controller=setting&method=index');

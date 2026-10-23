@@ -76,14 +76,18 @@ class KonselingController extends BaseController
     {
         $bukti = null;
         if (!empty($_FILES['bukti_fisik']['name'])) {
-            $bukti = time() . '_' . basename($_FILES['bukti_fisik']['name']);
-            move_uploaded_file($_FILES['bukti_fisik']['tmp_name'], "uploads/konseling/$bukti");
+            $bukti = Upload::store($_FILES['bukti_fisik'], 'konseling', array_merge(Upload::IMAGE, Upload::DOC), 'BUKTI');
+            if ($bukti === null) {
+                setFlash('error', 'Bukti fisik tidak dapat diunggah. Gunakan gambar atau PDF/DOC maksimal 8 MB.');
+            }
         }
 
         $doc = null;
         if (!empty($_FILES['dokumen']['name'])) {
-            $doc = time() . '_' . basename($_FILES['dokumen']['name']);
-            move_uploaded_file($_FILES['dokumen']['tmp_name'], "uploads/konseling/$doc");
+            $doc = Upload::store($_FILES['dokumen'], 'konseling', array_merge(Upload::IMAGE, Upload::DOC), 'DOK');
+            if ($doc === null) {
+                setFlash('error', 'Dokumen tidak dapat diunggah. Gunakan gambar atau PDF/DOC maksimal 8 MB.');
+            }
         }
 
         $id_employee = implode(',', $_POST['id_employee']);

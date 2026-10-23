@@ -1,50 +1,53 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-$session_path = dirname(__DIR__) . '/sessions';
-ini_set('session.save_path', $session_path);
+/**
+ * Front controller SIBER.
+ * Menangani: sesi aman, header keamanan, CSRF, otorisasi per controller, routing.
+ */
 
-// Mulai session SETELAH path diatur
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-// ✅ TAMBAHKAN BARIS INI
-// die("REQUEST MASUK DENGAN ID SESSION: " . session_id());
-// echo "<pre style='color:blue;padding:20px;'>DEBUG SESSION INDEX:\n";
-// print_r($_SESSION);
-// // echo "</pre>";
-// ini_set('display_errors', 1);
-// error_reporting(E_ALL);
+require_once __DIR__ . '/../app/helpers/Security.php';
 
-// ✅ PERBAIKAN: Panggil file database.php di sini agar class "Database" dikenali
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+
+sec_session_start();
+sec_send_headers();
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../app/helpers/LevelHelper.php';
-require_once __DIR__ . '/../app/helpers/ActivityLogHelper.php'; // ✅ pencatat aktivitas
-log_message("--- REQUEST BARU MASUK ---"); // ✅ JEJAK 1
-// Daftar controller-method yang bebas akses
+require_once __DIR__ . '/../app/helpers/ActivityLogHelper.php';
+require_once __DIR__ . '/../app/helpers/Upload.php';
+
+// Daftar controller-method yang bebas akses (token tetap dicek di dalamnya).
 $freeAccess = [
-    'auth' => ['login', 'logout'],
-    'backup' => ['autoBackup'], // Bebas akses untuk Cron, pengecekan pakai TOKEN
+    'auth'   => ['login', 'logout'],
+    'backup' => ['autoBackup'],
 ];
 
-// Tangkap controller dan method
-$controller = $_GET['controller'] ?? 'auth';
-$method     = $_GET['method'] ?? 'login';
+$controller = (string) ($_GET['controller'] ?? 'auth');
+$method     = (string) ($_GET['method'] ?? 'login');
 
-// Middleware: Cek apakah halaman butuh login
-$isProtectedPage = !isset($freeAccess[$controller]) || !in_array($method, $freeAccess[$controller]);
+if (!preg_match('/^[A-Za-z][A-Za-z0-9_]{0,59}$/', $controller) || !preg_match('/^[A-Za-z][A-Za-z0-9_]{0,59}$/', $method)) {
+    http_response_code(400);
+    echo '<div style="font-family:sans-serif;padding:24px">Permintaan tidak valid.</div>';
+    exit;
+}
 
-
-// Jika halaman butuh login DAN user belum login, redirect
+$isProtectedPage = !isset($freeAccess[$controller]) || !in_array($method, $freeAccess[$controller], true);
 if ($isProtectedPage && !isset($_SESSION['user'])) {
-    log_message("Middleware: Akses ditolak. Redirect ke login."); // ✅ JEJAK 2
     header('Location: index.php?controller=auth&method=login');
     exit;
 }
 
+// CSRF: berlaku untuk semua POST yang masuk lewat router.
+if ($isProtectedPage || $controller === 'auth') {
+    sec_csrf_require();
+}
+
 spl_autoload_register(function ($class) {
     $file = __DIR__ . "/../app/controllers/{$class}.php";
-    if (file_exists($file)) {
+    if (is_file($file)) {
         require_once $file;
     }
 });
@@ -52,28 +55,42 @@ spl_autoload_register(function ($class) {
 $controllerName = ucfirst($controller) . 'Controller';
 
 try {
-    // Buat koneksi database
     $database = new Database();
     $pdo = $database->getConnection();
 
-    // ✅ ACTIVITY LOG: catat SETELAH request selesai (shutdown) supaya tetap
-    // tercatat walaupun controller melakukan redirect/exit.
     register_shutdown_function(function () use ($pdo, $controller, $method) {
         activityLogCatat($pdo, $controller, $method);
     });
 
-    if (class_exists($controllerName)) {
-        // Sekarang $pdo sudah ada isinya saat dikirim ke controller
-        $object = new $controllerName($pdo);
-
-        if (method_exists($object, $method)) {
-            $object->$method();
-        } else {
-            throw new Exception("Method <b>{$method}</b> tidak ditemukan di controller <b>{$controllerName}</b>.");
-        }
-    } else {
-        throw new Exception("Controller <b>{$controllerName}</b> tidak ditemukan.");
+    if (!class_exists($controllerName)) {
+        throw new RuntimeException('Halaman tidak ditemukan.');
     }
-} catch (Exception $e) {
-    echo "<div style='padding:20px; font-family:sans-serif; color:red;'>" . $e->getMessage() . "</div>";
+
+    if (str_starts_with($method, '_')
+        || in_array(strtolower($method), ['__construct', '__destruct', '__call', '__invoke'], true)
+        || !method_exists($controllerName, $method)) {
+        throw new RuntimeException('Halaman tidak ditemukan.');
+    }
+
+    // Otorisasi terpusat SEBELUM controller dibuat, agar konstruktor yang
+    // melakukan redirect/query tidak sempat berjalan untuk peran yang salah.
+    if ($isProtectedPage) {
+        sec_enforce_policy($controller, $method);
+
+        // Aksi destruktif via GET wajib berasal dari aplikasi ini (anti-CSRF tautan).
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET'
+            && preg_match('/^(hapus|delete|restore|activate|aktifkan|reset)/i', $method)) {
+            sec_require_same_origin();
+        }
+    }
+
+    $object = new $controllerName($pdo);
+    $object->$method();
+} catch (Throwable $e) {
+    error_log('[SIBER] ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . ($e->getFile() ?: '?') . ':' . $e->getLine());
+    http_response_code(500);
+    echo '<div style="padding:20px;font-family:sans-serif;color:#c0392b;max-width:560px;margin:auto">'
+        . '<h3>Terjadi kesalahan</h3>'
+        . '<p>Permintaan tidak dapat diproses. Silakan coba lagi atau hubungi administrator.</p>'
+        . '<p><a href="index.php?controller=dashboard&amp;method=index">Kembali ke Beranda</a></p></div>';
 }

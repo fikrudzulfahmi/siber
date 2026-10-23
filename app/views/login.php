@@ -173,6 +173,7 @@
         <?php endif; ?>
 
         <form method="POST" action="?controller=auth&method=login">
+          <?= sec_csrf_field() ?>
           <div class="mb-3">
             <div class="input-group">
               <span class="input-group-text">

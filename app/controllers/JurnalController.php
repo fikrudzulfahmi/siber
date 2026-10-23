@@ -186,6 +186,19 @@ class JurnalController
 
         $model = new Jurnal($this->db);
         $jurnal = $model->findById($id);
+        $cekPemilikEdit = function ($idJurnal) {
+            if (sec_has_level(1)) {
+                return;
+            }
+            $stmt = $this->db->prepare("SELECT mg.id_guru FROM jurnal j JOIN mapel_guru mg ON j.id_mapel_guru = mg.id_mapel_guru WHERE j.id_jurnal = ?");
+            $stmt->execute([$idJurnal]);
+            $ownerId = $stmt->fetchColumn();
+            $userId = $_SESSION['user']['id'] ?? null;
+            if (!$ownerId || !$userId || (int) $ownerId !== (int) $userId) {
+                sec_require_level(1, 'Anda tidak memiliki hak akses untuk mengubah jurnal ini.');
+            }
+        };
+        $cekPemilikEdit($id);
 
         if (!$jurnal) {
             header('Location: ?controller=jurnal&method=history');
@@ -214,7 +227,20 @@ class JurnalController
 
     public function update()
     {
+        $cekPemilik = function ($idJurnal) {
+            if (sec_has_level(1)) {
+                return;
+            }
+            $stmt = $this->db->prepare("SELECT mg.id_guru FROM jurnal j JOIN mapel_guru mg ON j.id_mapel_guru = mg.id_mapel_guru WHERE j.id_jurnal = ?");
+            $stmt->execute([$idJurnal]);
+            $ownerId = $stmt->fetchColumn();
+            $userId = $_SESSION['user']['id'] ?? null;
+            if (!$ownerId || !$userId || (int) $ownerId !== (int) $userId) {
+                sec_require_level(1, 'Anda tidak memiliki hak akses untuk mengubah jurnal ini.');
+            }
+        };
         $data = $_POST;
+        $cekPemilik($data['id_jurnal'] ?? ($data['id'] ?? null));
         $model = new Jurnal($this->db);
         $model->update($data);
         setFlash('success', 'Jurnal berhasil diperbarui.');
@@ -298,6 +324,18 @@ class JurnalController
 
     public function hapus()
     {
+        $id = $_GET['id'] ?? null;
+        if (!sec_has_level(1)) {
+            $stmt = $this->db->prepare("SELECT mg.id_guru FROM jurnal j JOIN mapel_guru mg ON j.id_mapel_guru = mg.id_mapel_guru WHERE j.id_jurnal = ?");
+            $stmt->execute([$id]);
+            $ownerId = $stmt->fetchColumn();
+
+            $userId = $_SESSION['user']['id'] ?? null;
+            if (!$ownerId || !$userId || (int)$ownerId !== (int)$userId) {
+                sec_require_level(1, 'Anda tidak memiliki hak akses untuk menghapus jurnal ini.');
+            }
+        }
+
         $model = new Jurnal($this->db);
         $model->delete($_GET['id']);
         setFlash('success', 'Jurnal berhasil dihapus.');

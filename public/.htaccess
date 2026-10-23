@@ -4,3 +4,36 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^ index.php [L]
+
+# ---------------------------------------------------------------------------
+# Pengerasan dasar (kompatibel Apache 2.4 & LiteSpeed)
+# ---------------------------------------------------------------------------
+Options -Indexes
+
+# Jangan pernah menyajikan berkas konfigurasi, dump, template, atau log.
+<FilesMatch "\.(template|sql|log|ini|bak|old|orig|sh|yml|yaml|env|dist|lock|gitignore|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(debug|debug_log|cron_log|terlambat_log|test_terlambat_log|reminder_log|rekap_walas_log|rekap_terlambat_log)\.txt$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^\.(git|env|htaccess|htpasswd)">
+    Require all denied
+</FilesMatch>
+
+# Folder internal tidak boleh diakses lewat web.
+RewriteRule ^(sessions|backups|storage|config|app)(/|$) - [F,L,NC]
+
+# Tidak ada eksekusi skrip di folder unggahan.
+RewriteRule ^uploads/.*\.(php[0-9]?|phtml|phar|pht|cgi|pl|py|sh|asp|aspx|jsp)$ - [F,L,NC]
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
