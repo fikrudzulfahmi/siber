@@ -93,7 +93,7 @@
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm"><?= sec_e($set['keterangan']) ?></h6>
-                                                    <p class="text-xs text-secondary mb-0">Otomatisasi pengiriman pesan via Fonnte</p>
+                                                    <p class="text-xs text-secondary mb-0">Otomatisasi pengiriman pesan via gateway WhatsApp sekolah</p>
                                                 </div>
                                             </div>
                                         </td>

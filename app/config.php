@@ -8,10 +8,8 @@ if (is_file(__DIR__ . '/secrets.php')) {
     require_once dirname(__DIR__) . '/config/secrets.php';
 }
 
-// Konfigurasi API Fonnte
-if (!defined('FONNTE_TOKEN')) {
-    define('FONNTE_TOKEN', '');
-}
+// Catatan: notifikasi WhatsApp TIDAK lagi memakai Fonnte. Semua pesan masuk ke
+// tabel outbox_wa lalu ditarik oleh gateway WA lokal (public/wa-gateway/).
 
 // Nomor WhatsApp Tujuan Notifikasi
 if (!defined('WHATSAPP_RECIPIENTS')) {

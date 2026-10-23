@@ -79,13 +79,26 @@ if (!function_exists('wa_enqueue')) {
 
         if (empty($opsi['izinkan_dobel'])) {
             try {
+                // Batas "hari ini" harus memakai jam DATABASE, bukan jam PHP.
+                // Di hosting MySQL sering berjalan UTC sementara PHP disetel WIB;
+                // kalau dicampur, baris yang baru dibuat terlihat "kemarin" dan
+                // pemeriksaan anti-dobel tidak pernah menemukan apa pun.
+                $cutoff = date('Y-m-d 00:00:00');
+                try {
+                    $jamDb  = (string) $pdo->query('SELECT NOW()')->fetchColumn();
+                    $selisih = strtotime($jamDb . ' UTC') - time();       // detik: jam DB - jam nyata
+                    $cutoff = gmdate('Y-m-d H:i:s', strtotime($cutoff) + $selisih);
+                } catch (Throwable $e) {
+                    // gagal baca jam DB -> pakai jam PHP apa adanya
+                }
+
                 $cek = $pdo->prepare(
                     "SELECT id FROM outbox_wa
                       WHERE nomor = ? AND pesan = ? AND status IN ('pending','in_queue','sent')
                         AND created_at >= ?
                       LIMIT 1"
                 );
-                $cek->execute([$nomor, $pesan, date('Y-m-d 00:00:00')]);
+                $cek->execute([$nomor, $pesan, $cutoff]);
                 $sudahAda = $cek->fetchColumn();
                 if ($sudahAda !== false && $sudahAda !== null) {
                     return [

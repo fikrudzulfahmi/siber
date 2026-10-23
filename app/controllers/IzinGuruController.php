@@ -149,21 +149,31 @@ class IzinGuruController extends BaseController
         exit();
     }
 
+    /**
+     * Antrekan notifikasi WhatsApp ke tabel outbox_wa.
+     *
+     * Sejak aplikasi berhenti memakai Fonnte, pengiriman TIDAK lagi dilakukan
+     * langsung dari hosting. Pesan hanya disimpan sebagai status 'pending',
+     * lalu ditarik oleh gateway WA lokal (mode PULL) lewat
+     * /wa-gateway/jobs.php. Jalur ini sama dengan yang dipakai berkas cronjob,
+     * sehingga status antrean bisa dipantau di satu tempat.
+     *
+     * @param string|array $target satu nomor atau daftar nomor (WHATSAPP_RECIPIENTS)
+     */
     private function _sendWhatsAppNotification($target, $message)
     {
+        require_once __DIR__ . '/../../public/cron_jobs/_wa_outbox.php';
+
         $targets = is_array($target) ? $target : [$target];
 
         foreach ($targets as $nomor) {
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => 'https://api.fonnte.com/send',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => ['target' => $nomor, 'message' => $message],
-                CURLOPT_HTTPHEADER => ["Authorization: " . FONNTE_TOKEN], // 🔧 Menggunakan konstanta dari config
-            ]);
-            curl_exec($curl);
-            curl_close($curl);
+            $hasil = wa_enqueue($this->db, (string) $nomor, (string) $message);
+
+            if (!$hasil['ok'] && empty($hasil['duplikat'])) {
+                // Nomor tidak valid / antrean bermasalah: catat ke log, jangan
+                // sampai pengajuan izin gagal hanya karena notifikasi.
+                error_log('[WA-IZIN] gagal antre ke ' . $hasil['nomor'] . ': ' . $hasil['error']);
+            }
         }
     }
 

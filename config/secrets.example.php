@@ -18,6 +18,9 @@
  *  PENTING:
  *   - File ini TIDAK boleh di-commit ke Git (sudah masuk .gitignore).
  *   - File ini TIDAK boleh diletakkan di dalam folder public/.
+ *   - Tidak ada token Fonnte di sini: notifikasi WhatsApp dikirim oleh gateway
+ *     lokal (public/wa-gateway/) yang menarik tabel outbox_wa. Kredensial
+ *     gateway disimpan di config/wa_gateway.php (di luar public/).
  *   - CRON_KEY harus SAMA PERSIS dengan kunci di URL cron cPanel.
  *     Kalau diganti, semua cron akan balas 403 dan WA berhenti terkirim.
  *   - API_DEVICE_KEY sengaja dikosongkan: selama kosong, mesin presensi
@@ -26,14 +29,9 @@
  */
 
 // ---------------------------------------------------------------------------
-// 1. WhatsApp (Fonnte) — ambil dari dashboard fonnte.com → Device → Token
-// ---------------------------------------------------------------------------
-if (!defined('FONNTE_TOKEN')) {
-    define('FONNTE_TOKEN', 'ISI_TOKEN_FONNTE');
-}
-
-// ---------------------------------------------------------------------------
-// 2. Google Drive / Apps Script (dipakai fitur backup otomatis)
+// 1. Google Drive / Apps Script (dipakai tombol Backup + cron auto backup)
+//    GOOGLE_DRIVE_SECRET_KEY juga menjadi token URL cron autoBackup:
+//      ?controller=backup&method=autoBackup&token=<GOOGLE_DRIVE_SECRET_KEY>
 //    Kalau fitur ini tidak dipakai, biarkan apa adanya — tidak menggagalkan app.
 // ---------------------------------------------------------------------------
 if (!defined('GOOGLE_DRIVE_WEBHOOK_URL')) {
@@ -47,7 +45,7 @@ if (!defined('GOOGLE_DRIVE_FOLDER_ID')) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Kunci cron — HARUS sama dengan yang sudah terpasang di cPanel → Cron Jobs
+// 2. Kunci cron — HARUS sama dengan yang sudah terpasang di cPanel → Cron Jobs
 //    (lihat URL: .../cron_jobs/reminder.php?key=XXXXXXXX)
 //    Salin nilai lama dari app/config.php sebelum git pull.
 // ---------------------------------------------------------------------------
@@ -56,14 +54,14 @@ if (!defined('CRON_KEY')) {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Kunci API mesin presensi (OPSIONAL — kosongkan saat deploy pertama)
+// 3. Kunci API mesin presensi (OPSIONAL — kosongkan saat deploy pertama)
 // ---------------------------------------------------------------------------
 if (!defined('API_DEVICE_KEY')) {
     define('API_DEVICE_KEY', '');
 }
 
 // ---------------------------------------------------------------------------
-// 5. Database MySQL (cPanel → MySQL Databases)
+// 4. Database MySQL (cPanel → MySQL Databases)
 //    Host hampir selalu 'localhost' di shared hosting. Port kosongkan.
 // ---------------------------------------------------------------------------
 if (!defined('SIBER_DB_HOST')) {
@@ -100,7 +98,6 @@ if (PHP_SAPI === 'cli'
     && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
 
     $daftar = [
-        'FONNTE_TOKEN'            => 'Token WhatsApp Fonnte',
         'CRON_KEY'                => 'Kunci cron (sama dengan URL panel)',
         'SIBER_DB_HOST'           => 'Host database',
         'SIBER_DB_NAME'           => 'Nama database',

@@ -116,12 +116,10 @@ class BackupController extends BaseController
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
         
-        // Ambil Folder ID langsung dari config.php untuk menghindari cache
-        $folderId = '';
-        $cfgPath = __DIR__ . '/../config.php';
-        if (file_exists($cfgPath) && preg_match("/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'(.*?)'\);/", file_get_contents($cfgPath), $m)) {
-            $folderId = $m[1];
-        }
+        // Folder ID dibaca dari konstanta (config/secrets.php atau app/config.php).
+        // Dulu nilainya dipanen dengan regex dari app/config.php; cara itu tidak
+        // menemukan apa pun setelah kredensial pindah ke config/secrets.php.
+        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? (string) GOOGLE_DRIVE_FOLDER_ID : '';
 
         $postData = http_build_query([
             'secret' => $secretKey,
@@ -177,12 +175,10 @@ class BackupController extends BaseController
         $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
         $secretKey = GOOGLE_DRIVE_SECRET_KEY;
         
-        // Ambil Folder ID langsung dari config.php untuk menghindari cache
-        $folderId = '';
-        $cfgPath = __DIR__ . '/../config.php';
-        if (file_exists($cfgPath) && preg_match("/define\('GOOGLE_DRIVE_FOLDER_ID',\s*'(.*?)'\);/", file_get_contents($cfgPath), $m)) {
-            $folderId = $m[1];
-        }
+        // Folder ID dibaca dari konstanta (config/secrets.php atau app/config.php).
+        // Dulu nilainya dipanen dengan regex dari app/config.php; cara itu tidak
+        // menemukan apa pun setelah kredensial pindah ke config/secrets.php.
+        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? (string) GOOGLE_DRIVE_FOLDER_ID : '';
 
         $postData = http_build_query([
             'secret' => $secretKey,
@@ -191,14 +187,38 @@ class BackupController extends BaseController
             'file_base64' => $base64Data
         ]);
 
+        if ($webhookUrl === '') {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'GOOGLE_DRIVE_WEBHOOK_URL belum diisi di config/secrets.php',
+            ]);
+            exit;
+        }
+
         $ch = curl_init($webhookUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
         $response = curl_exec($ch);
+        $errno    = curl_errno($ch);
         curl_close($ch);
+
+        if ($errno !== 0) {
+            error_log('[BACKUP] upload Drive gagal (curl errno ' . $errno . '), file lokal sudah tersimpan: ' . $filePath);
+            http_response_code(502);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Upload ke Google Drive gagal, backup lokal sudah tersimpan.',
+                'file'    => $filename,
+            ]);
+            exit;
+        }
 
         header('Content-Type: application/json');
         echo $response;

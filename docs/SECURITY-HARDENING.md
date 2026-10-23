@@ -42,7 +42,7 @@ akses, memvalidasi input, dan menyimpan berkas.
 1. Backup: dump database + salin seluruh `public/` dan `app/` ke folder bertanggal.
 2. Pastikan `mysqldump` tersedia bagi user PHP (`which mysqldump`).
 3. Siapkan `config/secrets.php` di server (di luar `public/`), isi:
-   `FONNTE_TOKEN`, `GOOGLE_DRIVE_*`, `CRON_KEY`, `API_DEVICE_KEY`, dan `SIBER_DB_HOST/PORT/NAME/USERNAME/PASSWORD`.
+   `GOOGLE_DRIVE_*`, `CRON_KEY`, `API_DEVICE_KEY`, dan `SIBER_DB_HOST/PORT/NAME/USERNAME/PASSWORD` (Fonnte sudah tidak dipakai; WA lewat gateway lokal).
    Tanpa berkas ini aplikasi berhenti dengan pesan "Koneksi database gagal" — jadi unggah
    `config/secrets.php` **sebelum** `config/database.php`.
 4. Catat nilai `CRON_KEY` lama untuk membandingkan dengan URL cron yang terpasang.
