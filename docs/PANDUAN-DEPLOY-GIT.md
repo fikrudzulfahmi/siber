@@ -464,18 +464,23 @@ Notifikasi izin (pengajuan, disetujui, ditolak) memakai jalur yang sama dengan c
 Mulai commit ini, menu **Layanan Rapor** terbuka untuk tiga role:
 
 - **Admin** (level 1) dan **Waka Kurikulum** (level 5): bisa memilih kelas mana pun
-  lewat dropdown di kanan atas kartu, lalu melihat nilai, progres mapel, menginput,
-  dan mencetak rapor siswa di kelas tersebut.
-- **Walikelas** (level 3): tetap hanya kelas yang diampu, tanpa dropdown kelas.
+  lewat dropdown di kanan atas kartu, lalu **hanya melihat** nilai, progres mapel,
+  dan detail rapor siswa, serta mencetak rapor/peringkat.
+- **Walikelas** (level 3): tetap hanya kelas yang diampu, dan satu-satunya yang bisa
+  **menginput/mengubah** rapor.
 
 Yang dijaga:
 
-- Guru/walikelas yang membuka `edit_rapor`, `cetak`, `cetak_peringkat`, atau
-  `detail_progres` untuk siswa di kelas lain akan mendapat **403 Akses ditolak**.
+- Tombol **Simpan** dan kolom isian tidak muncul untuk admin/waka; semua field tampil
+  `disabled` dan ada label "Mode hanya lihat". Membuka siswa yang belum punya baris
+  rapor pun tidak membuat baris baru.
+- POST ke `update_terpadu` dari akun admin/waka ditolak **403** walau token CSRF valid,
+  jadi tetap aman meski URL/form dipalsukan.
+- Walas yang membuka `edit_rapor`, `cetak`, `cetak_peringkat`, atau `detail_progres`
+  untuk siswa di kelas lain mendapat **403 Akses ditolak**.
 - Daftar kelas di dropdown hanya kelas yang punya siswa aktif pada tahun pelajaran
   rapor yang sedang aktif, jadi kelas kosong/arsip tidak muncul.
-- Setelah menyimpan rapor, pengawas dikembalikan ke kelas yang tadi dibuka
-  (`&id_kelas=`), bukan ke kelas pertama.
+- Setelah menyimpan, walikelas dikembalikan ke kelas yang tadi dibuka (`&id_kelas=`).
 
 Deploy: cukup `git pull origin main` di folder aplikasi. Tidak ada tabel/kolom baru.
 Uji cepat: login sebagai waka kurikulum -> Layanan Rapor -> ganti kelas di dropdown ->
