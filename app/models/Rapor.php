@@ -99,6 +99,7 @@ class Rapor
                 LEFT JOIN kategori_nilai kn ON kn.id_mapel_guru = mg.id_mapel_guru
                 LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = s.id_siswa
                 WHERE ps.id_kelas = ? 
+                  AND ps.id_tahun = ? 
                   AND mg.id_tahun_pelajaran = ? 
                   AND " . siswa_aktif_sql('s') . "
                   AND m.nama_mapel != 'BIMBINGAN KONSELING'
@@ -108,7 +109,7 @@ class Rapor
             ORDER BY total_nilai DESC";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_kelas, $id_tahun]);
+        $stmt->execute([$id_kelas, $id_tahun, $id_tahun]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
