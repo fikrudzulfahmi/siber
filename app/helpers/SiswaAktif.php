@@ -16,7 +16,9 @@ if (!defined('SISWA_STATUS_NONAKTIF')) {
     // Status (lowercase) yang berarti siswa sudah tidak aktif di kelas.
     // Termasuk alasan yang dipakai menu PD Keluar: 'mengundurkan diri' dan
     // 'meninggal' — tanpa keduanya, siswa tersebut tetap tampil di daftar nilai.
-    define('SISWA_STATUS_NONAKTIF', ['lulus', 'keluar', 'pindah', 'mutasi', 'berhenti', 'drop out', 'mengundurkan diri', 'meninggal']);
+    // 'nonaktif' dipakai untuk record duplikat yang sudah digabungkan ke record
+    // asli oleh scripts/merge_siswa.php, dan harus hilang dari semua daftar.
+    define('SISWA_STATUS_NONAKTIF', ['lulus', 'keluar', 'pindah', 'mutasi', 'berhenti', 'drop out', 'mengundurkan diri', 'meninggal', 'nonaktif']);
 }
 
 if (!function_exists('siswa_aktif_sql')) {

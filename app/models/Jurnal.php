@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 class Jurnal
 {
     private $db;
@@ -43,12 +45,14 @@ class Jurnal
     public function getSiswaByKelas($id_kelas, $id_tahun)
     {
         $stmt = $this->db->prepare("
-            SELECT s.id_siswa, s.nama_siswa 
+            SELECT s.id_siswa, s.nama_siswa
             FROM ploting_siswa ps
             JOIN siswa s ON ps.id_siswa = s.id_siswa
-            WHERE ps.id_kelas = ? 
+            WHERE ps.id_kelas = ?
               AND ps.id_tahun = ?
               AND s.status = 'Aktif'
+              AND " . siswa_aktif_sql('s') . "
+            GROUP BY s.id_siswa, s.nama_siswa
             ORDER BY s.nama_siswa ASC
         ");
         $stmt->execute([$id_kelas, $id_tahun]);

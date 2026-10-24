@@ -380,6 +380,43 @@ phpMyAdmin sekali saja.
 > Jangan pakai tombol hapus (ikon tempat sampah) untuk siswa yang keluar — tombol itu
 > menghapus data siswa. Pakai **PD Keluar** supaya riwayat dan nilai tetap tersimpan.
 
+## 14. Menggabungkan siswa yang tercatat dua kali (5 menit)
+
+Gejala: satu nama muncul dua kali di daftar absensi jurnal, daftar nilai, atau rapor,
+padahal plotting-nya hanya satu. Penyebabnya record `siswa` dobel (biasanya impor ulang
+atau entri manual dengan NISN placeholder seperti `1111111111`).
+
+Cek dulu, jangan langsung hapus:
+
+```sql
+SELECT s.id_siswa, s.nama_siswa, s.nisn, s.status, s.status_siswa,
+  (SELECT COUNT(*) FROM nilai n WHERE n.id_siswa = s.id_siswa) AS nilai,
+  (SELECT COUNT(*) FROM jurnal_kehadiran j WHERE j.id_siswa = s.id_siswa) AS absensi,
+  (SELECT COUNT(*) FROM ploting_siswa p WHERE p.id_siswa = s.id_siswa) AS plotting
+FROM siswa s
+WHERE s.nama_siswa LIKE '%NAMA SISWA%';
+```
+
+Record dengan NISN asli dan riwayat terbanyak = yang **dipertahankan**.
+
+```bash
+cd ~/domains/pondokminggirsari.com/public_html/subdomain/siber
+php scripts/merge_siswa.php --dari=ID_DUPLIKAT --ke=ID_DIPERTAHANKAN            # pratinjau
+php scripts/merge_siswa.php --dari=ID_DUPLIKAT --ke=ID_DIPERTAHANKAN --apply    # eksekusi
+```
+
+Skrip memindahkan nilai, absensi, izin, konseling, rapor, keanggotaan ekstra/prestasi,
+membuang plotting ganda, lalu menandai record duplikat `status = 'Nonaktif'` dan
+`status_siswa = 'nonaktif'` (tidak dihapus, masih bisa diaudit). Kalau ada nilai untuk
+kategori yang sama di kedua record, skrip **berhenti** dan tidak mengubah apa pun —
+kasus itu harus diputuskan manual.
+
+Backup dulu sebelum `--apply`:
+
+```bash
+php public/index.php 2>/dev/null; echo "atau lewat tombol Backup di aplikasi"
+```
+
 ## Lampiran A — Perintah harian
 
 ```bash
