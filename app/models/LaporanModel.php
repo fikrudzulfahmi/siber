@@ -15,10 +15,16 @@ class LaporanModel
         $params = [];
         $whereClause = " WHERE e.id_level != 4 ";
 
-        // Kita gunakan variabel untuk filter tahun di dalam LEFT JOIN kn
+        // Filter tahun pada mapel_guru: tabel `kelas` tidak menyimpan tahun,
+        // jadi tahun pelajaran ditentukan oleh baris mapel_guru. Tanpa filter ini
+        // kelas semester/tahun lalu (mis. IX A-D yang siswanya sudah lulus)
+        // tetap muncul di daftar mapel-kelas.
+        $filterTahunMG = "";
         $filterTahunKN = "";
         if (!empty($id_tahun)) {
-            // Hanya ambil kategori yang tahunnya sesuai pilihan
+            $filterTahunMG = " AND mg.id_tahun_pelajaran = ? ";
+            $params[] = $id_tahun;
+            // Kategori otomatis ikut tahun yang sama dengan mapel_guru
             $filterTahunKN = " AND mg.id_tahun_pelajaran = ? ";
             $params[] = $id_tahun;
         }
@@ -27,12 +33,15 @@ class LaporanModel
     SELECT 
         e.id_employe, e.nama AS nama_guru,
         mg.id_mapel_guru, m.nama_mapel, k.kelas,
+        mg.id_tahun_pelajaran AS id_tahun_mapel,
+        tp.tahun_pelajaran AS label_tahun_ajaran, tp.semester AS label_semester,
         kn.id_kategori, kn.kategori
     FROM employe e
-    -- 1. Ambil SEMUA jadwal guru tanpa filter tahun di sini agar mapel selalu muncul
-    LEFT JOIN mapel_guru mg ON e.id_employe = mg.id_guru 
+    -- 1. Ambil mapel-kelas sesuai tahun pilihan (kosong = arsip semua tahun)
+    LEFT JOIN mapel_guru mg ON e.id_employe = mg.id_guru $filterTahunMG
     LEFT JOIN mapel m ON mg.id_mapel = m.id_mapel
     LEFT JOIN kelas k ON mg.id_kelas = k.id_kelas
+    LEFT JOIN tahun_pelajaran tp ON tp.id_tahun_pelajaran = mg.id_tahun_pelajaran
     -- 2. Ambil kategori HANYA yang sesuai tahun pilihan
     LEFT JOIN kategori_nilai kn ON mg.id_mapel_guru = kn.id_mapel_guru $filterTahunKN
     $whereClause
@@ -55,15 +64,17 @@ class LaporanModel
             }
 
             if (!empty($row['id_mapel_guru'])) {
-                // Gunakan Nama Mapel + Kelas sebagai Key Unik (Deduplication)
-                // Ini supaya jika di mapel_guru ada baris dobel semester 1 & 2, dia jadi 1 baris saja
-                $mapel_key = $row['nama_mapel'] . ' - ' . $row['kelas'];
+                // Key unik = mapel + kelas + tahun pelajaran. Tahun ikut key supaya
+                // kelas dengan nama sama di dua tahun tidak menyatu jadi satu baris.
+                $label_tahun = trim(($row['label_tahun_ajaran'] ?? '') . ' - ' . ($row['label_semester'] ?? ''), ' -');
+                $mapel_key = $row['nama_mapel'] . ' - ' . $row['kelas'] . ' #' . (int) $row['id_tahun_mapel'];
 
                 if (!isset($data_nested[$id_guru]['mapel_list'][$mapel_key])) {
                     $data_nested[$id_guru]['mapel_list'][$mapel_key] = [
                         'id_mapel_guru' => $row['id_mapel_guru'],
                         'nama_mapel' => $row['nama_mapel'],
                         'kelas' => $row['kelas'],
+                        'label_tahun' => $label_tahun,
                         'kategori_list' => []
                     ];
                 }
@@ -77,6 +88,17 @@ class LaporanModel
                 }
             }
         }
+
+        // Saat tahun tertentu dipilih, guru tanpa mapel di tahun itu tidak perlu
+        // tampil sebagai akordeon kosong.
+        if (!empty($id_tahun)) {
+            foreach ($data_nested as $id_guru => $guru) {
+                if (empty($guru['mapel_list'])) {
+                    unset($data_nested[$id_guru]);
+                }
+            }
+        }
+
         return $data_nested;
     }
     public function getNilaiByKategori($id_kategori)

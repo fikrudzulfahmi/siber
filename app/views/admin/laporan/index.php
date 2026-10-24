@@ -44,7 +44,7 @@
                             <div class="input-group input-group-static">
                                 <label for="id_tahun" class="ms-0">Pilih Tahun Ajaran (Arsip)</label>
                                 <select name="id_tahun" id="id_tahun" class="form-control" onchange="this.form.submit()">
-                                    <option value="">-- Tampilkan Semua --</option>
+                                    <option value="">-- Tampilkan Semua (arsip) --</option>
                                     <?php foreach ($daftar_tahun as $th): ?>
                                         <option value="<?= $th['id_tahun_pelajaran'] ?>" <?= ($id_tahun == $th['id_tahun_pelajaran']) ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($th['tahun_pelajaran'] . ' - ' . $th['semester']) ?>
@@ -89,6 +89,9 @@
                                                                 data-bs-target="#<?= $accordion_id ?>"
                                                                 aria-expanded="false">
                                                                 <?= htmlspecialchars($mapel['nama_mapel'] . ' - ' . $mapel['kelas']) ?>
+                                                                <?php if (empty($id_tahun) && !empty($mapel['label_tahun'])): ?>
+                                                                    <span class="badge bg-gradient-secondary ms-2 font-weight-normal" style="font-size:.7rem;"><?= htmlspecialchars($mapel['label_tahun']) ?></span>
+                                                                <?php endif; ?>
                                                             </button>
                                                         </h2>
 

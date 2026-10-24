@@ -21,8 +21,19 @@ class LaporanController
 
     public function index()
     {
-        // 1. Ambil ID Tahun dari URL
-        $id_tahun = $_GET['id_tahun'] ?? null;
+        // 1. Tahun pelajaran: default tahun aktif, kosong = mode arsip (semua tahun)
+        $id_tahun_aktif = $this->db
+            ->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran
+                     WHERE status = 'Aktif' OR status = 'aktif' OR status = 1
+                     ORDER BY id_tahun_pelajaran DESC LIMIT 1")
+            ->fetchColumn();
+
+        if (array_key_exists('id_tahun', $_GET)) {
+            // ?id_tahun= (kosong) sengaja dipakai untuk membuka arsip semua tahun
+            $id_tahun = $_GET['id_tahun'] !== '' ? (int) $_GET['id_tahun'] : null;
+        } else {
+            $id_tahun = $id_tahun_aktif ?: null;
+        }
 
         $laporanModel = new LaporanModel($this->db);
 
