@@ -76,7 +76,7 @@ class Kategori
             FROM nilai n
             JOIN siswa s ON s.id_siswa = n.id_siswa
             JOIN kategori_nilai kn ON kn.id_kategori = n.id_kategori
-            WHERE n.id_kategori = ? ORDER BY s.nama_siswa ASC
+            WHERE n.id_kategori = ? AND " . siswa_aktif_sql('s') . " ORDER BY s.nama_siswa ASC
         ");
         $stmt->execute([$id_kategori]);
         $nilaiList = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -172,9 +172,11 @@ class Kategori
         // 2. Ambil Siswa dari tabel PLOTING_SISWA (Sesuai Tahun & Kelas)
         // Bukan dari tabel siswa langsung
         $stmtSiswa = $this->db->prepare("
-            SELECT ps.id_siswa 
+            SELECT ps.id_siswa
             FROM ploting_siswa ps
+            JOIN siswa s ON s.id_siswa = ps.id_siswa
             WHERE ps.id_kelas = ? AND ps.id_tahun = ?
+              AND " . siswa_aktif_sql('s') . "
         ");
         $stmtSiswa->execute([$id_kelas, $id_tahun]);
         $siswaList = $stmtSiswa->fetchAll(PDO::FETCH_ASSOC);
@@ -278,7 +280,7 @@ class Kategori
         $sql = "SELECT n.*, s.nama_siswa 
             FROM nilai n 
             JOIN siswa s ON n.id_siswa = s.id_siswa 
-            WHERE n.id_kategori = ? 
+            WHERE n.id_kategori = ? AND " . siswa_aktif_sql('s') . " 
             ORDER BY s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_kategori]);
@@ -287,7 +289,17 @@ class Kategori
 
     public function delete($id_kategori)
     {
-        $stmt = $this->db->prepare("DELETE FROM kategori_nilai WHERE id_kategori = ?");
-        return $stmt->execute([$id_kategori]);
+        // Baris nilai harus dihapus lebih dulu, kalau tidak data yatim ini
+        // bisa muncul kembali saat kategori nilai berikutnya dibuat.
+        $this->db->beginTransaction();
+        try {
+            $this->db->prepare("DELETE FROM nilai WHERE id_kategori = ?")->execute([$id_kategori]);
+            $ok = $this->db->prepare("DELETE FROM kategori_nilai WHERE id_kategori = ?")->execute([$id_kategori]);
+            $this->db->commit();
+            return $ok;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

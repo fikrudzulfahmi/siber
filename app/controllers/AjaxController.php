@@ -54,7 +54,7 @@ class AjaxController extends BaseController
 
         $id_kelas = $_GET['id_kelas'];
 
-        $stmt = $this->db->prepare("SELECT id_siswa, nama_siswa FROM siswa WHERE id_kelas = ? ORDER BY nama_siswa ASC");
+        $stmt = $this->db->prepare("SELECT id_siswa, nama_siswa FROM siswa WHERE id_kelas = ? AND " . siswa_aktif_sql('siswa') . " ORDER BY nama_siswa ASC");
         $stmt->execute([$id_kelas]);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

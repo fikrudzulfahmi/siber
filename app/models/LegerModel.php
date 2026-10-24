@@ -64,7 +64,8 @@ class LegerModel
     -- Ambil nilai yang spesifik
     LEFT JOIN nilai n ON (n.id_siswa = ps.id_siswa AND n.id_kategori = kn.id_kategori)
     WHERE ps.id_kelas = :id_kelas 
-      AND ps.id_tahun = :id_tahun_pelajaran
+      AND ps.id_tahun = :id_tahun_pelajaran 
+        AND " . siswa_aktif_sql('s') . "
       AND mg.id_kelas = :id_kelas_filter -- KUNCI PERBAIKAN: Filter mapel berdasarkan kelas
     ORDER BY s.nama_siswa ASC, m.nama_mapel ASC
     ";

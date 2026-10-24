@@ -99,7 +99,8 @@ class Rapor
                 LEFT JOIN kategori_nilai kn ON kn.id_mapel_guru = mg.id_mapel_guru
                 LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = s.id_siswa
                 WHERE ps.id_kelas = ? 
-                  AND mg.id_tahun_pelajaran = ?
+                  AND mg.id_tahun_pelajaran = ? 
+                  AND " . siswa_aktif_sql('s') . "
                   AND m.nama_mapel != 'BIMBINGAN KONSELING'
                 GROUP BY s.id_siswa, m.id_mapel
             ) as tabel_nilai
@@ -253,6 +254,7 @@ class Rapor
     LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = s.id_siswa
     LEFT JOIN mapel m ON mg.id_mapel = m.id_mapel
     WHERE ps.id_kelas = ? AND ps.id_tahun = ? 
+      AND " . siswa_aktif_sql('s') . " 
     GROUP BY s.id_siswa
     ORDER BY s.nama_siswa ASC";
 

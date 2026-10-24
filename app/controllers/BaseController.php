@@ -1,6 +1,7 @@
 <?php
 // BaseController.php
 require_once __DIR__ . '/../helpers/LevelHelper.php';
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
 
 class BaseController
 {

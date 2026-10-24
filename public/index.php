@@ -18,6 +18,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../app/helpers/LevelHelper.php';
 require_once __DIR__ . '/../app/helpers/ActivityLogHelper.php';
 require_once __DIR__ . '/../app/helpers/Upload.php';
+require_once __DIR__ . '/../app/helpers/SiswaAktif.php';
 
 // Daftar controller-method yang bebas akses (token tetap dicek di dalamnya).
 $freeAccess = [

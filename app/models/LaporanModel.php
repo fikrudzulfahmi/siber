@@ -86,7 +86,7 @@ class LaporanModel
             FROM nilai n
             JOIN siswa s ON s.id_siswa = n.id_siswa
             JOIN kategori_nilai kn ON kn.id_kategori = n.id_kategori
-            WHERE n.id_kategori = ? ORDER BY s.nama_siswa ASC
+            WHERE n.id_kategori = ? AND " . siswa_aktif_sql('s') . " ORDER BY s.nama_siswa ASC
         ");
         $stmt->execute([$id_kategori]);
         $nilaiList = $stmt->fetchAll(PDO::FETCH_ASSOC);
