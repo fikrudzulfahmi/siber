@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 class Konseling
 {
 
@@ -96,7 +98,7 @@ class Konseling
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
             WHERE k.wali_kelas = ?
-              AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+              AND " . siswa_aktif_sql('s') . "
         ";
         $params = [$id_walikelas];
 
@@ -380,7 +382,7 @@ class Konseling
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             WHERE ps.id_kelas = ? 
-              AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+              AND " . siswa_aktif_sql('s') . "
         ";
         $params = [$id_kelas];
 

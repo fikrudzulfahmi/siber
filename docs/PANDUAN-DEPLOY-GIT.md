@@ -347,6 +347,39 @@ Tidak perlu restore database — tidak ada perubahan skema.
 
 ---
 
+## 13. PD Keluar — catat siswa berhenti & kembalikan (2 menit)
+
+Menu ini untuk siswa yang **berhenti, mengundurkan diri, mutasi, atau meninggal**.
+Siswa **lulus tetap di menu Ploting** (kelulusan = penyelesaian akademik).
+
+Cara mengeluarkan siswa:
+
+1. Buka **Data Siswa** → klik ikon keluar (kuning) di baris siswa, **atau** menu
+   sidebar **PD Keluar** → pilih kelas → pilih siswa.
+2. Pilih alasan (`mengundurkan diri`, `mutasi`, `meninggal`, `keluar`), isi tanggal
+   dan keterangan, lalu **Simpan**.
+
+Yang terjadi: `siswa.status_siswa` diisi alasan tersebut, sehingga siswa hilang dari
+daftar nilai, input nilai, rapor, leger, dan laporan. **Data nilainya tidak dihapus** —
+hanya disembunyikan.
+
+Cara mengembalikan (salah tandai / siswa kembali):
+
+1. Buka **PD Keluar** → centang **tampilkan riwayat termasuk yang dibatalkan**
+   (atau filter status) → cari nama siswa.
+2. Klik **Kembalikan**. Status kembali aktif, nilai dan rapor tampil lagi,
+   dan baris riwayat ditandai "dibatalkan" (tidak hilang).
+
+Kelulusan dari Ploting juga tercatat di riwayat ini, jadi salah pilih siswa saat
+"Luluskan" bisa dibatalkan dari sini.
+
+Tabel `siswa_keluar` dibuat otomatis saat menu pertama kali dibuka. Bila user
+database tidak punya izin `CREATE TABLE`, jalankan `siswa_keluar.sql` lewat
+phpMyAdmin sekali saja.
+
+> Jangan pakai tombol hapus (ikon tempat sampah) untuk siswa yang keluar — tombol itu
+> menghapus data siswa. Pakai **PD Keluar** supaya riwayat dan nilai tetap tersimpan.
+
 ## Lampiran A — Perintah harian
 
 ```bash

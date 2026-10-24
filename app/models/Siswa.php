@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 class Siswa
 {
     private $db;
@@ -26,7 +28,7 @@ class Siswa
                 FROM siswa s
                 LEFT JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa AND ps.id_tahun = ?
                 LEFT JOIN kelas k ON ps.id_kelas = k.id_kelas
-                WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                WHERE " . siswa_aktif_sql('s') . "
                 ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);

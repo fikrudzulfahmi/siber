@@ -266,6 +266,8 @@ function sec_policy(): array
         'rekon'                     => [1, 3, 4, 6, 7],
         'ekstra'                    => [1, 2, 6, 7],
         'prestasi'                  => [1, 2, 6, 7],
+        // PD keluar: admin, kesiswaan, kepala pondok.
+        'siswaKeluar'               => [1, 6, 7],
     ];
 }
 

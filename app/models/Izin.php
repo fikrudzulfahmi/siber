@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 class Izin
 {
     private $db;
@@ -38,7 +40,7 @@ class Izin
             JOIN siswa s ON i.id_siswa = s.id_siswa
             JOIN ploting_siswa ps ON ps.id_siswa = s.id_siswa AND ps.id_tahun = ?
             JOIN kelas k ON ps.id_kelas = k.id_kelas
-            WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+            WHERE " . siswa_aktif_sql('s') . "
         ";
         $params = [$id_tahun];
 

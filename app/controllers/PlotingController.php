@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Ploting.php';
+require_once __DIR__ . '/../models/SiswaKeluar.php';
 require_once __DIR__ . '/../helpers/LevelHelper.php';
 require_once 'BaseController.php';
 
@@ -120,10 +121,15 @@ class PlotingController extends BaseController
         $id_tahun = $_POST['id_tahun'] ?? 0;
 
         $model = new Ploting($this->db);
+        // Kelulusan juga dicatat di riwayat PD keluar supaya bisa dibatalkan
+        // (misalnya salah pilih siswa) dari halaman PD Keluar.
+        $modelKeluar = new SiswaKeluar($this->db);
+        $oleh = $_SESSION['user']['nama'] ?? ($_SESSION['user']['username'] ?? '');
         $sukses = 0;
 
         foreach ($ids_siswa as $id_siswa) {
             $model->luluskanSiswa($id_siswa, $id_tahun);
+            $modelKeluar->catatLulus((int) $id_siswa, (int) $id_tahun, $oleh);
             $sukses++;
         }
 

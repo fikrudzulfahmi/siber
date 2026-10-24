@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 if (!isset($pdo)) {
     require_once '../../config/database.php';
 }
@@ -27,7 +29,7 @@ $sql = "SELECT DISTINCT s.id_siswa, s.nama_siswa
         FROM ploting_siswa ps
         JOIN siswa s ON ps.id_siswa = s.id_siswa 
         WHERE ps.id_kelas = ?
-        AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')";
+        AND " . siswa_aktif_sql('s') . "";
 
 $params = [$id_kelas];
 if ($id_tahun) {

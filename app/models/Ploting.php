@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../helpers/SiswaAktif.php';
+
 class Ploting
 {
     private $db;
@@ -28,7 +30,7 @@ class Ploting
                 FROM ploting_siswa ps
                 JOIN siswa s ON s.id_siswa = ps.id_siswa
                 WHERE ps.id_kelas = ? AND ps.id_tahun = ?
-                AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                AND " . siswa_aktif_sql('s') . "
                 ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
@@ -45,7 +47,7 @@ class Ploting
                 JOIN kelas k ON k.id_kelas = ps.id_kelas
                 JOIN tahun_pelajaran t ON t.id_tahun_pelajaran = ps.id_tahun
                 WHERE ps.id_kelas = ? AND ps.id_tahun = ?
-                AND (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                AND " . siswa_aktif_sql('s') . "
                 ORDER BY s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
@@ -60,7 +62,7 @@ class Ploting
     {
         $sql = "SELECT s.id_siswa, s.nama_siswa, s.nisn
                 FROM siswa s
-                WHERE (s.status_siswa IS NULL OR s.status_siswa != 'lulus')
+                WHERE " . siswa_aktif_sql('s') . "
                 AND NOT EXISTS (
                     SELECT 1 FROM ploting_siswa ps
                     WHERE ps.id_siswa = s.id_siswa AND ps.id_tahun = ?

@@ -130,6 +130,9 @@
                                                 <a href="?controller=siswa&method=delete&id=<?= $row['id_siswa'] ?>" class="btn btn-link text-danger px-2 mb-0 delete-btn">
                                                     <i class="fas fa-trash text-danger"></i>
                                                 </a>
+                                                <a href="?controller=siswaKeluar&method=index&id_siswa=<?= $row['id_siswa'] ?>" class="btn btn-link text-warning px-2 mb-0" title="Catat sebagai PD keluar (mutasi, mengundurkan diri, meninggal)">
+                                                    <i class="fas fa-sign-out-alt text-warning"></i>
+                                                </a>
                                             </td>
                                         <?php endif; ?>
                                     </tr>
