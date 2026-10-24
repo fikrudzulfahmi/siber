@@ -1,5 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
+<?php $ro = !empty($hanyaLihat) ? ' disabled' : ''; ?>
 
 <div class="container-fluid py-4">
     <?php if ($msg = getFlash('success')): ?>
@@ -20,7 +21,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Input Detail Rapor: <?= htmlspecialchars($dataSiswa['nama_siswa']) ?></h6>
+                        <h6 class="text-white text-capitalize ps-3"><?= empty($hanyaLihat) ? 'Input Detail Rapor' : 'Detail Rapor (hanya lihat)' ?>: <?= htmlspecialchars($dataSiswa['nama_siswa']) ?></h6>
                         <p class="text-white text-xs ps-3 mb-0">NISN: <?= sec_e($dataSiswa['nisn']) ?></p>
                     </div>
                 </div>
@@ -35,19 +36,19 @@
                                 <h6 class="mb-3 mt-4">1. Presensi & Catatan</h6>
                                 <div class="input-group input-group-static mb-3">
                                     <label>Sakit (Hari)</label>
-                                    <input type="number" name="sakit" class="form-control" value="<?= $rapor['sakit'] ?? 0 ?>">
+                                    <input type="number" name="sakit" class="form-control" value="<?= $rapor['sakit'] ?? 0 ?>"<?= $ro ?>>
                                 </div>
                                 <div class="input-group input-group-static mb-3">
                                     <label>Izin (Hari)</label>
-                                    <input type="number" name="izin" class="form-control" value="<?= $rapor['izin'] ?? 0 ?>">
+                                    <input type="number" name="izin" class="form-control" value="<?= $rapor['izin'] ?? 0 ?>"<?= $ro ?>>
                                 </div>
                                 <div class="input-group input-group-static mb-3">
                                     <label>Alfa (Hari)</label>
-                                    <input type="number" name="alfa" class="form-control" value="<?= $rapor['alfa'] ?? 0 ?>">
+                                    <input type="number" name="alfa" class="form-control" value="<?= $rapor['alfa'] ?? 0 ?>"<?= $ro ?>>
                                 </div>
                                 <div class="input-group input-group-static mb-3">
                                     <label>Catatan Wali Kelas</label>
-                                    <textarea name="catatan_walikelas" class="form-control" rows="4"><?= sec_e($rapor['catatan_walikelas'] ?? '') ?></textarea>
+                                    <textarea name="catatan_walikelas" class="form-control" rows="4"<?= $ro ?>><?= sec_e($rapor['catatan_walikelas'] ?? '') ?></textarea>
                                 </div>
                                 <div class="alert alert-light border p-2 mt-2">
                                     <small class="text-info">
@@ -118,7 +119,7 @@
                                                             <input type="text" name="prestasi[<?= $i ?>][jenis]"
                                                                 class="form-control"
                                                                 placeholder="Contoh: Akademik / Olahraga"
-                                                                value="<?= htmlspecialchars($val_jenis) ?>">
+                                                                value="<?= htmlspecialchars($val_jenis) ?>"<?= $ro ?>>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -126,7 +127,7 @@
                                                             <input type="text" name="prestasi[<?= $i ?>][ket]"
                                                                 class="form-control"
                                                                 placeholder="Contoh: Juara 1 Lomba MTQ"
-                                                                value="<?= htmlspecialchars($val_ket) ?>">
+                                                                value="<?= htmlspecialchars($val_ket) ?>"<?= $ro ?>>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -147,11 +148,16 @@
                         </div>
 
                         <div class="row mt-4">
-                            <div class="col-12 d-flex justify-content-end mb-4">
-                                <a href="?controller=rapor&method=index<?= isset($_GET['id_kelas']) ? '&id_kelas=' . (int) $_GET['id_kelas'] : '' ?>" class="btn btn-outline-secondary me-2">Batal</a>
+                            <div class="col-12 d-flex justify-content-end align-items-center mb-4">
+                                <?php if (!empty($hanyaLihat)): ?>
+                                    <span class="badge bg-gradient-secondary me-auto">Mode hanya lihat &mdash; perubahan rapor dilakukan walikelas</span>
+                                <?php endif; ?>
+                                <a href="?controller=rapor&method=index<?= isset($_GET['id_kelas']) ? '&id_kelas=' . (int) $_GET['id_kelas'] : '' ?>" class="btn btn-outline-secondary me-2"><?= empty($hanyaLihat) ? 'Batal' : 'Kembali' ?></a>
+                                <?php if (empty($hanyaLihat)): ?>
                                 <button type="submit" class="btn bg-gradient-success">
                                     <i class="material-icons text-sm me-2">save</i> Simpan Semua Data
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </form>

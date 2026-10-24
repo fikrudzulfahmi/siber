@@ -115,6 +115,8 @@ class RaporController extends BaseController
 
         $siswaRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $hanyaLihat = sec_has_level([1, 5]) && !sec_has_level([3]);
+
         $siswaList = [];
         foreach ($siswaRaw as $s) {
             $s['has_absensi'] = (!is_null($s['sakit']) || !is_null($s['izin']) || !is_null($s['alfa']));
@@ -185,13 +187,20 @@ class RaporController extends BaseController
         $this->pastikanBolehSiswa((int) $id_siswa);
         $setting = $this->raporModel->getActiveSetting();
 
+        // Admin & Waka Kurikulum hanya boleh MELIHAT rapor; pengubahan milik walikelas.
+        $hanyaLihat = sec_has_level([1, 5]) && !sec_has_level([3]);
+
         // 1. Ambil Data Rapor Utama
         $rapor = $this->raporModel->getRaporSiswa($setting['id_rapor'], $id_siswa);
-        if (!$rapor) {
+        if (!$rapor && !$hanyaLihat) {
             $this->raporModel->initRaporSiswa($setting['id_rapor'], $id_siswa);
             $rapor = $this->raporModel->getRaporSiswa($setting['id_rapor'], $id_siswa);
         }
-        $id_rapor_siswa = $rapor['id_rapor_siswa'];
+        if (!$rapor) {
+            // Pengawas tidak membuat/mengubah baris rapor, cukup tampilkan kosong.
+            $rapor = ['id_rapor_siswa' => null, 'sakit' => null, 'izin' => null, 'alfa' => null, 'catatan_walikelas' => null];
+        }
+        $id_rapor_siswa = $rapor['id_rapor_siswa'] ?? null;
 
         // =========================================================================
         // 🌟 TARIK DATA REKAP DARI MODEL & SET DEFAULT FALLBACK
@@ -273,6 +282,9 @@ class RaporController extends BaseController
 
     public function update_terpadu()
     {
+        // Pengubahan rapor hanya untuk walikelas.
+        sec_require_level([3], 'Rapor hanya dapat diubah oleh walikelas. Admin dan Waka Kurikulum hanya dapat melihat.');
+
         if (!sec_has_level([1, 5])) {
             $id_rapor_siswa = $_POST['id_rapor_siswa'] ?? null;
             $stmt = $this->db->prepare("SELECT ps.id_kelas

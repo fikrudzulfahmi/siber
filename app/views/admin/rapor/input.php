@@ -95,7 +95,7 @@
                                             <span class="badge badge-sm <?= $s['has_catatan'] ? 'bg-gradient-success' : 'bg-gradient-secondary' ?>">CAT</span>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <a href="?controller=rapor&method=edit_rapor&id_siswa=<?= $s['id_siswa'] ?>&id_kelas=<?= $kelas['id_kelas'] ?>" class="btn btn-link text-primary btn-sm mb-0">Input</a>
+                                            <a href="?controller=rapor&method=edit_rapor&id_siswa=<?= $s['id_siswa'] ?>&id_kelas=<?= $kelas['id_kelas'] ?>" class="btn btn-link text-primary btn-sm mb-0"><?= empty($hanyaLihat) ? 'Input' : 'Lihat' ?></a>
                                             <a href="?controller=rapor&method=cetak&id_siswa=<?= $s['id_siswa'] ?>" target="_blank" class="btn btn-link text-dark btn-sm mb-0">Cetak</a>
                                         </td>
                                     </tr>
