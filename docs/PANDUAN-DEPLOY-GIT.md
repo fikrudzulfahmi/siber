@@ -206,8 +206,10 @@ curl -s -o /dev/null -w "reminder tanpa key: %{http_code}\n" "https://siber.pond
 ```
 
 - `reminder: 200`, `autoBackup: 200`, dan tanpa key `403`.
-- Auto backup juga menyimpan file `.sql` di folder `backups/` (di luar webroot) dan
-  mengunggahnya ke Google Drive. Cek folder Drive setelah uji.
+- Auto backup menyimpan file `.sql` di folder `backups/` (di luar webroot, dipakai
+  untuk restore dari panel) dan mengunggah versi **terkompres `.sql.gz`** ke Drive
+  (database ~50 MB; versi mentah ditolak Google dengan HTTP 400). Cek folder Drive
+  setelah uji — nama file berakhiran `.sql.gz`.
 
 ---
 
@@ -308,6 +310,7 @@ tail -30 ~/siber/public/error_log 2>/dev/null
 | Notifikasi izin tidak masuk antrean | Tabel `outbox_wa` tidak ada atau nomor kosong | Cek `error_log` (baris `[WA-IZIN]`) |
 | Guru masih bisa buka halaman admin | `public/index.php` belum ter-update | Cek `grep -q "sec_enforce_policy" public/index.php && echo terpasang` |
 | Tombol Backup gagal | `backups/` tidak writable / `mysqldump` tidak ada | `chmod 750 backups`, cek `which mysqldump` |
+| Drive menolak `HTTP 400` | Kiriman base64 terlalu besar (DB > ~35 MB) | Sudah ditangani: file > 4 MB dikirim sebagai `.sql.gz`; pastikan kode terbaru terpasang |
 
 ---
 

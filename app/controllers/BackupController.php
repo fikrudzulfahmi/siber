@@ -98,6 +98,76 @@ class BackupController extends BaseController
     }
 
     /**
+     * Kirim isi backup ke Apps Script (Google Drive).
+     *
+     * Backup database produksi ~50 MB; setelah base64 jadi ~66 MB dan Google
+     * membalas HTTP 400 (payload terlalu besar). Karena itu file besar dikirim
+     * dalam bentuk gzip -- hasilnya beberapa MB saja. File lokal tetap .sql
+     * supaya restore dari panel tidak berubah.
+     *
+     * @return array{ok:bool,http:int,errno:int,pesan:string,nama:string,gzip:bool}
+     */
+    private function uploadToDrive(string $payload, string $filename): array
+    {
+        $webhookUrl = defined('GOOGLE_DRIVE_WEBHOOK_URL') ? (string) GOOGLE_DRIVE_WEBHOOK_URL : '';
+        $secretKey  = defined('GOOGLE_DRIVE_SECRET_KEY') ? (string) GOOGLE_DRIVE_SECRET_KEY : '';
+        $folderId   = defined('GOOGLE_DRIVE_FOLDER_ID') ? (string) GOOGLE_DRIVE_FOLDER_ID : '';
+        $kosong     = ['ok' => false, 'http' => 0, 'errno' => 0];
+
+        if ($webhookUrl === '') {
+            return $kosong + ['pesan' => 'GOOGLE_DRIVE_WEBHOOK_URL belum diisi di config/secrets.php', 'nama' => $filename, 'gzip' => false];
+        }
+
+        $nama = $filename;
+        $gzip = false;
+        // Di atas 4 MB, POST base64 melewati batas Apps Script (HTTP 400).
+        if (strlen($payload) > 4 * 1024 * 1024 && function_exists('gzencode')) {
+            $terkompres = gzencode($payload, 6);
+            if ($terkompres !== false && strlen($terkompres) < strlen($payload)) {
+                $payload = $terkompres;
+                $nama   .= '.gz';
+                $gzip    = true;
+            }
+        }
+
+        $postData = http_build_query([
+            'secret'      => $secretKey,
+            'folder_id'   => $folderId,
+            'filename'    => $nama,
+            'file_base64' => base64_encode($payload),
+        ]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+
+        $response = curl_exec($ch);
+        $errno    = curl_errno($ch);
+        $http     = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $galat    = curl_error($ch);
+        curl_close($ch);
+
+        if ($errno !== 0) {
+            return $kosong + ['http' => $http, 'errno' => $errno, 'pesan' => 'curl error ' . $errno . ': ' . $galat, 'nama' => $nama, 'gzip' => $gzip];
+        }
+        if ($http < 200 || $http >= 300) {
+            return $kosong + ['http' => $http, 'pesan' => 'Drive membalas HTTP ' . $http . '. ' . substr(trim(strip_tags((string) $response)), 0, 160), 'nama' => $nama, 'gzip' => $gzip];
+        }
+
+        $resData = json_decode((string) $response, true);
+        $ok      = is_array($resData) && isset($resData['status']) && $resData['status'] === 'success';
+        $pesan   = $ok
+            ? 'terunggah sebagai ' . $nama
+            : (string) ($resData['message'] ?? substr(trim((string) $response), 0, 160));
+
+        return ['ok' => $ok, 'http' => $http, 'errno' => 0, 'pesan' => $pesan, 'nama' => $nama, 'gzip' => $gzip];
+    }
+
+    /**
      * Membuat Backup secara manual:
      * Menyimpan di folder lokal & Upload ke Google Drive
      */
@@ -112,39 +182,14 @@ class BackupController extends BaseController
         file_put_contents($filePath, $sqlScript);
 
         // 2. Upload ke Google Drive
-        $base64Data = base64_encode($sqlScript);
-        $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
-        $secretKey = GOOGLE_DRIVE_SECRET_KEY;
-        
-        // Folder ID dibaca dari konstanta (config/secrets.php atau app/config.php).
-        // Dulu nilainya dipanen dengan regex dari app/config.php; cara itu tidak
-        // menemukan apa pun setelah kredensial pindah ke config/secrets.php.
-        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? (string) GOOGLE_DRIVE_FOLDER_ID : '';
+        $hasil = $this->uploadToDrive($sqlScript, $filename);
 
-        $postData = http_build_query([
-            'secret' => $secretKey,
-            'folder_id' => $folderId,
-            'filename' => $filename,
-            'file_base64' => $base64Data
-        ]);
-
-        $ch = curl_init($webhookUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Timeout 60 detik
-        
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $resData = json_decode($response, true);
-        
         // 3. Redirect ke Halaman Setting
-        if ($resData && isset($resData['status']) && $resData['status'] === 'success') {
-            echo "<script>alert('Backup berhasil disimpan lokal dan diunggah ke Google Drive!'); window.location.href='?controller=setting&method=index';</script>";
+        if ($hasil['ok']) {
+            $info = $hasil['gzip'] ? ' (dikompres: ' . $hasil['nama'] . ')' : '';
+            echo "<script>alert('Backup berhasil disimpan lokal dan diunggah ke Google Drive" . $info . "!'); window.location.href='?controller=setting&method=index';</script>";
         } else {
-            $errorMsg = $resData['message'] ?? 'Unknown error';
+            $errorMsg = addslashes((string) $hasil['pesan']);
             echo "<script>alert('Backup disimpan lokal, TETAPI gagal diunggah ke Google Drive: $errorMsg'); window.location.href='?controller=setting&method=index';</script>";
         }
         exit;
@@ -171,57 +216,29 @@ class BackupController extends BaseController
         file_put_contents($filePath, $sqlScript);
 
         // 2. Upload ke Google Drive
-        $base64Data = base64_encode($sqlScript);
-        $webhookUrl = GOOGLE_DRIVE_WEBHOOK_URL;
-        $secretKey = GOOGLE_DRIVE_SECRET_KEY;
-        
-        // Folder ID dibaca dari konstanta (config/secrets.php atau app/config.php).
-        // Dulu nilainya dipanen dengan regex dari app/config.php; cara itu tidak
-        // menemukan apa pun setelah kredensial pindah ke config/secrets.php.
-        $folderId = defined('GOOGLE_DRIVE_FOLDER_ID') ? (string) GOOGLE_DRIVE_FOLDER_ID : '';
+        $hasil = $this->uploadToDrive($sqlScript, $filename);
 
-        $postData = http_build_query([
-            'secret' => $secretKey,
-            'folder_id' => $folderId,
-            'filename' => $filename,
-            'file_base64' => $base64Data
-        ]);
-
-        if ($webhookUrl === '') {
-            http_response_code(500);
-            header('Content-Type: application/json');
-            echo json_encode([
-                'status'  => 'error',
-                'message' => 'GOOGLE_DRIVE_WEBHOOK_URL belum diisi di config/secrets.php',
-            ]);
-            exit;
-        }
-
-        $ch = curl_init($webhookUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-
-        $response = curl_exec($ch);
-        $errno    = curl_errno($ch);
-        curl_close($ch);
-
-        if ($errno !== 0) {
-            error_log('[BACKUP] upload Drive gagal (curl errno ' . $errno . '), file lokal sudah tersimpan: ' . $filePath);
+        if (!$hasil['ok']) {
+            error_log('[BACKUP] upload Drive gagal (' . $hasil['pesan'] . '), file lokal sudah tersimpan: ' . $filePath);
             http_response_code(502);
             header('Content-Type: application/json');
             echo json_encode([
                 'status'  => 'error',
                 'message' => 'Upload ke Google Drive gagal, backup lokal sudah tersimpan.',
+                'detail'  => $hasil['pesan'],
                 'file'    => $filename,
             ]);
             exit;
         }
 
         header('Content-Type: application/json');
-        echo $response;
+        echo json_encode([
+            'status'  => 'success',
+            'message' => 'Backup tersimpan lokal dan terunggah ke Google Drive',
+            'file'    => $filename,
+            'drive'   => $hasil['nama'],
+            'gzip'    => $hasil['gzip'],
+        ]);
         exit;
     }
 
