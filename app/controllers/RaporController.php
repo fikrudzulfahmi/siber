@@ -337,7 +337,7 @@ class RaporController extends BaseController
                 // 3. Sync Prestasi (Hapus lama, Insert baru)
                 // Menggunakan kolom 'id_prestasi' sebagai Foreign Key sesuai error Anda
                 $this->db->prepare("DELETE FROM rapor_prestasi WHERE id_rapor_siswa = ?")->execute([$id_rapor_siswa]);
-                foreach ($_POST['prestasi'] as $p) {
+                foreach (($_POST['prestasi'] ?? []) as $p) {
                     if (!empty(trim($p['jenis']))) {
                         $sqlPrestasi = "INSERT INTO rapor_prestasi (id_rapor_siswa, jenis_prestasi, keterangan) VALUES (?, ?, ?)";
                         $this->db->prepare($sqlPrestasi)->execute([
