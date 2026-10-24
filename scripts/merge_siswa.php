@@ -32,10 +32,17 @@ if (PHP_SAPI !== 'cli') {
 
 require_once __DIR__ . '/../config/database.php';
 
-$opsi = getopt('', ['dari:', 'ke:', 'apply']);
+$opsi = getopt('', ['dari:', 'ke:', 'apply', 'nilai:']);
 $idDari = isset($opsi['dari']) ? (int) $opsi['dari'] : 0;
 $idKe   = isset($opsi['ke']) ? (int) $opsi['ke'] : 0;
 $apply  = array_key_exists('apply', $opsi);
+// Pilihan untuk nilai yang ada di kedua record: 'ke' (record yang dipertahankan)
+// atau 'dari' (record duplikat). Kosong = berhenti dan minta keputusan.
+$pilihanNilai = isset($opsi['nilai']) ? strtolower(trim((string) $opsi['nilai'])) : null;
+if ($pilihanNilai !== null && !in_array($pilihanNilai, ['ke', 'dari'], true)) {
+    fwrite(STDERR, "--nilai hanya menerima 'ke' atau 'dari'.\n");
+    exit(1);
+}
 
 if ($idDari <= 0 || $idKe <= 0 || $idDari === $idKe) {
     fwrite(STDERR, "Pemakaian: php scripts/merge_siswa.php --dari=ID_DUPLIKAT --ke=ID_DIPERTAHANKAN [--apply]\n");
@@ -158,6 +165,7 @@ foreach ($ringkasan as $tabel => $n) {
 // ---------------------------------------------------------------- konflik
 judul('PEMERIKSAAN KONFLIK');
 $konflik = [];      // perlu keputusan manusia -> skrip berhenti
+$konflikNilai = []; // baris nilai yang ada di kedua record
 $absensiGanda = []; // bisa diputuskan otomatis: satu siswa hanya punya satu status per jurnal
 
 foreach ($tabelAnak as $tabel => $kunci) {
@@ -183,14 +191,34 @@ foreach ($tabelAnak as $tabel => $kunci) {
             $absensiGanda[] = $row;
             continue;
         }
+
+        // Tampilkan isi kedua baris supaya bisa dibandingkan sebelum diputuskan.
+        $stmtIsi = $db->prepare("SELECT * FROM `$tabel` WHERE `$pk` IN (?, ?)");
+        $stmtIsi->execute([$row['id_dari'], $row['id_ke']]);
+        $isi = ['dari' => null, 'ke' => null];
+        foreach ($stmtIsi->fetchAll(PDO::FETCH_ASSOC) as $r) {
+            $isi[(int) $r[$pk] === (int) $row['id_dari'] ? 'dari' : 'ke'] = $r;
+        }
+        $beda = [];
+        foreach (($isi['ke'] ?? []) as $kolom => $nilaiKe) {
+            if ($kolom === $pk) {
+                continue;
+            }
+            $nilaiDari = $isi['dari'][$kolom] ?? null;
+            if ((string) $nilaiDari !== (string) $nilaiKe) {
+                $beda[] = sprintf('%s: dari=%s ke=%s', $kolom, $nilaiDari === null ? 'NULL' : $nilaiDari, $nilaiKe === null ? 'NULL' : $nilaiKe);
+            }
+        }
         $konflik[] = sprintf(
-            '%s: %s=%s sudah ada di kedua record (dari id %s, ke id %s)',
+            '%s: %s=%s sudah ada di kedua record (id %s vs %s)%s',
             $tabel,
             $kunci,
             $row[$kunci],
             $row['id_dari'],
-            $row['id_ke']
+            $row['id_ke'],
+            $beda ? ' -> ' . implode('; ', $beda) : ' -> isi sama'
         );
+        $konflikNilai[] = $row;
     }
 }
 
@@ -198,8 +226,13 @@ if ($konflik) {
     foreach ($konflik as $baris) {
         echo '  ! ' . $baris . "\n";
     }
-    echo "\nSkrip berhenti: selesaikan konflik di atas secara manual dulu.\n";
-    exit(2);
+    if ($pilihanNilai === null) {
+        echo "\nSkrip berhenti: tentukan nilai mana yang dipakai.\n";
+        echo "  --nilai=ke    -> pakai nilai milik record yang dipertahankan (ID $idKe)\n";
+        echo "  --nilai=dari  -> pakai nilai milik record duplikat (ID $idDari)\n";
+        exit(2);
+    }
+    printf("\n  Nilai yang dipakai: record %s; baris nilai satunya dihapus.\n", $pilihanNilai === 'ke' ? $idKe : $idDari);
 }
 echo "  Tidak ada konflik nilai.\n";
 if ($absensiGanda) {
@@ -219,6 +252,10 @@ foreach ($tabelAnak as $tabel => $kunci) {
     if ($tabel === 'jurnal_kehadiran' && $absensiGanda) {
         $jumlah -= count($absensiGanda);
         $catatan = sprintf(' (setelah %d baris ganda dihapus)', count($absensiGanda));
+    }
+    if ($tabel === 'nilai' && $konflikNilai) {
+        $jumlah -= count($konflikNilai);
+        $catatan = sprintf(' (setelah %d baris ganda dihapus)', count($konflikNilai));
     }
     if ($jumlah > 0) {
         $rencana[] = sprintf('pindahkan %d baris %s ke ID %d%s', $jumlah, $tabel, $idKe, $catatan);
@@ -260,6 +297,15 @@ if (tabelAda($db, 'ploting_siswa')) {
             $row['id_dari'], $row['id_kelas'], $row['id_tahun'], $idKe, $row['id_ke'], $row['id_ke']
         );
     }
+}
+
+foreach ($konflikNilai as $row) {
+    $rencana[] = sprintf(
+        'nilai kategori %s: pakai nilai dari record %s, hapus baris id %s',
+        $row['id_kategori'],
+        $pilihanNilai === 'ke' ? $idKe : $idDari,
+        $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke']
+    );
 }
 
 foreach ($absensiGanda as $row) {
@@ -322,8 +368,24 @@ try {
         }
     }
 
-    // 2. Absensi ganda: satu status per siswa per jurnal.
-    foreach ($absensiGanda as $row) {
+    // 2. Nilai ganda: simpan satu baris per kategori sesuai pilihan --nilai.
+    foreach ($konflikNilai as $row) {
+        $idHapus = $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke'];
+        $db->prepare("DELETE FROM nilai WHERE id_nilai = ?")->execute([$idHapus]);
+        printf("  nilai kategori %s: baris %d dihapus\n", $row['id_kategori'], $idHapus);
+    }
+
+    // 3. Absensi ganda: satu status per siswa per jurnal.
+    foreach ($konflikNilai as $row) {
+    $rencana[] = sprintf(
+        'nilai kategori %s: pakai nilai dari record %s, hapus baris id %s',
+        $row['id_kategori'],
+        $pilihanNilai === 'ke' ? $idKe : $idDari,
+        $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke']
+    );
+}
+
+foreach ($absensiGanda as $row) {
         $statusDari = (string) $row['status_dari'];
         $statusKe   = (string) $row['status_ke'];
         if ($statusDari !== $statusKe && $statusDari !== 'H') {
@@ -335,7 +397,7 @@ try {
         printf("  absensi jurnal %s dirapikan\n", $row['id_jurnal']);
     }
 
-    // 3. Baris anak yang tidak bentrok: pindahkan.
+    // 4. Baris anak yang tidak bentrok: pindahkan.
     foreach ($tabelAnak as $tabel => $kunci) {
         if (!isset($ringkasan[$tabel]) || empty($ringkasan[$tabel]['dari'])) {
             continue;
@@ -345,13 +407,13 @@ try {
         printf("  %s: %d baris dipindah\n", $tabel, $stmt->rowCount());
     }
 
-    // 4. Plotting yang tidak bentrok: pindahkan.
+    // 5. Plotting yang tidak bentrok: pindahkan.
     if (!empty($plottingPindah)) {
         $db->prepare("UPDATE ploting_siswa SET id_siswa = ? WHERE id_siswa = ?")->execute([$idKe, $idDari]);
         printf("  ploting_siswa: %d baris dipindah\n", count($plottingPindah));
     }
 
-    // 5. Tandai nonaktif; jangan hapus supaya masih bisa diaudit.
+    // 6. Tandai nonaktif; jangan hapus supaya masih bisa diaudit.
     $db->prepare("UPDATE siswa SET status = 'Nonaktif', status_siswa = 'nonaktif' WHERE id_siswa = ?")
        ->execute([$idDari]);
     printf("  siswa %d ditandai nonaktif\n", $idDari);

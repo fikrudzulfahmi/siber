@@ -407,9 +407,18 @@ php scripts/merge_siswa.php --dari=ID_DUPLIKAT --ke=ID_DIPERTAHANKAN --apply    
 
 Skrip memindahkan nilai, absensi, izin, konseling, rapor, keanggotaan ekstra/prestasi,
 membuang plotting ganda, lalu menandai record duplikat `status = 'Nonaktif'` dan
-`status_siswa = 'nonaktif'` (tidak dihapus, masih bisa diaudit). Kalau ada nilai untuk
-kategori yang sama di kedua record, skrip **berhenti** dan tidak mengubah apa pun —
-kasus itu harus diputuskan manual.
+`status_siswa = 'nonaktif'` (tidak dihapus, masih bisa diaudit).
+
+Kalau ada nilai untuk kategori yang sama di kedua record, skrip berhenti dan menampilkan
+perbandingan isinya (`kolom: dari=... ke=...`), lalu meminta satu keputusan:
+
+```bash
+php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=ke    # pakai nilai record yang dipertahankan
+php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=dari  # pakai nilai record duplikat
+```
+
+Pilih berdasarkan siapa yang terakhir mengisi nilai untuk kelas itu, lalu tambahkan
+`--apply` pada perintah yang sama.
 
 Backup dulu sebelum `--apply`:
 
