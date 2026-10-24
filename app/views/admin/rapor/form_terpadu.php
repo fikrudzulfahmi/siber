@@ -148,7 +148,7 @@
 
                         <div class="row mt-4">
                             <div class="col-12 d-flex justify-content-end mb-4">
-                                <a href="?controller=rapor&method=index" class="btn btn-outline-secondary me-2">Batal</a>
+                                <a href="?controller=rapor&method=index<?= isset($_GET['id_kelas']) ? '&id_kelas=' . (int) $_GET['id_kelas'] : '' ?>" class="btn btn-outline-secondary me-2">Batal</a>
                                 <button type="submit" class="btn bg-gradient-success">
                                     <i class="material-icons text-sm me-2">save</i> Simpan Semua Data
                                 </button>

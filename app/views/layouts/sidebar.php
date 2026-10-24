@@ -200,7 +200,7 @@ if (!function_exists('collapseItem')) {
                 ); ?>
             <?php endif; ?>
 
-            <?php if (isAnyLevel($id_level, [1, 3])): ?>
+            <?php if (isAnyLevel($id_level, [1, 3, 5])): ?>
                 <?php collapseItem(
                     "collapseRapor",
                     "Layanan Rapor",
@@ -215,7 +215,7 @@ if (!function_exists('collapseItem')) {
         </li>
         ' : '') . '
         
-        ' . (isAnyLevel($id_level, [3]) ? '
+        ' . (isAnyLevel($id_level, [1, 3, 5]) ? '
         <li class="sidebar-item">
             <a class="nav-link text-white ' . (isActive("rapor", "index") ? "active bg-gradient-success" : "") . '" href="?controller=rapor&method=index">
                 <i class="material-icons me-2 opacity-10">edit_note</i> Input Rapor Siswa
@@ -691,7 +691,7 @@ if (!function_exists('collapseItem')) {
                 ); ?>
             <?php endif; ?>
 
-            <?php if (isAnyLevel($id_level, [1, 3])): ?>
+            <?php if (isAnyLevel($id_level, [1, 3, 5])): ?>
                 <?php collapseItem(
                     "collapseRapor",
                     "Layanan Rapor",
@@ -706,7 +706,7 @@ if (!function_exists('collapseItem')) {
         </li>
         ' : '') . '
         
-        ' . (isAnyLevel($id_level, [3]) ? '
+        ' . (isAnyLevel($id_level, [1, 3, 5]) ? '
         <li class="sidebar-item">
             <a class="nav-link text-white ' . (isActive("rapor", "index") ? "active bg-gradient-success" : "") . '" href="?controller=rapor&method=index">
                 <i class="material-icons me-2 opacity-10">edit_note</i> Input Rapor Siswa

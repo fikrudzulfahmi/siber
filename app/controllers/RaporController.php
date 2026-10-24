@@ -34,14 +34,49 @@ class RaporController extends BaseController
             exit;
         }
 
-        $stmt = $this->db->prepare("SELECT * FROM kelas WHERE wali_kelas = ?");
-        $stmt->execute([$id_employe]);
-        $kelas = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Admin (1) dan Waka Kurikulum (5) boleh membuka rapor semua kelas.
+        // Walikelas (3) tetap terkunci ke kelas yang diampu.
+        $pengawas = sec_has_level([1, 5]);
+        $daftarKelas = [];
 
-        if (!$kelas) {
-            setFlash('danger', 'Hanya Walikelas yang dapat mengakses menu ini.');
-            header("Location: ?controller=dashboard");
-            exit;
+        if ($pengawas) {
+            $stmt = $this->db->prepare("
+                SELECT k.id_kelas, k.kelas, k.tingkat, COUNT(DISTINCT p.id_siswa) AS jml_siswa
+                FROM kelas k
+                JOIN ploting_siswa p ON p.id_kelas = k.id_kelas AND p.id_tahun = ?
+                JOIN siswa s ON s.id_siswa = p.id_siswa AND " . siswa_aktif_sql('s') . "
+                GROUP BY k.id_kelas, k.kelas, k.tingkat
+                ORDER BY k.tingkat ASC, k.kelas ASC
+            ");
+            $stmt->execute([$setting['id_tahun_pelajaran']]);
+            $daftarKelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!$daftarKelas) {
+                setFlash('danger', 'Belum ada kelas yang memiliki siswa aktif pada tahun pelajaran ini.');
+                header("Location: ?controller=dashboard");
+                exit;
+            }
+
+            $id_kelas = isset($_GET['id_kelas']) ? (int) $_GET['id_kelas'] : 0;
+            $kelas = $daftarKelas[0];
+            if ($id_kelas > 0) {
+                foreach ($daftarKelas as $dk) {
+                    if ((int) $dk['id_kelas'] === $id_kelas) {
+                        $kelas = $dk;
+                        break;
+                    }
+                }
+            }
+        } else {
+            $stmt = $this->db->prepare("SELECT * FROM kelas WHERE wali_kelas = ?");
+            $stmt->execute([$id_employe]);
+            $kelas = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$kelas) {
+                setFlash('danger', 'Hanya Walikelas yang dapat mengakses menu ini.');
+                header("Location: ?controller=dashboard");
+                exit;
+            }
         }
 
         // AMBIL PROGRES NILAI
@@ -106,6 +141,12 @@ class RaporController extends BaseController
             }
 
             $id_siswa = $_GET['id_siswa'];
+
+            if (!$this->bolehAksesSiswa((int) $id_siswa)) {
+                echo json_encode(['error' => 'Anda tidak memiliki hak akses untuk melihat nilai siswa ini.']);
+                exit;
+            }
+
             $setting = $this->raporModel->getActiveSetting();
 
             if (!$setting) {
@@ -141,6 +182,7 @@ class RaporController extends BaseController
     public function edit_rapor()
     {
         $id_siswa = $_GET['id_siswa'];
+        $this->pastikanBolehSiswa((int) $id_siswa);
         $setting = $this->raporModel->getActiveSetting();
 
         // 1. Ambil Data Rapor Utama
@@ -186,6 +228,47 @@ class RaporController extends BaseController
         $dataSiswa = $stmt->fetch(PDO::FETCH_ASSOC);
 
         include '../app/views/admin/rapor/form_terpadu.php';
+    }
+
+    /**
+     * Admin & Waka Kurikulum boleh membuka rapor semua siswa.
+     * Walikelas hanya untuk siswa di kelas yang diampu pada tahun ajaran aktif.
+     */
+    private function bolehAksesSiswa(int $id_siswa): bool
+    {
+        if (sec_has_level([1, 5])) {
+            return true;
+        }
+
+        $setting = $this->raporModel->getActiveSetting();
+        if (!$setting || !$id_siswa) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("SELECT 1 FROM ploting_siswa p
+            JOIN kelas k ON k.id_kelas = p.id_kelas
+            WHERE p.id_siswa = ? AND p.id_tahun = ? AND k.wali_kelas = ?");
+        $stmt->execute([$id_siswa, $setting['id_tahun_pelajaran'], $_SESSION['user']['id']]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    private function pastikanBolehSiswa(int $id_siswa): void
+    {
+        if (!$this->bolehAksesSiswa($id_siswa)) {
+            sec_require_level([1, 5], 'Anda tidak memiliki hak akses untuk membuka rapor siswa ini.');
+        }
+    }
+
+    private function pastikanBolehKelas(int $id_kelas): void
+    {
+        if (sec_has_level([1, 5])) {
+            return;
+        }
+        $stmt = $this->db->prepare("SELECT 1 FROM kelas WHERE id_kelas = ? AND wali_kelas = ?");
+        $stmt->execute([$id_kelas, $_SESSION['user']['id']]);
+        if (!$stmt->fetchColumn()) {
+            sec_require_level([1, 5], 'Anda tidak memiliki hak akses untuk membuka kelas ini.');
+        }
     }
 
     public function update_terpadu()
@@ -255,7 +338,22 @@ class RaporController extends BaseController
 
                 $this->db->commit();
                 setFlash('success', 'Data Rapor Terpadu berhasil disimpan.');
-                header("Location: index.php?controller=rapor&method=index");
+
+                $tujuan = 'index.php?controller=rapor&method=index';
+                if (sec_has_level([1, 5])) {
+                    $stmtKelas = $this->db->prepare("SELECT ps.id_kelas
+                        FROM rapor_siswa rs
+                        JOIN rapor_setting rset ON rs.id_rapor = rset.id_rapor
+                        JOIN ploting_siswa ps ON ps.id_siswa = rs.id_siswa AND ps.id_tahun = rset.id_tahun_pelajaran
+                        WHERE rs.id_rapor_siswa = ?");
+                    $stmtKelas->execute([$id_rapor_siswa]);
+                    $idKelasKembali = (int) $stmtKelas->fetchColumn();
+                    if ($idKelasKembali > 0) {
+                        $tujuan .= '&id_kelas=' . $idKelasKembali;
+                    }
+                }
+
+                header("Location: " . $tujuan);
                 exit;
             } catch (Exception $e) {
                 $this->db->rollBack();
@@ -274,6 +372,7 @@ class RaporController extends BaseController
         }
 
         $id_siswa = $_GET['id_siswa'];
+        $this->pastikanBolehSiswa((int) $id_siswa);
         $setting = $this->raporModel->getActiveSetting();
         if (!$setting) {
             die("Periode rapor aktif tidak ditemukan.");
@@ -407,6 +506,7 @@ class RaporController extends BaseController
         }
 
         $id_kelas = $_GET['id_kelas'];
+        $this->pastikanBolehKelas((int) $id_kelas);
         $setting = $this->raporModel->getActiveSetting();
         if (!$setting) {
             die("Periode rapor aktif tidak ditemukan.");

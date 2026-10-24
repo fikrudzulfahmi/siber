@@ -25,6 +25,19 @@
                                 Manajemen Rapor: <?= htmlspecialchars($setting['jenis_rapor']) ?> (<?= htmlspecialchars($setting['tahun_pelajaran']) ?>)
                             </h6>
                             <small class="text-white opacity-8">Kelas: <?= htmlspecialchars($kelas['kelas']) ?></small>
+                            <?php if (!empty($daftarKelas)): ?>
+                                <form method="get" action="index.php" class="mt-2 mb-0">
+                                    <input type="hidden" name="controller" value="rapor">
+                                    <input type="hidden" name="method" value="index">
+                                    <select name="id_kelas" class="form-select form-select-sm" onchange="this.form.submit()" style="min-width:240px;">
+                                        <?php foreach ($daftarKelas as $dk): ?>
+                                            <option value="<?= (int) $dk['id_kelas'] ?>" <?= ((int) $dk['id_kelas'] === (int) $kelas['id_kelas']) ? 'selected' : '' ?>>
+                                                <?= sec_e($dk['kelas']) ?> &mdash; <?= (int) $dk['jml_siswa'] ?> siswa
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </form>
+                            <?php endif; ?>
                         </div>
                         <div>
                             <a href="index.php?controller=rapor&method=cetak_peringkat&id_kelas=<?= $kelas['id_kelas'] ?>" class="btn bg-profile-button btn-sm text-white mb-0 shadow-sm" target="_blank" style="background-color: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);">
@@ -82,7 +95,7 @@
                                             <span class="badge badge-sm <?= $s['has_catatan'] ? 'bg-gradient-success' : 'bg-gradient-secondary' ?>">CAT</span>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <a href="?controller=rapor&method=edit_rapor&id_siswa=<?= $s['id_siswa'] ?>" class="btn btn-link text-primary btn-sm mb-0">Input</a>
+                                            <a href="?controller=rapor&method=edit_rapor&id_siswa=<?= $s['id_siswa'] ?>&id_kelas=<?= $kelas['id_kelas'] ?>" class="btn btn-link text-primary btn-sm mb-0">Input</a>
                                             <a href="?controller=rapor&method=cetak&id_siswa=<?= $s['id_siswa'] ?>" target="_blank" class="btn btn-link text-dark btn-sm mb-0">Cetak</a>
                                         </td>
                                     </tr>
