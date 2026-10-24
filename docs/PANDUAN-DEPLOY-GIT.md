@@ -413,12 +413,17 @@ Kalau ada nilai untuk kategori yang sama di kedua record, skrip berhenti dan men
 perbandingan isinya (`kolom: dari=... ke=...`), lalu meminta satu keputusan:
 
 ```bash
-php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=ke    # pakai nilai record yang dipertahankan
-php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=dari  # pakai nilai record duplikat
+php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=isi   # pilih otomatis: yang isinya lebih lengkap
+php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=ke    # selalu pakai nilai record yang dipertahankan
+php scripts/merge_siswa.php --dari=ID --ke=ID --nilai=dari  # selalu pakai nilai record duplikat
 ```
 
-Pilih berdasarkan siapa yang terakhir mengisi nilai untuk kelas itu, lalu tambahkan
-`--apply` pada perintah yang sama.
+`--nilai=isi` yang paling aman: untuk tiap kategori dipilih baris yang kolom angkanya
+terisi (bukan 0/NULL); kalau keduanya sama lengkap, dipakai record yang dipertahankan.
+Jangan pakai `--nilai=dari` atau `--nilai=ke` kalau sebagian nilai kosong di salah satu
+record — nilai yang terisi bisa tertimpa angka 0.
+
+Tambahkan `--apply` pada perintah yang sama setelah daftar rencana terbaca benar.
 
 Backup dulu sebelum `--apply`:
 

@@ -39,8 +39,8 @@ $apply  = array_key_exists('apply', $opsi);
 // Pilihan untuk nilai yang ada di kedua record: 'ke' (record yang dipertahankan)
 // atau 'dari' (record duplikat). Kosong = berhenti dan minta keputusan.
 $pilihanNilai = isset($opsi['nilai']) ? strtolower(trim((string) $opsi['nilai'])) : null;
-if ($pilihanNilai !== null && !in_array($pilihanNilai, ['ke', 'dari'], true)) {
-    fwrite(STDERR, "--nilai hanya menerima 'ke' atau 'dari'.\n");
+if ($pilihanNilai !== null && !in_array($pilihanNilai, ['ke', 'dari', 'isi'], true)) {
+    fwrite(STDERR, "--nilai hanya menerima 'ke', 'dari', atau 'isi'.\n");
     exit(1);
 }
 
@@ -218,6 +218,26 @@ foreach ($tabelAnak as $tabel => $kunci) {
             $row['id_ke'],
             $beda ? ' -> ' . implode('; ', $beda) : ' -> isi sama'
         );
+        // Skor isi: berapa kolom angka yang terisi (bukan 0/NULL).
+        // Dipakai untuk --nilai=isi: record dengan isi lebih lengkap menang.
+        $skor = ['dari' => 0, 'ke' => 0];
+        foreach (['dari', 'ke'] as $sisi) {
+            foreach (($isi[$sisi] ?? []) as $kolom => $nilai) {
+                if (in_array($kolom, [$pk, 'id_siswa', 'id_kategori'], true)) {
+                    continue;
+                }
+                if (is_numeric($nilai) && (float) $nilai != 0.0) {
+                    $skor[$sisi]++;
+                }
+            }
+        }
+        if ($pilihanNilai === 'isi') {
+            $row['pilih'] = ($skor['dari'] > $skor['ke']) ? 'dari' : 'ke';
+            $row['skor_dari'] = $skor['dari'];
+            $row['skor_ke'] = $skor['ke'];
+        } else {
+            $row['pilih'] = $pilihanNilai;
+        }
         $konflikNilai[] = $row;
     }
 }
@@ -232,9 +252,14 @@ if ($konflik) {
         echo "  --nilai=dari  -> pakai nilai milik record duplikat (ID $idDari)\n";
         exit(2);
     }
-    printf("\n  Nilai yang dipakai: record %s; baris nilai satunya dihapus.\n", $pilihanNilai === 'ke' ? $idKe : $idDari);
+    if ($pilihanNilai === 'isi') {
+        echo "\n  Nilai dipilih per kategori: yang isinya lebih lengkap dipertahankan.\n";
+    } else {
+        printf("\n  Nilai yang dipakai: record %s; baris nilai satunya dihapus.\n", $pilihanNilai === 'ke' ? $idKe : $idDari);
+    }
+} else {
+    echo "  Tidak ada konflik nilai.\n";
 }
-echo "  Tidak ada konflik nilai.\n";
 if ($absensiGanda) {
     printf("  %d absensi ganda akan dirapikan otomatis (satu status per jurnal).\n", count($absensiGanda));
 }
@@ -265,8 +290,9 @@ foreach ($tabelAnak as $tabel => $kunci) {
 $bentrokPlotting = [];
 $plottingPindah = [];
 if (tabelAda($db, 'ploting_siswa')) {
+    $pkPlot = kolomPrimary($db, 'ploting_siswa') ?: 'id_ploting';
     $stmt = $db->prepare("
-        SELECT a.id_ploting AS id_dari, b.id_ploting AS id_ke, a.id_kelas, a.id_tahun
+        SELECT a.`$pkPlot` AS id_dari, b.`$pkPlot` AS id_ke, a.id_kelas, a.id_tahun
         FROM ploting_siswa a
         JOIN ploting_siswa b
           ON b.id_kelas = a.id_kelas AND b.id_tahun = a.id_tahun AND b.id_siswa = :ke
@@ -276,7 +302,7 @@ if (tabelAda($db, 'ploting_siswa')) {
     $bentrokPlotting = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $stmt = $db->prepare("
-        SELECT a.id_ploting, a.id_kelas, a.id_tahun
+        SELECT a.`$pkPlot` AS id_ploting, a.id_kelas, a.id_tahun
         FROM ploting_siswa a
         WHERE a.id_siswa = :dari
           AND NOT EXISTS (
@@ -300,11 +326,17 @@ if (tabelAda($db, 'ploting_siswa')) {
 }
 
 foreach ($konflikNilai as $row) {
+    $pilihKe = ($row['pilih'] === 'ke');
+    $keterangan = '';
+    if ($pilihanNilai === 'isi') {
+        $keterangan = sprintf(' (terisi: dari %d, ke %d kolom)', $row['skor_dari'], $row['skor_ke']);
+    }
     $rencana[] = sprintf(
-        'nilai kategori %s: pakai nilai dari record %s, hapus baris id %s',
+        'nilai kategori %s: pakai nilai record %s%s, hapus baris id %s',
         $row['id_kategori'],
-        $pilihanNilai === 'ke' ? $idKe : $idDari,
-        $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke']
+        $pilihKe ? $idKe : $idDari,
+        $keterangan,
+        $pilihKe ? $row['id_dari'] : $row['id_ke']
     );
 }
 
@@ -363,36 +395,28 @@ try {
                 $db->prepare("UPDATE `$tabel` SET `$kolom` = ? WHERE `$kolom` = ?")
                    ->execute([$row['id_ke'], $row['id_dari']]);
             }
-            $db->prepare("DELETE FROM ploting_siswa WHERE id_ploting = ?")->execute([$row['id_dari']]);
+            $db->prepare("DELETE FROM ploting_siswa WHERE `$pkPlot` = ?")->execute([$row['id_dari']]);
             printf("  plotting %d dibuang (anak-anak dipindah ke plotting %d)\n", $row['id_dari'], $row['id_ke']);
         }
     }
 
     // 2. Nilai ganda: simpan satu baris per kategori sesuai pilihan --nilai.
     foreach ($konflikNilai as $row) {
-        $idHapus = $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke'];
+        $idHapus = ($row['pilih'] === 'ke') ? $row['id_dari'] : $row['id_ke'];
         $db->prepare("DELETE FROM nilai WHERE id_nilai = ?")->execute([$idHapus]);
         printf("  nilai kategori %s: baris %d dihapus\n", $row['id_kategori'], $idHapus);
     }
 
     // 3. Absensi ganda: satu status per siswa per jurnal.
-    foreach ($konflikNilai as $row) {
-    $rencana[] = sprintf(
-        'nilai kategori %s: pakai nilai dari record %s, hapus baris id %s',
-        $row['id_kategori'],
-        $pilihanNilai === 'ke' ? $idKe : $idDari,
-        $pilihanNilai === 'ke' ? $row['id_dari'] : $row['id_ke']
-    );
-}
-
-foreach ($absensiGanda as $row) {
+    $pkHadir = kolomPrimary($db, 'jurnal_kehadiran') ?: 'id_jurnal_kehadiran';
+    foreach ($absensiGanda as $row) {
         $statusDari = (string) $row['status_dari'];
         $statusKe   = (string) $row['status_ke'];
         if ($statusDari !== $statusKe && $statusDari !== 'H') {
-            $db->prepare("UPDATE jurnal_kehadiran SET status = ? WHERE id_jurnal_kehadiran = ?")
+            $db->prepare("UPDATE jurnal_kehadiran SET status = ? WHERE `$pkHadir` = ?")
                ->execute([$statusDari, $row['id_ke']]);
         }
-        $db->prepare("DELETE FROM jurnal_kehadiran WHERE id_jurnal_kehadiran = ?")
+        $db->prepare("DELETE FROM jurnal_kehadiran WHERE `$pkHadir` = ?")
            ->execute([$row['id_dari']]);
         printf("  absensi jurnal %s dirapikan\n", $row['id_jurnal']);
     }
