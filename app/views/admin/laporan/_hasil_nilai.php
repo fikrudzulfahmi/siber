@@ -41,7 +41,15 @@ $customNama = json_decode($hasil_laporan[0]['nama_ns'] ?? '{}', true);
         </thead>
         <tbody>
             <?php $no = 1;
-            foreach ($hasil_laporan as $nilai): ?>
+            foreach ($hasil_laporan as $nilai):
+                // Nilai 0 dianggap "belum diisi" (sama seperti hitungan nilai kosong):
+                // baris kategori baru dibuat otomatis dengan nilai 0, bukan NULL,
+                // sehingga tanpa ini sel kosong tercetak 0 dan rata-rata tampak 0,0.
+                $kosong = static function ($v) {
+                    return $v === null || $v === '' || (float) $v == 0.0;
+                };
+                $belum_ada_nilai = ((float) ($nilai['persentase_tuntas'] ?? 0)) == 0.0;
+            ?>
                 <tr>
                     <td class="text-center text-sm"><?= $no++ ?></td>
                     <td>
@@ -53,21 +61,21 @@ $customNama = json_decode($hasil_laporan[0]['nama_ns'] ?? '{}', true);
                     for ($i = 1; $i <= $banyak_ns; $i++):
                     ?>
                         <td class="text-center text-xs">
-                            <?= ($nilai['n' . $i] !== null && $nilai['n' . $i] !== '') ? htmlspecialchars($nilai['n' . $i]) : '-' ?>
+                            <?= $kosong($nilai['n' . $i] ?? null) ? '-' : htmlspecialchars($nilai['n' . $i]) ?>
                         </td>
                     <?php endfor; ?>
 
                     <td class="text-center bg-light">
-                        <span class="text-xs font-weight-bold"><?= number_format($nilai['rata'] ?? 0, 1) ?></span>
+                        <span class="text-xs font-weight-bold"><?= $belum_ada_nilai ? '-' : number_format($nilai['rata'] ?? 0, 1) ?></span>
                     </td>
                     <td class="text-center bg-warning text-white">
-                        <span class="text-xs font-weight-bold"><?= htmlspecialchars($nilai['sts'] ?? '-') ?></span>
+                        <span class="text-xs font-weight-bold"><?= $kosong($nilai['sts'] ?? null) ? '-' : htmlspecialchars($nilai['sts']) ?></span>
                     </td>
                     <td class="text-center bg-info text-white">
-                        <span class="text-xs font-weight-bold"><?= htmlspecialchars($nilai['sas'] ?? '-') ?></span>
+                        <span class="text-xs font-weight-bold"><?= $kosong($nilai['sas'] ?? null) ? '-' : htmlspecialchars($nilai['sas']) ?></span>
                     </td>
                     <td class="text-center bg-success">
-                        <span class="text-white text-xs font-weight-bold"><?= number_format($nilai['nilai_raport'] ?? 0, 1) ?></span>
+                        <span class="text-white text-xs font-weight-bold"><?= $belum_ada_nilai ? '-' : number_format($nilai['nilai_raport'] ?? 0, 1) ?></span>
                     </td>
 
                     <td class="text-center">
