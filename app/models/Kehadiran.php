@@ -125,6 +125,7 @@ class Kehadiran
           AND jk.status != 'H'
           AND ps.id_tahun = :id_tahun
           AND s.status = 'Aktif'
+        ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC
     ";
 
         $paramsKehadiran = [
