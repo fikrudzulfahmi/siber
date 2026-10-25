@@ -205,6 +205,34 @@ class Kategori
         }
     }
 
+    // --- Sinkronisasi: siswa baru yang masuk setelah kategori dibuat ---
+    // Idempotent: hanya menambah baris nilai yang belum ada, tidak menyentuh nilai lama.
+    public function syncNilaiKelas($id_kelas, $id_tahun)
+    {
+        if (empty($id_kelas) || empty($id_tahun)) return 0;
+
+        $sql = "INSERT INTO nilai (id_kategori, id_siswa)
+                SELECT kn.id_kategori, ps.id_siswa
+                FROM kategori_nilai kn
+                JOIN mapel_guru mg ON mg.id_mapel_guru = kn.id_mapel_guru
+                JOIN ploting_siswa ps ON ps.id_kelas = mg.id_kelas
+                                     AND ps.id_tahun = mg.id_tahun_pelajaran
+                JOIN siswa s ON s.id_siswa = ps.id_siswa
+                WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ?
+                  AND " . siswa_aktif_sql('s') . "
+                  AND NOT EXISTS (
+                      SELECT 1 FROM nilai n
+                      WHERE n.id_kategori = kn.id_kategori AND n.id_siswa = ps.id_siswa
+                  )";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_kelas, $id_tahun]);
+            return $stmt->rowCount();
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
     public function update($data)
     {
         $sql = "UPDATE kategori_nilai SET kategori = :kategori, banyak_ns = :banyak_ns, nama_ns = :nama_ns, 

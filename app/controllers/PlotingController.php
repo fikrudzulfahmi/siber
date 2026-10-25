@@ -100,6 +100,12 @@ class PlotingController extends BaseController
             }
         }
 
+        // Siswa baru: buatkan baris nilai untuk kategori yang sudah ada
+        if ($sukses > 0) {
+            require_once __DIR__ . '/../models/Kategori.php';
+            (new Kategori($this->db))->syncNilaiKelas($id_kelas_tujuan, $id_tahun_tujuan);
+        }
+
         header('Content-Type: application/json');
         echo json_encode([
             'status' => 'success',

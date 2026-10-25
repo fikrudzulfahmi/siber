@@ -485,3 +485,45 @@ Yang dijaga:
 Deploy: cukup `git pull origin main` di folder aplikasi. Tidak ada tabel/kolom baru.
 Uji cepat: login sebagai waka kurikulum -> Layanan Rapor -> ganti kelas di dropdown ->
 buka Input pada satu siswa -> Simpan -> harus kembali ke kelas yang sama.
+
+---
+
+## 16. Siswa baru dan baris nilai kategori (tanpa perubahan database)
+
+Dulu baris `nilai` hanya dibuat sekali, yaitu saat guru **membuat kategori**. Siswa yang
+diploting ke kelas **setelah** kategori itu ada tidak punya baris nilai, sehingga tidak
+muncul di halaman input nilai, rekap, leger, maupun rapor.
+
+Sekarang ada sinkronisasi `Kategori::syncNilaiKelas($id_kelas, $id_tahun)` yang dipanggil
+otomatis di dua titik:
+
+1. saat siswa diploting ke kelas (menu **Ploting** → Simpan), dan
+2. saat guru membuka halaman **input nilai** sebuah kategori.
+
+Sifatnya idempotent dan hanya menambah:
+
+- hanya membuat baris untuk pasangan kategori–siswa yang belum ada;
+- nilai yang sudah diisi tidak diubah, tidak dikosongkan, dan tidak dihapus;
+- siswa berstatus nonaktif (keluar/lulus/pindah/…) tidak dibuatkan baris;
+- aman dipanggil berkali-kali, tidak menghasilkan baris ganda.
+
+Artinya siswa lama tidak perlu mengisi ulang apa pun, dan siswa baru langsung ikut serta
+di semua kategori yang sudah ada. Kategori yang dibuat setelah siswa masuk tetap terisi
+lewat proses pembuatan kategori seperti biasa.
+
+Cek di production (read-only):
+
+```sql
+-- siswa yang belum punya baris nilai pada kategori kelasnya
+SELECT mg.id_kelas, mg.id_tahun_pelajaran, kn.id_kategori, s.nama_siswa
+FROM kategori_nilai kn
+JOIN mapel_guru mg ON mg.id_mapel_guru = kn.id_mapel_guru
+JOIN ploting_siswa ps ON ps.id_kelas = mg.id_kelas AND ps.id_tahun = mg.id_tahun_pelajaran
+JOIN siswa s ON s.id_siswa = ps.id_siswa
+LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = ps.id_siswa
+WHERE n.id_nilai IS NULL
+ORDER BY mg.id_kelas, s.nama_siswa;
+```
+
+Kalau query di atas mengembalikan baris, cukup buka halaman input nilai kategori terkait
+sekali (atau ploting ulang siswanya) — baris yang kurang akan dibuat otomatis.

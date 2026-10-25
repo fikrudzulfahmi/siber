@@ -130,6 +130,10 @@ class KategoriController
 
         $model = new Kategori($this->db);
         $info = $model->getInfoMapelGuru($id_mapel_guru);
+        // Siswa baru yang diploting setelah kategori dibuat otomatis dibuatkan baris nilai
+        if ($info) {
+            $model->syncNilaiKelas($info['id_kelas'], $info['id_tahun']);
+        }
         $nilaiList = $model->getByKategori($id_kategori);
         $kategoriInfo = $model->find($id_kategori);
 
