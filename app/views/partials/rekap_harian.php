@@ -209,7 +209,9 @@ foreach ($jurnalMengajar as $jm) {
                     <div>
                         <h6 class="mb-0">Jurnal Struktural Hari Ini</h6>
                         <p class="text-xs text-muted mb-0">
-                            <?php if (!empty($jurnalStruktural['jadwal'])): ?>
+                            <?php if (!empty($jurnalStruktural['libur'])): ?>
+                                Libur: <?= sec_e($jurnalStruktural['libur']) ?>
+                            <?php elseif (!empty($jurnalStruktural['jadwal'])): ?>
                                 Jam kerja <?= sec_e($jurnalStruktural['jadwal']['jam_masuk']) ?> - <?= sec_e($jurnalStruktural['jadwal']['jam_pulang']) ?>
                             <?php else: ?>
                                 Tidak ada jadwal kerja hari ini
@@ -218,8 +220,10 @@ foreach ($jurnalMengajar as $jm) {
                     </div>
                     <?php if (!empty($jurnalStruktural['sudah'])): ?>
                         <span class="badge bg-gradient-success">Sudah diisi</span>
-                    <?php else: ?>
+                    <?php elseif (!empty($jurnalStruktural['wajib_isi'])): ?>
                         <span class="badge bg-gradient-danger">Belum diisi</span>
+                    <?php else: ?>
+                        <span class="badge bg-secondary">Tidak wajib diisi</span>
                     <?php endif; ?>
                 </div>
                 <div class="card-body pt-3">
@@ -238,12 +242,23 @@ foreach ($jurnalMengajar as $jm) {
                             <?= sec_e($jurnalStruktural['catatan'] !== '' ? mb_substr($jurnalStruktural['catatan'], 0, 220) : 'Tidak ada catatan akhir.') ?>
                         </p>
                         <a href="?controller=jurnalStruktural&method=index" class="text-sm">Lihat / perbarui</a>
-                    <?php else: ?>
+                    <?php elseif (!empty($jurnalStruktural['wajib_isi'])): ?>
                         <p class="text-sm text-muted mb-2">
                             Jurnal struktural hari ini belum diisi.
                         </p>
                         <a href="?controller=jurnalStruktural&method=index" class="btn btn-sm bg-gradient-info mb-0">
                             <i class="material-icons-round me-1">edit_note</i> Isi sekarang
+                        </a>
+                    <?php else: ?>
+                        <p class="text-sm text-muted mb-2">
+                            <?php if (!empty($jurnalStruktural['libur'])): ?>
+                                Hari libur, jurnal struktural tidak wajib diisi.
+                            <?php else: ?>
+                                Tidak ada jadwal kerja hari ini, jurnal struktural tidak wajib diisi.
+                            <?php endif; ?>
+                        </p>
+                        <a href="?controller=jurnalStruktural&method=index" class="text-sm text-muted">
+                            Tetap isi jurnal (opsional)
                         </a>
                     <?php endif; ?>
                 </div>

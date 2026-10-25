@@ -684,7 +684,7 @@ Halaman utama (`controller=dashboard`) kini menampilkan sampai tiga kartu rekap 
 
 1. **Presensi Harian** — jam masuk/pulang dari finger (`attendance`), status Tepat Waktu / Terlambat N menit / Pulang Cepat N menit. Sumber urutan prioritas: kegiatan lembaga (`kegiatan` + `kegiatan_peserta.pin_guru`) → jadwal kerja (`jadwal`) → jam scan mentah. Tanpa scan sama sekali tetap tampil "Belum melakukan Presensi" / "Alpa" (kecuali hari libur nasional). Sudah scan tapi tidak punya jadwal maupun kegiatan → jam scan tetap ditampilkan dengan catatan **tidak terekap karena tidak terjadwal**.
 2. **Jurnal Mengajar Hari Ini** — semua slot `jadwal_pelajaran` hari itu (bukan hanya yang kosong), badge **Sudah** (+ jam input), **Belum** (jam sudah lewat), **Belum waktunya** (jam belum mulai). Satu mapel+kelas = satu jurnal per hari. Kartu tidak muncul bila guru tidak punya jam mengajar hari itu.
-3. **Jurnal Struktural Hari Ini** — hanya untuk **Tenaga Kependidikan** (`employe.id_jabatan = 2`). Tetap tampil di hari tanpa jadwal kerja. Sudah isi → ringkasan catatan + jumlah program kerja; belum → badge merah + tombol isi.
+3. **Jurnal Struktural Hari Ini** — hanya untuk **Tenaga Kependidikan** (`employe.id_jabatan = 2`). Kartu tetap tampil setiap hari, tetapi **hanya menagih pengisian bila hari ini ada jadwal kerja dan bukan hari libur**: kondisi itu → badge merah *Belum diisi* + tombol Isi sekarang. Tanpa jadwal kerja atau pada hari libur → badge abu *Tidak wajib diisi* + keterangan, tanpa tombol (tetap ada tautan kecil "Tetap isi jurnal (opsional)"). Sudah isi → ringkasan catatan + jumlah program kerja.
 
 ### Yang berubah
 

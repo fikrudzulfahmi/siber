@@ -331,11 +331,17 @@ class DashboardController extends BaseController
 
         $presensiModel = new Presensi($this->db);
         $jadwal = $presensiModel->getRingkasanJadwal($pegawai['pin'], date('l'));
+        $libur  = $presensiModel->cekLibur(date('Y-m-d'));
 
         $model  = new JurnalStrukturalModel($this->db);
         $hariIni = $model->getStatusHariIni($id_user, date('Y-m-d'), $id_tahun);
 
         return [
+            // Jurnal struktural hanya ditagih kalau hari ini ada jadwal kerja
+            // dan bukan hari libur. Di luar itu kartu tetap tampil, tapi
+            // statusnya bukan "Belum diisi".
+            'libur'          => $libur ? ($libur['keterangan'] ?? 'Libur') : null,
+            'wajib_isi'      => $jadwal !== null && !$libur,
             'jadwal' => $jadwal ? [
                 'jam_masuk'  => substr($jadwal['jam_masuk'], 0, 5),
                 'jam_pulang' => substr($jadwal['jam_pulang'], 0, 5),
