@@ -220,7 +220,13 @@
                     window.location.href = el.href;
                 }
             } else if (el.form) {
-                el.form.submit();
+                // requestSubmit agar validasi HTML5 dijalankan dan nama/tombol
+                // yang diklik ikut terkirim.
+                if (typeof el.form.requestSubmit === 'function') {
+                    el.form.requestSubmit(el);
+                } else {
+                    el.form.submit();
+                }
             } else {
                 el.click();
             }
