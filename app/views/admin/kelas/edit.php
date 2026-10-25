@@ -1,18 +1,5 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

@@ -1,37 +1,11 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#f44336',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <div class="container-fluid py-4">
     <div class="mb-3">
         <a href="?controller=user&method=index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i> Kembali
+            <i class="material-icons-round me-2">arrow_back</i> Kembali
         </a>
     </div>
 
@@ -47,8 +21,8 @@
 
                 <div class="card-body px-4 pb-2">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                            <i class="fas fa-plus"></i> Tambah Jadwal
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                            <i class="material-icons-round">add</i> Tambah Jadwal
                         </button>
                     </div>
                 </div>
@@ -87,7 +61,7 @@
                                         <td><?= htmlspecialchars($j['waktu_pulang']) ?></td>
                                         <td>
                                             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editJadwal<?= $j['id_jadwal'] ?>">Edit</button>
-                                            <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#deleteJadwal<?= $j['id_jadwal'] ?>">Hapus</button>
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteJadwal<?= $j['id_jadwal'] ?>">Hapus</button>
                                         </td>
                                     </tr>
 
@@ -121,7 +95,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-success">Update</button>
                                                     </div>
                                                 </form>
@@ -139,7 +113,7 @@
                                                     <!-- Modal Body -->
                                                     <div class="modal-body">
                                                         <div class="text-center">
-                                                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                                            <i class="material-icons-round text-warning mb-3">warning</i>
                                                             <p class="fw-bold mb-1">Apakah Anda yakin ingin menghapus jadwal pada hari <strong><?= sec_e($j['day']) ?></strong>?</p>
                                                             <p class="text-muted mb-0">Tindakan ini tidak bisa dibatalkan!</p>
                                                         </div>
@@ -196,7 +170,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success">Tambah</button>
                     </div>
                 </form>

@@ -114,48 +114,39 @@
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 7, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 3, // Targetkan kolom ke-4 (indeks 3)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 1, // Targetkan kolom ke-3 (indeks 2)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 8, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 3, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '300px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 4, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '300px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 2, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 5, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 6, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             }
         ]
     });
@@ -179,48 +170,39 @@
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 7, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 3, // Targetkan kolom ke-4 (indeks 3)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 1, // Targetkan kolom ke-3 (indeks 2)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '500px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 8, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 3, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '300px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 4, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '300px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 2, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 5, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             },
             { // ✅ PENYESUAIAN UNTUK WRAP TEXT
                 targets: 6, // Targetkan kolom ke-8 (indeks 7)
-                className: 'wrap-text', // Terapkan kelas CSS
-                width: '250px' // Beri batas lebar agar teks tahu kapan harus turun
+                className: 'wrap-text', // Terapkan kelas CSS // Beri batas lebar agar teks tahu kapan harus turun
             }
         ]
     });
@@ -228,6 +210,9 @@
 
 <!-- ==================== Navigasi mobile ==================== -->
 <script src="assets/js/siber-nav.js?v=1"></script>
+
+<!-- Notifikasi global: toast sukses + SweetAlert untuk error/validasi -->
+<?php require __DIR__ . '/toast.php'; ?>
 <?php
 $controller = $_GET['controller'] ?? '';
 $method = $_GET['method'] ?? '';
@@ -422,7 +407,7 @@ $method = $_GET['method'] ?? '';
                                 .then(data => {
                                     if (data.status === 'success') {
                                         info.event.remove();
-                                        Swal.fire('Berhasil', 'Hari libur dihapus', 'success');
+                                        SiberToast.success('Hari libur dihapus.');
                                     }
                                 });
                         }

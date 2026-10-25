@@ -3,33 +3,7 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
-    <?php if ($msg = getFlash('error')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <div class="row">
         <div class="col-12">
@@ -41,7 +15,7 @@
                 </div>
 
                 <div class="my-4 mx-4">
-                    <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
                         Tambah Jenis Perangkat
                     </button>
                 </div>
@@ -80,7 +54,7 @@
                                             </button>
                                             <?php if ($row['status'] == 1): ?>
                                                 <a href="?controller=jenisPerangkat&method=delete&id=<?= $row['id'] ?>"
-                                                    class="btn btn-dark btn-sm delete-btn">
+                                                    class="btn btn-danger btn-sm delete-btn">
                                                     Nonaktifkan
                                                 </a>
                                             <?php endif; ?>
@@ -113,7 +87,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </div>
@@ -144,7 +118,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">Simpan Perubahan</button>
                 </div>
             </div>

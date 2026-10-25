@@ -3,18 +3,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <div class="row">
         <div class="col-12">
@@ -27,7 +15,7 @@
                 </div>
 
                 <div class="my-4 mx-4">
-                    <a href="?controller=programKerja&method=create" class="btn btn-dark">
+                    <a href="?controller=programKerja&method=create" class="btn btn-success">
                         Tambah Program Kerja
                     </a>
                 </div>
@@ -68,7 +56,7 @@
                                                     Edit
                                                 </a>
                                                 <a href="?controller=programKerja&method=delete&id=<?= sec_e($row['id_program']) ?>"
-                                                    class="btn btn-dark btn-sm delete-btn">
+                                                    class="btn btn-danger btn-sm delete-btn">
                                                     Hapus
                                                 </a>
                                             </td>

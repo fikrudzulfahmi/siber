@@ -1,19 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <div class="container-fluid py-4">
 
@@ -34,7 +21,7 @@
                                 <a href="?controller=siswa&method=create" class="btn btn-success">
                                     <i class="material-icons-round align-middle me-1" style="font-size:18px">add_circle</i> Tambah Siswa
                                 </a>
-                                <a href="TemplateUpload.xlsx" class="btn btn-dark">
+                                <a href="TemplateUpload.xlsx" class="btn btn-outline-dark">
                                     <i class="material-icons-round align-middle me-1" style="font-size:18px">description</i> Download Template
                                 </a>
                             </div>
@@ -116,18 +103,18 @@
                                         </td>
 
                                         <td><?= sec_e($row['nama_wali']) ?></td>
-                                        <td><a href="https://wa.me/<?= sec_e(preg_replace('/^0/', '62', $row['hp_wali'])) ?>" target="_blank" class="text-success fw-bold"><i class="fab fa-whatsapp"></i> <?= sec_e($row['hp_wali']) ?></a></td>
+                                        <td><a href="https://wa.me/<?= sec_e(preg_replace('/^0/', '62', $row['hp_wali'])) ?>" target="_blank" class="text-success fw-bold"><i class="material-icons-round">chat</i> <?= sec_e($row['hp_wali']) ?></a></td>
 
                                         <?php if (!isLevel($id_level, 7)): ?>
                                             <td class="text-center">
                                                 <a href="?controller=siswa&method=edit&id=<?= $row['id_siswa'] ?>" class="btn btn-link text-dark px-2 mb-0">
-                                                    <i class="fas fa-pencil-alt text-dark"></i>
+                                                    <i class="material-icons-round text-dark">edit</i>
                                                 </a>
                                                 <a href="?controller=siswa&method=delete&id=<?= $row['id_siswa'] ?>" class="btn btn-link text-danger px-2 mb-0 delete-btn">
-                                                    <i class="fas fa-trash text-danger"></i>
+                                                    <i class="material-icons-round text-danger">delete</i>
                                                 </a>
                                                 <a href="?controller=siswaKeluar&method=index&id_siswa=<?= $row['id_siswa'] ?>" class="btn btn-link text-warning px-2 mb-0" title="Catat sebagai PD keluar (mutasi, mengundurkan diri, meninggal)">
-                                                    <i class="fas fa-sign-out-alt text-warning"></i>
+                                                    <i class="material-icons-round text-warning">logout</i>
                                                 </a>
                                             </td>
                                         <?php endif; ?>

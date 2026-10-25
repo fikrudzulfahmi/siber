@@ -1,33 +1,7 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
-<?php if ($msg = getFlash('error')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#f44336',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const mapelSelect = document.getElementById('id_mapel_guru');

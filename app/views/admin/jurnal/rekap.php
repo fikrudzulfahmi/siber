@@ -1,45 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('warning')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     /* Perbaiki lebar form control agar tidak melebihi parent */
@@ -228,7 +189,8 @@
                                                     // 1. Render Tabel Informasi Utama
                                                     let html = `
                         <div style="text-align: left; font-size: 14px;">
-                            <table class="table table-bordered" style="table-layout: fixed; width: 100%;">
+                            <div class="table-responsive">
+<table class="table table-bordered" style="table-layout: fixed; width: 100%;">
                                 <tbody>
                                     <tr>
                                         <td style="width: 35%; font-weight: bold; background-color: #f8f9fa;">Mapel / Kelas</td>
@@ -248,6 +210,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+</div>
 
                             <h6 class="mt-3" style="font-weight: bold;">Materi Pembelajaran:</h6>
                             <div style="white-space: pre-wrap; background-color: #f8f9fa; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 15px;">
@@ -255,7 +218,8 @@
                             </div>
 
                             <h6 class="mt-3" style="font-weight: bold;">Daftar Ketidakhadiran Siswa:</h6>
-                            <table class="table table-sm table-striped">
+                            <div class="table-responsive">
+<table class="table table-sm table-striped">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Nama Siswa</th>
@@ -278,7 +242,8 @@
                                                         html += `<tr><td colspan="2" class="text-center text-muted">Semua siswa hadir (Nihil).</td></tr>`;
                                                     }
 
-                                                    html += `</tbody></table></div>`;
+                                                    html += `</tbody></table>
+</div></div>`;
 
                                                     // 3. Tampilkan Modal
                                                     Swal.fire({

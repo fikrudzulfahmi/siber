@@ -75,7 +75,7 @@
                             </div>
 
                             <div class="col-md-5">
-                                <label class="form-label font-weight-bold text-success"><i class="fas fa-users"></i> Pilih Peserta (Bisa Lebih dari Satu)</label>
+                                <label class="form-label font-weight-bold text-success"><i class="material-icons-round">groups</i> Pilih Peserta (Bisa Lebih dari Satu)</label>
                                 <div class="input-group input-group-outline mb-2">
                                     <input type="text" id="searchSiswa" class="form-control" placeholder="Cari nama atau kelas...">
                                 </div>

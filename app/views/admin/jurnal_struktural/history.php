@@ -3,19 +3,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <style>
         .table-responsive .table {
@@ -67,7 +54,7 @@
 
                 <div class="my-4 mx-4">
                     <a href="?controller=jurnalStruktural&method=index"
-                        class="btn btn-dark mb-3">
+                        class="btn btn-outline-secondary mb-3">
                         Kembali Input Jurnal
                     </a>
                 </div>

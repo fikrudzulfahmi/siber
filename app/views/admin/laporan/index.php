@@ -65,8 +65,8 @@
                                 <h2 class="accordion-header">
                                     <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-guru-<?= $id_guru ?>" aria-expanded="false">
                                         <?= htmlspecialchars($guru['nama_guru']) ?>
-                                        <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3"></i>
-                                        <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3"></i>
+                                        <i class="material-icons-round collapse-close text-xs pt-1 position-absolute end-0 me-3">add</i>
+                                        <i class="material-icons-round collapse-open text-xs pt-1 position-absolute end-0 me-3">remove</i>
                                     </button>
                                 </h2>
                                 <div id="collapse-guru-<?= $id_guru ?>" class="accordion-collapse collapse" data-bs-parent="#accordionLaporan">
@@ -145,9 +145,9 @@
                 <p class="text-center">Memuat data nilai...</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <a href="#" id="btn-export-excel" class="btn btn-dark" target="_blank">
-                    <i class="fas fa-file-excel"></i>&nbsp; Export Excel
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                <a href="#" id="btn-export-excel" class="btn btn-outline-dark" target="_blank">
+                    <i class="material-icons-round">table_view</i>&nbsp; Export Excel
                 </a>
             </div>
         </div>

@@ -109,7 +109,7 @@
                                             <td class="text-center">
 
                                                 <!-- Tombol untuk menandai sudah kembali -->
-                                                <button type="button" class="btn btn-sm btn-primary"
+                                                <button type="button" class="btn btn-sm btn-success"
                                                     data-bs-toggle="modal" data-bs-target="#kembaliModal<?= $row['id_perizinan'] ?>">
                                                     Tandai Kembali
                                                 </button>
@@ -152,7 +152,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
                 </form>
             </div>

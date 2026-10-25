@@ -2,27 +2,6 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <!-- Flash Message dengan SweetAlert -->
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: <?= sec_js($msg) ?>,
-            timer: 3000,
-            showConfirmButton: false
-        });
-    </script>
-<?php elseif ($msg = getFlash('error')): ?>
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: <?= sec_js($msg) ?>,
-            timer: 3000,
-            showConfirmButton: false
-        });
-    </script>
-<?php endif; ?>
 
 <!-- Custom Style -->
 <style>

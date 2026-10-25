@@ -1,20 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({ icon: 'success', title: 'Berhasil!', text: <?= sec_js($msg) ?>, confirmButtonColor: '#4caf50', confirmButtonText: 'OK' });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('error')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({ icon: 'error', title: 'Gagal', text: <?= sec_js($msg) ?>, confirmButtonColor: '#d33', confirmButtonText: 'OK' });
-        });
-    </script>
-<?php endif; ?>
 
 <div class="container-fluid py-4">
 
@@ -114,7 +100,7 @@
 
                         <div class="col-12 col-md-2">
                             <button type="submit" class="btn btn-danger btn-sm w-100 mb-0"
-                                    onclick="return confirm('Keluarkan siswa ini? Data nilai tetap tersimpan dan bisa dikembalikan.')">
+                                    data-confirm="Keluarkan siswa ini? Data nilai tetap tersimpan dan bisa dikembalikan.">
                                 <i class="material-icons-round align-middle me-1" style="font-size:18px">logout</i> Keluarkan
                             </button>
                         </div>
@@ -154,7 +140,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-2">
-                            <button type="submit" class="btn btn-dark btn-sm w-100 mb-0"><i class="material-icons-round align-middle me-1" style="font-size:18px">search</i> Filter</button>
+                            <button type="submit" class="btn btn-success btn-sm w-100 mb-0"><i class="material-icons-round align-middle me-1" style="font-size:18px">search</i> Filter</button>
                         </div>
                     </form>
 
@@ -201,7 +187,7 @@
                                                         <input type="hidden" name="id_keluar" value="<?= (int) $r['id_keluar'] ?>">
                                                         <?php if ($filter['riwayat']): ?><input type="hidden" name="riwayat" value="1"><?php endif; ?>
                                                         <button type="submit" class="btn btn-outline-success btn-sm mb-0"
-                                                                onclick="return confirm('Kembalikan siswa ini ke status aktif? Nilainya akan tampil lagi.')">
+                                                                data-confirm="Kembalikan siswa ini ke status aktif? Nilainya akan tampil lagi.">
                                                             <i class="material-icons-round align-middle" style="font-size:18px">undo</i> Kembalikan
                                                         </button>
                                                     </form>

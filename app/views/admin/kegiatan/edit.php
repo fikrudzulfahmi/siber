@@ -108,7 +108,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end mt-4 mb-2">
-                            <a href="?controller=kegiatan&method=index" class="btn btn-secondary me-2">Batal</a>
+                            <a href="?controller=kegiatan&method=index" class="btn btn-outline-secondary me-2">Batal</a>
                             <button type="submit" class="btn btn-info px-5">Update Kegiatan</button>
                         </div>
                     </form>

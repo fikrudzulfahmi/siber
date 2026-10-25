@@ -1,18 +1,5 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
@@ -104,7 +91,7 @@
 
                         <!-- Info Kelas via Ploting -->
                         <div class="alert alert-info py-2 px-3" role="alert">
-                            <i class="fas fa-info-circle me-1"></i>
+                            <i class="material-icons-round me-1">info</i>
                             Penempatan kelas siswa baru diatur melalui menu
                             <strong>Ploting / Kenaikan Kelas</strong> (mode "Siswa Baru") berdasarkan tahun pelajaran.
                         </div>

@@ -562,3 +562,59 @@ pernah berbeda lagi (dulu ada menu yang muncul di desktop tetapi hilang di mobil
 
 Setelah `git pull`, lakukan hard refresh (Ctrl+F5) di HP karena CSS/JS baru
 (`?v=1`) bisa tersimpan di cache browser.
+
+## 18. Notifikasi: toast, SweetAlert, dan pengingat struktural
+
+Tanpa perubahan skema database. Semua file di-commit bersama, cukup `git pull`.
+
+### 18.1 Satu pintu notifikasi
+
+- `layouts/header.php` menyedot `$_SESSION['flash']` sekali ke
+  `$GLOBALS['siber_flashes']` lalu menghapusnya dari session.
+- `layouts/toast.php` memetakan tipe flash:
+  - `success`/`sukses`/`berhasil` -> **toast** hijau di pojok kanan atas.
+  - `warning`/`peringatan` -> toast kuning.
+  - `info` -> toast biru.
+  - `error`/`gagal`/`danger`/`no_student` -> **SweetAlert** (modal) karena
+    biasanya berisi sebab kegagalan yang perlu dibaca.
+- Akibatnya **blok `getFlash()` di dalam view dihapus** (66 blok di 50 file).
+  Jangan menambah lagi: cukup `setFlash('success', '...')` di controller.
+- `public/assets/js/siber-notify.js` menyediakan `SiberToast.success/error/
+  warning/info`, `SiberConfirm({teks, judul, bahaya})`, `SiberDialog(tipe, teks)`.
+- `window.alert` dialihkan ke toast; konfirmasi memakai atribut
+  `data-confirm="pesan"` (menggantikan `onclick="return confirm(...)"`), dan
+  validasi HTML5 (`required`, `pattern`) memunculkan SweetAlert, bukan bubble
+  bawaan browser.
+
+### 18.2 Tombol dan tabel
+
+- `btn-primary` -> `btn-success` di **seluruh** `app/views` (termasuk
+  `satpam/`), sisa 0.
+- `btn-dark` untuk aksi biasa diganti: aksi utama -> `btn-success`, cetak/ekspor
+  -> `btn-outline-dark`, konfirmasi kecil -> `btn-outline-secondary`,
+  hapus/bersihkan -> `btn-danger`.
+- Tombol `Kembali`/`Batal`/`Tutup` yang masih `btn-secondary` solid diubah ke
+  `btn-outline-secondary`.
+- Ikon Font Awesome (`fa fa-*`, `fas fa-*`) diganti Material Icons Round,
+  sisa 0 di seluruh view.
+- `columnDefs: width: '...px'` di konfigurasi DataTables (`layouts/footer.php`)
+  dihapus supaya kolom tidak saling menekan; `th style="width:..%"` di halaman
+  web (bukan cetak/PDF) dihapus, termasuk tabel Rekap Presensi yang total
+  lebarnya 154%.
+- 8 tabel web yang belum punya wrapper dibungkus `<div class="table-responsive">`.
+  Tabel pada view `*cetak*`/`*pdf*` sengaja tidak diubah (layout cetak memang
+  lebar tetap).
+
+### 18.3 Pengingat program struktural untuk tenaga kependidikan
+
+- Logika dipusatkan di `app/models/PengingatDeadline.php`:
+  - `LEVEL_STRUKTURAL = [5,6,7,10,11,12,13,14,15,16]`.
+  - `bolehProgramStruktural()` mengecek level session, lalu `employe.id_level`
+    (sumber jabatan resmi), lalu riwayat unggahan `program_struktural`.
+- Kartu **selalu** tampil untuk yang berhak, dengan empty state
+  "Belum ada deadline program struktural untuk tahun pelajaran ini."
+- Halaman Program Struktural: aturan level diambil dari model (bukan daftar
+  ganda di controller); admin (level 1) boleh membuka untuk memantau.
+- Hasil uji lokal: level 5, 6, 7, 10-16 melihat kartu; level 1-4 tidak.
+
+Setelah `git pull`: hard refresh (Ctrl+F5) karena ada CSS/JS baru `?v=1`.

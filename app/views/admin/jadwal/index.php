@@ -1,45 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('warning')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     /* Perbaiki lebar form control agar tidak melebihi parent */
@@ -185,11 +146,12 @@
                         <?php foreach ($hariList as $hari): ?>
                             <div class="tab-pane fade <?= (strtolower($hari) == strtolower($hariAktif)) ? 'show active' : '' ?>"
                                 id="<?= strtolower($hari) ?>" role="tabpanel">
-                                <table
+                                <div class="table-responsive">
+<table
                                     class="table table-bordered table-striped align-items-center mb-0">
                                     <?php if (!isLevel($id_level, 7)): ?>
                                         <div class="my-4 mx-4">
-                                            <a href="?controller=jadwal&method=create&id_kelas=<?= $id_kelas; ?>&hari=<?= $hari; ?>" class="btn btn-dark mb-3">Tambah Jadwal</a>
+                                            <a href="?controller=jadwal&method=create&id_kelas=<?= $id_kelas; ?>&hari=<?= $hari; ?>" class="btn btn-success mb-3">Tambah Jadwal</a>
                                         </div>
                                     <?php endif; ?>
                                     <thead>
@@ -214,7 +176,7 @@
                                                     <?php if (!isLevel($id_level, 7)): ?>
                                                         <td>
                                                             <a href="?controller=jadwal&method=delete&id=<?= $j['id_jadwal'] ?>&id_kelas=<?= $id_kelas ?>&hari=<?= $hari; ?>"
-                                                                class="btn btn-dark btn-sm delete-btn">
+                                                                class="btn btn-danger btn-sm delete-btn">
                                                                 Hapus
                                                             </a>
 
@@ -230,6 +192,7 @@
                                         <?php endif; ?>
                                     </tbody>
                                 </table>
+</div>
                             </div>
                         <?php endforeach; ?>
                     </div>

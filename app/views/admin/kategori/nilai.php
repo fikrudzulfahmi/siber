@@ -6,31 +6,7 @@
 $customNama = json_decode($kategoriInfo['nama_ns'] ?? '{}', true);
 ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50'
-            });
-        });
-    </script>
-<?php endif; ?>
 
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#d33'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <div class="container-fluid py-4">
     <div class="row">
@@ -148,15 +124,15 @@ $customNama = json_decode($kategoriInfo['nama_ns'] ?? '{}', true);
                         <a href="?controller=kategori&method=index&id_mapel_guru=<?= $info['id_mapel_guru'] ?>" class="btn btn-secondary me-2">Kembali</a>
 
                         <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#modalImport">
-                            <i class="fas fa-upload"></i>&nbsp; Import Excel
+                            <i class="material-icons-round">upload</i>&nbsp; Import Excel
                         </button>
 
-                        <a href="?controller=kategori&method=exportExcel&id_kategori=<?= $kategoriInfo['id_kategori'] ?>&id_mapel_guru=<?= $info['id_mapel_guru'] ?>" class="btn btn-dark me-2">
-                            <i class="fas fa-file-excel text-success"></i>&nbsp; Export Excel
+                        <a href="?controller=kategori&method=exportExcel&id_kategori=<?= $kategoriInfo['id_kategori'] ?>&id_mapel_guru=<?= $info['id_mapel_guru'] ?>" class="btn btn-outline-dark me-2">
+                            <i class="material-icons-round text-success">table_view</i>&nbsp; Export Excel
                         </a>
 
-                        <a href="?controller=kategori&method=exportPdf&id_kategori=<?= $kategoriInfo['id_kategori'] ?>&id_mapel_guru=<?= $info['id_mapel_guru'] ?>" target="_blank" class="btn btn-dark me-2">
-                            <i class="fas fa-file-pdf text-danger"></i>&nbsp; Export PDF
+                        <a href="?controller=kategori&method=exportPdf&id_kategori=<?= $kategoriInfo['id_kategori'] ?>&id_mapel_guru=<?= $info['id_mapel_guru'] ?>" target="_blank" class="btn btn-outline-dark me-2">
+                            <i class="material-icons-round text-danger">picture_as_pdf</i>&nbsp; Export PDF
                         </a>
 
                         <button type="submit" class="btn btn-success">Simpan Semua Perubahan</button>
@@ -183,7 +159,7 @@ $customNama = json_decode($kategoriInfo['nama_ns'] ?? '{}', true);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">Upload & Proses</button>
                 </div>
             </form>

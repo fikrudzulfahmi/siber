@@ -4,19 +4,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
 
@@ -33,7 +20,7 @@
 
                 <div class="my-4 mx-4">
                     <a href="?controller=tp&method=create&id_mapel_guru=<?= $info['id_mapel_guru'] ?>"
-                        class="btn btn-dark mb-1">Tambah Tujuan Pembelajaran</a>
+                        class="btn btn-success mb-1">Tambah Tujuan Pembelajaran</a>
                     <a href="?controller=tp&method=index" class="btn btn-outline-secondary me-2 float-end">Kembali</a>
                 </div>
 
@@ -54,7 +41,7 @@
                                         <td><?= sec_e($row['tujuan_pembelajaran']) ?></td>
                                         <td>
                                             <a href="?controller=tp&method=edit&id=<?= $row['id_tp'] ?>" class="btn btn-success btn-sm">Edit</a>
-                                            <a href="?controller=tp&method=delete&id=<?= $row['id_tp'] ?>&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-dark btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                                            <a href="?controller=tp&method=delete&id=<?= $row['id_tp'] ?>&id_mapel_guru=<?= sec_e($row['id_mapel_guru']) ?>" class="btn btn-danger btn-sm" data-confirm="Yakin ingin menghapus?">Hapus</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

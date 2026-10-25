@@ -31,7 +31,7 @@
 
                     <div>
                         <button type="submit" class="btn btn-success mb-0">Tampilkan</button>
-                        <a href="?controller=kehadiran&method=cetakPdf&tanggal=<?= urlencode($tanggal_terpilih) ?>&id_kelas=<?= urlencode($id_kelas_terpilih) ?>" class="btn btn-dark mb-0" target="_blank">
+                        <a href="?controller=kehadiran&method=cetakPdf&tanggal=<?= urlencode($tanggal_terpilih) ?>&id_kelas=<?= urlencode($id_kelas_terpilih) ?>" class="btn btn-outline-dark mb-0" target="_blank">
                             <i class="material-icons opacity-10">print</i> Cetak PDF
                         </a>
                     </div>

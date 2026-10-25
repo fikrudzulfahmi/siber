@@ -3,6 +3,11 @@
 // Sebelumnya variabel ini tidak pernah diisi sehingga semua pengecekan level
 // di view selalu bernilai "bukan level tersebut".
 $id_level = $_SESSION['user']['level'] ?? '';
+
+// Semua flash dipindahkan ke notifikasi global (toast pojok kanan atas /
+// SweetAlert untuk pesan error). Dirender oleh layouts/toast.php.
+$GLOBALS['siber_flashes'] = $_SESSION['flash'] ?? [];
+unset($_SESSION['flash']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -27,6 +32,7 @@ $id_level = $_SESSION['user']['level'] ?? '';
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link id="pagestyle" href="assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
     <link href="assets/css/siber-nav.css?v=1" rel="stylesheet" />
+    <link href="assets/css/siber-notify.css?v=1" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">

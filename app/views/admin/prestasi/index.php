@@ -19,19 +19,6 @@
 </style>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <div class="row">
         <div class="col-12">
@@ -40,7 +27,7 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                         <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Prestasi Siswa Kolektif</h6>
                         <a href="?controller=prestasi&method=tambah" class="btn btn-sm btn-outline-white me-3 mb-0">
-                            <i class="fas fa-plus me-1"></i> Tambah Prestasi
+                            <i class="material-icons-round me-1">add</i> Tambah Prestasi
                         </a>
                     </div>
                 </div>
@@ -81,7 +68,7 @@
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?= htmlspecialchars($p['nama_kegiatan']) ?></h6>
                                                         <p class="text-xs text-secondary mb-0">
-                                                            <i class="far fa-calendar-alt me-1"></i> <?= date('d M Y', strtotime($p['tgl_kegiatan'])) ?>
+                                                            <i class="material-icons-round me-1">calendar_month</i> <?= date('d M Y', strtotime($p['tgl_kegiatan'])) ?>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -94,14 +81,14 @@
                                             </td>
                                             <td class="align-middle text-sm">
                                                 <span class="text-xs font-weight-bold" title="<?= htmlspecialchars($p['nama_peserta']) ?>">
-                                                    <i class="fas fa-users me-1 text-info"></i>
+                                                    <i class="material-icons-round me-1 text-info">groups</i>
                                                     <?= htmlspecialchars(mb_strimwidth($p['nama_peserta'], 0, 50, "...")) ?>
                                                 </span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <?php if ($p['file_sertifikat']) : ?>
                                                     <a href="../public/uploads/sertifikat/<?= sec_e($p['file_sertifikat']) ?>" target="_blank" class="text-secondary font-weight-bold text-xs">
-                                                        <i class="fas fa-file-pdf text-danger me-1"></i> Lihat
+                                                        <i class="material-icons-round text-danger me-1">picture_as_pdf</i> Lihat
                                                     </a>
                                                 <?php else : ?>
                                                     <span class="text-xs text-secondary italic">Tidak ada</span>
@@ -111,12 +98,12 @@
                                                 <div class="btn-group shadow-none">
                                                     <a href="?controller=prestasi&method=edit&id=<?= sec_e($p['id_prestasi_kegiatan']) ?>"
                                                         class="btn btn-link text-warning font-weight-bold text-xs mb-0">
-                                                        <i class="fas fa-edit me-1"></i> Edit
+                                                        <i class="material-icons-round me-1">edit</i> Edit
                                                     </a>
                                                     <a href="?controller=prestasi&method=hapus&id=<?= sec_e($p['id_prestasi_kegiatan']) ?>"
                                                         class="btn btn-link text-danger font-weight-bold text-xs mb-0"
-                                                        onclick="return confirm('Hapus data prestasi ini? Daftar peserta terkait akan otomatis terhapus secara logis.')">
-                                                        <i class="fas fa-trash me-1"></i> Hapus
+                                                        data-confirm="Hapus data prestasi ini? Daftar peserta terkait akan otomatis terhapus secara logis.">
+                                                        <i class="material-icons-round me-1">delete</i> Hapus
                                                     </a>
                                                 </div>
                                             </td>

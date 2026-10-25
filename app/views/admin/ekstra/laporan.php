@@ -39,7 +39,7 @@
                 <div class="text-end border-top pt-3">
                     <a href="?controller=ekstra&method=index" class="btn btn-link text-secondary mb-0">Kembali</a>
                     <button type="submit" class="btn bg-gradient-danger mb-0">
-                        <i class="fas fa-file-pdf me-2 text-lg"></i> Generate PDF (Dompdf)
+                        <i class="material-icons-round me-2 text-lg">picture_as_pdf</i> Generate PDF (Dompdf)
                     </button>
                 </div>
             </form>

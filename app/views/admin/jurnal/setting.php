@@ -90,7 +90,7 @@
 
                         console.log("Database status: " + data.db_value);
                     } else {
-                        alert("Gagal memperbarui pengaturan.");
+                        SiberToast.error("Gagal memperbarui pengaturan.");
                         this.checked = !isChecked; // Balikkan posisi switch jika gagal
                     }
                 })

@@ -1,45 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('warning')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     /* Perbaiki lebar form control agar tidak melebihi parent */
@@ -194,7 +155,7 @@
                                         </td>
                                         <td class="text-center align-middle">
                                             <button class="btn btn-sm btn-success mb-0 btn-lihat-tp" data-id="<?= sec_e($row['id_mapel_guru']) ?>" data-mapel="<?= htmlspecialchars($row['nama_mapel']) ?>">
-                                                <i class="fas fa-eye"></i>&nbsp; Lihat TP
+                                                <i class="material-icons-round">visibility</i>&nbsp; Lihat TP
                                             </button>
                                         </td>
                                         </tr>

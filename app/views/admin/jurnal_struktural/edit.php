@@ -140,7 +140,7 @@
 
                         <div class="d-flex justify-content-end">
                             <a href="?controller=jurnalStruktural&method=history"
-                                class="btn btn-secondary me-2">
+                                class="btn btn-outline-secondary me-2">
                                 Batal
                             </a>
                             <button type="submit"

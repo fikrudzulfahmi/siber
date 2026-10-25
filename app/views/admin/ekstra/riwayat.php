@@ -2,19 +2,6 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
     <div class="card my-4">
         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
             <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
@@ -58,7 +45,7 @@
                                             <i class="material-icons text-sm">edit</i>
                                         </a>
                                         <a href="?controller=ekstra&method=hapusJurnal&id_kegiatan=<?= sec_e($r['id_ekstra_kegiatan']) ?>&id_ekstra=<?= $id_ekstra ?>"
-                                            onclick="return confirm('Hapus jurnal ini? Data presensi juga akan terhapus.')"
+                                            data-confirm="Hapus jurnal ini? Data presensi juga akan terhapus."
                                             class="btn btn-link text-danger mb-0 px-2">
                                             <i class="material-icons text-sm">delete</i>
                                         </a>

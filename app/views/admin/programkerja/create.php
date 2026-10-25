@@ -29,7 +29,7 @@
 
 
                         <button class="btn btn-success">Simpan</button>
-                        <a href="?controller=programKerja&method=index" class="btn btn-secondary">Kembali</a>
+                        <a href="?controller=programKerja&method=index" class="btn btn-outline-secondary">Kembali</a>
                     </form>
                 </div>
 

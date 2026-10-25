@@ -4,19 +4,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
 
@@ -33,7 +20,7 @@
 
                 <?php if (!isLevel($id_level, 7)): ?>
                     <div class="my-4 mx-4">
-                        <a href="?controller=kelas&method=create" class="btn btn-dark mb-3">Tambah Kelas</a>
+                        <a href="?controller=kelas&method=create" class="btn btn-success mb-3">Tambah Kelas</a>
                     </div>
                 <?php endif; ?>
 
@@ -65,7 +52,7 @@
                                             <td>
                                                 <a href="?controller=kelas&method=edit&id=<?= sec_e($row['id_kelas']) ?>" class="btn btn-success btn-sm">Edit</a>
                                                 <a href="?controller=kelas&method=delete&id=<?= sec_e($row['id_kelas']) ?>"
-                                                    class="btn btn-dark btn-sm delete-btn">
+                                                    class="btn btn-danger btn-sm delete-btn">
                                                     Hapus
                                                 </a>
                                             </td>

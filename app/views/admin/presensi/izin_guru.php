@@ -24,31 +24,6 @@
         /* Pastikan word-break: break-all; sudah dihapus atau tidak ada */
     }
 </style>
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php elseif ($msg = getFlash('error')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#f44336',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 
 <div class="container-fluid py-4">
@@ -62,7 +37,7 @@
                 </div>
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#tambahIzinModal">
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahIzinModal">
                             + Tambah Izin
                         </button>
                     </div>
@@ -161,7 +136,7 @@
                                             ?>
                                                 <button class="btn btn-success btn-sm my-1" data-bs-toggle="modal" data-bs-target="#editIzinModal<?= $izin['id'] ?>">Edit</button>
 
-                                                <a href="index.php?controller=izinGuru&method=delete&id=<?= $izin['id'] ?>" class="btn btn-dark btn-sm my-1 delete-btn">Hapus</a>
+                                                <a href="index.php?controller=izinGuru&method=delete&id=<?= $izin['id'] ?>" class="btn btn-danger btn-sm my-1 delete-btn">Hapus</a>
                                             <?php else: ?>
                                                 <small class="text-muted">Tidak ada aksi</small>
                                             <?php endif; ?>
@@ -229,7 +204,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">Ajukan Izin</button>
                 </div>
             </form>

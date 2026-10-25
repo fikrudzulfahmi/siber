@@ -3,6 +3,7 @@ require_once __DIR__ . '/../helpers/LevelHelper.php';
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../models/Izin.php';
 require_once __DIR__ . '/../models/Presensi.php';
+require_once __DIR__ . '/../models/PengingatDeadline.php';
 
 class DashboardController extends BaseController
 {
@@ -80,51 +81,18 @@ class DashboardController extends BaseController
         // Ambil ID tahun pelajaran aktif
         $id_tahun_pelajaran_aktif = $this->db->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE status = 'Aktif' LIMIT 1")->fetchColumn();
 
-        $deadlineList = [];
+        $pengingat = new PengingatDeadline($this->db);
         $id_guru = $_SESSION['user']['id'] ?? null;
         $semuaJurnalTerisi = true;
 
-        if ($id_tahun_pelajaran_aktif && $id_guru) {
-            // Logika untuk deadline perangkat
-            $stmt = $this->db->prepare("
-                SELECT d.jenis_perangkat, d.tanggal_deadline,
-                       CASE WHEN pm.id IS NOT NULL THEN 1 ELSE 0 END AS sudah_upload,
-                       COALESCE(pm.status_approval, 'belum upload') AS status_approval
-                FROM deadline_perangkat d
-                JOIN mapel_guru mg ON mg.id_guru = :id_employe
-                JOIN mapel m ON mg.id_mapel = m.id_mapel
-                LEFT JOIN perangkat_mengajar pm ON pm.jenis_perangkat = d.jenis_perangkat
-                    AND pm.id_tahun_pelajaran = d.id_tahun_pelajaran
-                    AND pm.id_employe = :id_employe
-                WHERE d.id_tahun_pelajaran = :id_tahun_pelajaran
-                GROUP BY d.jenis_perangkat, d.tanggal_deadline, pm.id, pm.status_approval
-                ORDER BY d.tanggal_deadline ASC
-            ");
-            $stmt->execute(['id_tahun_pelajaran' => $id_tahun_pelajaran_aktif, 'id_employe' => $id_guru]);
-            $deadlineList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Pengingat deadline perangkat pembelajaran (guru mapel)
+        $deadlineList = $pengingat->perangkat($id_guru, $id_tahun_pelajaran_aktif);
 
-            $timezone = new DateTimeZone('Asia/Jakarta');
-            $today = new DateTime('now', $timezone);
-            $today->setTime(0, 0, 0); // ✅ RESET JAM KE 00:00:00 agar murni hitung tanggal
-            foreach ($deadlineList as &$d) {
-                if ($d['status_approval'] === 'Ditolak') {
-                    $d['status'] = 'ditolak';
-                    $d['sisa_hari'] = null;
-                } elseif ($d['sudah_upload']) {
-                    $d['status'] = 'selesai';
-                    $d['sisa_hari'] = null;
-                } else {
-                    $tglDeadline = new DateTime($d['tanggal_deadline']);
-                    $diff = $today->diff($tglDeadline);
-                    $d['sisa_hari'] = $diff->invert ? 0 : $diff->days; // Jika sudah lewat, sisa hari 0
-                    $d['status'] = ($tglDeadline < $today) ? 'lewat' : (($d['sisa_hari'] <= 7) ? 'dekat' : 'aman');
-                }
-            }
-            unset($d);
+        if ($id_tahun_pelajaran_aktif && $id_guru) {
 
             // Logika untuk pengecekan jurnal harian
             // Hanya dijalankan jika user yang login memiliki level guru (2)
-            if (in_array(2, $userLevels)) {
+            if (in_array(2, $userLevelsInt)) {
                 $hari_ini = date('l'); // e.g., Monday, Tuesday
                 $stmtJurnal = $this->db->prepare("
                     SELECT COUNT(jp.id_jadwal) 
@@ -142,73 +110,13 @@ class DashboardController extends BaseController
             }
         }
         // ===============================
-        // Deadline Program Struktural (untuk level tertentu)
+        // Deadline Program Struktural (jabatan struktural & tenaga kependidikan)
         // ===============================
-        $levelsProgram = [5, 6, 10, 11, 12, 13, 14, 15, 16];
+        $showProgramDeadline = $pengingat->bolehProgramStruktural($userLevelsInt, $id_user);
+        $deadlineProgram = $showProgramDeadline
+            ? $pengingat->programStruktural($id_user, $id_tahun_pelajaran_aktif)
+            : [];
 
-        // cek level user
-        $showProgramDeadline = count(array_intersect($userLevelsInt, $levelsProgram)) > 0;
-
-        // inisialisasi WAJIB
-        $deadlineProgram = [];
-
-        if ($showProgramDeadline && $id_tahun_pelajaran_aktif) {
-            $stmt = $this->db->prepare("
-        SELECT d.jenis_program, d.tanggal_deadline,
-               COALESCE(p.file, NULL) AS file,
-               COALESCE(p.status_approval, 'Belum dikirim') AS status_approval
-        FROM deadline_program_struktural d
-        LEFT JOIN program_struktural p
-            ON p.jenis_program = d.jenis_program
-            AND p.id_employe = :id_user
-            AND p.id_tahun_pelajaran = d.id_tahun_pelajaran
-        WHERE d.id_tahun_pelajaran = :id_tahun
-        ORDER BY d.tanggal_deadline ASC
-    ");
-
-            $stmt->execute([
-                ':id_user' => $id_user,
-                ':id_tahun' => $id_tahun_pelajaran_aktif
-            ]);
-
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $timezone = new DateTimeZone('Asia/Jakarta');
-            $today = new DateTime('now', $timezone);
-            $today->setTime(0, 0, 0); // ✅ RESET JAM KE 00:00:00 agar murni hitung tanggal
-
-            foreach ($rows as $r) {
-                $deadlineDate = new DateTime($r['tanggal_deadline']);
-
-                if ($r['status_approval'] === 'Ditolak') {
-                    $status = 'ditolak';
-                    $daysLeft = null;
-                } elseif ($r['file']) {
-                    $status = 'selesai';
-                    $daysLeft = null;
-                } elseif ($deadlineDate < $today) {
-                    $status = 'lewat';
-                    $daysLeft = 0;
-                } else {
-                    $status = 'belum upload';
-                    $daysLeft = $today->diff($deadlineDate)->days;
-                }
-
-
-                $daysLeft = ($deadlineDate > $today)
-                    ? $today->diff($deadlineDate)->days
-                    : 0;
-
-                $deadlineProgram[] = [
-                    'jenis_program'    => $r['jenis_program'],
-                    'file'             => $r['file'],
-                    'status_approval'  => $r['status_approval'],
-                    'status'           => $status,
-                    'sisa_hari'        => $daysLeft,
-                    'deadline'         => $r['tanggal_deadline'], // disarankan
-                ];
-            }
-        }
 
         // ===============================
         // Logika Presensi Hari Ini (Support Kegiatan)

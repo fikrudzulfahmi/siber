@@ -94,7 +94,8 @@
       </div>
       <div class="modal-body">
         <div id="modalContent">
-          <table class="table table-bordered table-striped align-items-center mb-0">
+          <div class="table-responsive">
+<table class="table table-bordered table-striped align-items-center mb-0">
             <thead>
               <tr>
                 <th>Jenis Perangkat</th>
@@ -105,6 +106,7 @@
               <!-- Data akan diisi lewat JS -->
             </tbody>
           </table>
+</div>
         </div>
       </div>
     </div>

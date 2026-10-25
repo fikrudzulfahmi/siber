@@ -5,30 +5,6 @@ include '../app/views/layouts/sidebar.php';
 ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50'
-                });
-            });
-        </script>
-    <?php endif; ?>
-    <?php if ($msg = getFlash('error')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#d33'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <div class="row">
         <div class="col-12">
@@ -46,19 +22,19 @@ include '../app/views/layouts/sidebar.php';
                         <div>
                             <?php if ($cekKategori): ?>
                                 <button type="button" class="btn btn-success" onclick="alertSudahAda()">
-                                    <i class="fas fa-plus"></i> Tambah Kategori
+                                    <i class="material-icons-round">add</i> Tambah Kategori
                                 </button>
                             <?php else: ?>
                                 <a href="?controller=kategori&method=create&id_mapel_guru=<?= $id_mapel_guru ?>" class="btn btn-success">
-                                    <i class="fas fa-plus"></i> Tambah Kategori
+                                    <i class="material-icons-round">add</i> Tambah Kategori
                                 </a>
                             <?php endif; ?>
 
                             <form method="post" action="index.php?controller=kategori&method=sync" class="d-inline"
-                                  onsubmit="return confirm('Tambahkan baris nilai untuk siswa yang belum punya nilai di kelas ini? Nilai yang sudah ada tidak berubah.');">
+                                  data-confirm="Tambahkan baris nilai untuk siswa yang belum punya nilai di kelas ini? Nilai yang sudah ada tidak berubah.">
                                 <input type="hidden" name="id_mapel_guru" value="<?= sec_e($id_mapel_guru) ?>">
                                 <button type="submit" class="btn btn-outline-success">
-                                    <i class="fas fa-sync"></i> Sinkronkan Siswa
+                                    <i class="material-icons-round">sync</i> Sinkronkan Siswa
                                 </button>
                             </form>
 

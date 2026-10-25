@@ -76,7 +76,7 @@
                         <?php if (!empty($rekap_bulanan['siswa'])): ?>
                             <a href="?controller=kehadiran&method=cetakRekapBulanan&bulan=<?= $bulan_terpilih ?>&tahun=<?= $tahun_terpilih ?>&id_kelas=<?= $id_kelas_terpilih ?>"
                                 target="_blank" class="btn bg-dark text-white mb-0">
-                                <i class="fas fa-file-pdf"></i>&nbsp; Cetak PDF
+                                <i class="material-icons-round">picture_as_pdf</i>&nbsp; Cetak PDF
                             </a>
                         <?php endif; ?>
                     </div>

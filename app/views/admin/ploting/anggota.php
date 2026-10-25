@@ -22,7 +22,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-light">
-                    <strong><i class="fas fa-filter"></i> Filter Pencarian</strong>
+                    <strong><i class="material-icons-round">filter_alt</i> Filter Pencarian</strong>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -47,7 +47,7 @@
                         <div class="col-md-2 mb-3">
                             <label class="d-none d-md-block">&nbsp;</label>
                             <button id="btnCari" class="btn btn-success w-100 mb-0">
-                                <i class="fas fa-search"></i> Cari
+                                <i class="material-icons-round">search</i> Cari
                             </button>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h6>Daftar Siswa</h6>
                     <a href="#" id="btnExport" class="btn btn-sm btn-success mb-0 d-none" target="_blank">
-                        <i class="fas fa-file-excel"></i> Export Excel
+                        <i class="material-icons-round">table_view</i> Export Excel
                     </a>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">

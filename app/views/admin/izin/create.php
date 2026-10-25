@@ -88,7 +88,7 @@
 
 
                         <button type="submit" class="btn btn-success">Simpan</button>
-                        <a href="?controller=izin&method=index" class="btn btn-secondary">Kembali</a>
+                        <a href="?controller=izin&method=index" class="btn btn-outline-secondary">Kembali</a>
                     </form>
                 </div>
             </div>

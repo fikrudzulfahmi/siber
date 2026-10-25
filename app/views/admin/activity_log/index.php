@@ -17,19 +17,6 @@ if (!function_exists('activityLogPageUrl')) {
 }
 ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     #tabelLog td,
@@ -123,7 +110,7 @@ if (!function_exists('activityLogPageUrl')) {
 
                     <div class="col-md-3 d-flex gap-2">
                         <button class="btn btn-success btn-sm mb-0">
-                            <i class="fas fa-search me-1"></i> Tampilkan
+                            <i class="material-icons-round me-1">search</i> Tampilkan
                         </button>
                         <a href="?controller=activityLog&method=index" class="btn btn-outline-secondary btn-sm mb-0">
                             Reset
@@ -138,15 +125,15 @@ if (!function_exists('activityLogPageUrl')) {
                             <label class="text-xs mb-0">Hapus log lebih dari</label>
                             <input type="number" name="hari" value="90" min="1" class="form-control form-control-sm border px-2" style="width:80px;">
                             <label class="text-xs mb-0">hari</label>
-                            <button type="submit" class="btn btn-sm btn-dark mb-0">
-                                <i class="fas fa-broom me-1"></i> Bersihkan
+                            <button type="submit" class="btn btn-sm btn-danger mb-0">
+                                <i class="material-icons-round me-1">cleaning_services</i> Bersihkan
                             </button>
                         </form>
 
                         <form action="?controller=activityLog&method=hapus" method="POST" class="form-hapus-semua mb-0">
                             <input type="hidden" name="mode" value="semua">
                             <button type="submit" class="btn btn-sm btn-danger mb-0">
-                                <i class="fas fa-trash me-1"></i> Hapus Semua
+                                <i class="material-icons-round me-1">delete</i> Hapus Semua
                             </button>
                         </form>
                     </div>
@@ -203,11 +190,11 @@ if (!function_exists('activityLogPageUrl')) {
                                                 <span class="badge badge-aksi <?= $warnaAksi ?> <?= $teksAksi ?> mb-1"><?= htmlspecialchars($row['aksi'] ?? '-') ?></span>
                                                 <span class="d-block"><?= htmlspecialchars($row['aktivitas'] ?? '-') ?></span>
                                                 <span class="text-xs text-secondary" title="<?= htmlspecialchars($row['url'] ?? '') ?>">
-                                                    <i class="fas fa-link me-1"></i><span class="log-uri"><?= htmlspecialchars($row['url'] ?? '-') ?></span>
+                                                    <i class="material-icons-round me-1">link</i><span class="log-uri"><?= htmlspecialchars($row['url'] ?? '-') ?></span>
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="d-block"><i class="fas fa-globe me-1 text-secondary"></i><?= htmlspecialchars($row['browser'] ?? '-') ?></span>
+                                                <span class="d-block"><i class="material-icons-round me-1 text-secondary">public</i><?= htmlspecialchars($row['browser'] ?? '-') ?></span>
                                                 <span class="text-xs text-secondary">
                                                     <?= htmlspecialchars($row['os'] ?? '-') ?> &middot; <?= htmlspecialchars($row['device'] ?? '-') ?>
                                                 </span>

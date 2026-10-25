@@ -82,7 +82,7 @@
                             </div>
 
                             <div class="col-md-5">
-                                <label class="form-label font-weight-bold text-success"><i class="fas fa-users"></i> Anggota Tim (Cek untuk Mengubah)</label>
+                                <label class="form-label font-weight-bold text-success"><i class="material-icons-round">groups</i> Anggota Tim (Cek untuk Mengubah)</label>
                                 <div class="input-group input-group-outline mb-2">
                                     <input type="text" id="searchSiswa" class="form-control" placeholder="Cari nama atau kelas...">
                                 </div>

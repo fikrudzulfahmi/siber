@@ -1,18 +1,5 @@
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
     <div class="row">
@@ -25,7 +12,7 @@
                 </div>
                 <?php if (!isLevel($id_level, [1, 6, 7])): ?>
                     <div class="my-4 mx-4">
-                        <a href="?controller=konseling&method=create" class="btn btn-dark mb-3">Tambah Konseling</a>
+                        <a href="?controller=konseling&method=create" class="btn btn-success mb-3">Tambah Konseling</a>
                     </div>
                 <?php endif; ?>
 
@@ -77,13 +64,13 @@
                                         </td>
                                         <td>
                                             <a href="?controller=konseling&method=tindakLanjut&id=<?= $k['id_konseling'] ?>"
-                                                class="btn btn-dark btn-sm">Tindak Lanjut</a>
+                                                class="btn btn-success btn-sm">Tindak Lanjut</a>
 
                                             <?php if ($k['status'] === 'Berlangsung'): ?>
                                                 <?php if (!isLevel($id_level, 7)): ?>
                                                     <a href="?controller=konseling&method=selesai&id=<?= $k['id_konseling'] ?>"
                                                         class="btn btn-success btn-sm"
-                                                        onclick="return confirm('Tandai sebagai selesai?')">Selesai
+                                                        data-confirm="Tandai sebagai selesai?">Selesai
                                                     <?php endif; ?>
                                                     </a>
                                                 <?php endif; ?>
@@ -91,7 +78,7 @@
                                                 <?php if ($k['status'] === 'Selesai'): ?>
                                                     <a href="?controller=konseling&method=cetak&id=<?= $k['id_konseling'] ?>"
                                                         class="btn btn-sm btn-outline-info" target="_blank">
-                                                        <i class="fas fa-print"></i> Cetak
+                                                        <i class="material-icons-round">print</i> Cetak
                                                     </a>
                                                 <?php endif; ?>
 

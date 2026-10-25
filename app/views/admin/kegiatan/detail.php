@@ -52,13 +52,13 @@
                         </div>
                         <p class="text-xxs text-muted">* Anda bisa memilih lebih dari 1 foto sekaligus</p>
                         <button type="submit" class="btn btn-sm bg-gradient-dark w-100">
-                            <i class="fas fa-upload me-2"></i> Unggah & Kompres Semua
+                            <i class="material-icons-round me-2">upload</i> Unggah & Kompres Semua
                         </button>
                     </form>
                 </div>
             </div>
             <a href="?controller=kegiatan&method=index" class="btn btn-outline-secondary btn-sm w-100 mt-2">
-                <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar
+                <i class="material-icons-round me-2">arrow_back</i> Kembali ke Daftar
             </a>
         </div>
 
@@ -69,7 +69,7 @@
                         <h6 class="text-white text-capitalize mb-0">Rekap Kehadiran (Range Waktu)</h6>
                         <a href="?controller=kegiatan&method=cetak&id_kegiatan=<?= $kegiatan['id_kegiatan'] ?>"
                             class="btn btn-light btn-sm mb-0 text-success" target="_blank">
-                            <i class="fas fa-file-pdf me-2"></i> Download Laporan PDF
+                            <i class="material-icons-round me-2">picture_as_pdf</i> Download Laporan PDF
                         </a>
                     </div>
                 </div>

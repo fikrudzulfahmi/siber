@@ -4,19 +4,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
 
@@ -32,7 +19,7 @@
 
 
                 <div class="my-4 mx-4">
-                    <a href="?controller=tahunPelajaran&method=create" class="btn btn-dark mb-3">Tambah Tahun Pelajaran</a>
+                    <a href="?controller=tahunPelajaran&method=create" class="btn btn-success mb-3">Tambah Tahun Pelajaran</a>
                 </div>
 
                 <div class="card-body px-0 pb-2">
@@ -71,7 +58,7 @@
 
                                                 <a href="?controller=tahunPelajaran&method=edit&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-success btn-sm">Edit</a>
 
-                                                <a href="?controller=tahunPelajaran&method=delete&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-dark btn-sm delete-btn">Hapus</a>
+                                                <a href="?controller=tahunPelajaran&method=delete&id=<?= sec_e($row['id_tahun_pelajaran']) ?>" class="btn btn-danger btn-sm delete-btn">Hapus</a>
 
                                             </div>
                                         </td>

@@ -1,26 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: <?= sec_js($msg) ?>,
-            confirmButtonColor: '#4caf50'
-        });
-    </script>
-<?php endif; ?>
-<?php if ($msg = getFlash('warning')): ?>
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'Perhatian',
-            text: <?= sec_js($msg) ?>,
-            confirmButtonColor: '#ff9800'
-        });
-    </script>
-<?php endif; ?>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
@@ -73,7 +53,7 @@
                 </div>
 
                 <div class="my-4 mx-4">
-                    <a href="?controller=jurnal&method=history" class="btn btn-dark">Riwayat Jurnal</a>
+                    <a href="?controller=jurnal&method=history" class="btn btn-outline-secondary">Riwayat Jurnal</a>
                 </div>
 
                 <div class="card-body px-4 pb-4">

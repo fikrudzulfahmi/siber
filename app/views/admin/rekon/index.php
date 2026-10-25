@@ -153,8 +153,8 @@
 
 
                             <div class="col-auto">
-                                <button type="submit" class="btn btn-dark">
-                                    <i class="fas fa-print me-1"></i> Cetak
+                                <button type="submit" class="btn btn-outline-dark">
+                                    <i class="material-icons-round me-1">print</i> Cetak
                                 </button>
                             </div>
                         </div>

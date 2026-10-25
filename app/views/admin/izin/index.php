@@ -1,16 +1,3 @@
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50',
-                confirmButtonText: 'OK'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     /* Ganti #datatable5 dengan ID tabel Anda */
@@ -46,7 +33,7 @@
                             <input type="hidden" name="method" value="rekap">
                             <input type="date" name="tanggal_awal" class="form-control" required style="max-width: 180px;">
                             <input type="date" name="tanggal_akhir" class="form-control" required style="max-width: 180px;">
-                            <button type="submit" class="btn btn-dark d-flex align-items-center gap-1">
+                            <button type="submit" class="btn btn-outline-dark d-flex align-items-center gap-1">
                                 <span class="material-icons">print</span> Cetak Rekap
                             </button>
                         </form>
@@ -54,7 +41,7 @@
                         <?php if (isAnyLevel($id_level, [3, 4])): // ✅ Variabel $id_level sekarang sudah ada 
                         ?>
                             <div class="align-items-center flex-wrap gap-3">
-                                <a href="?controller=izin&method=create" class="btn btn-dark d-flex align-items-center gap-1">
+                                <a href="?controller=izin&method=create" class="btn btn-success d-flex align-items-center gap-1">
                                     <span class="material-icons">add</span> Tambah Izin
                                 </a>
                             </div>
@@ -123,7 +110,7 @@
                                         ?>
                                             <td class="text-center">
                                                 <a href="?controller=izin&method=edit&id=<?= $row['id_perizinan'] ?>" class="btn btn-sm btn-success">Edit</a>
-                                                <a href="?controller=izin&method=delete&id=<?= $row['id_perizinan'] ?>" class="btn btn-sm btn-dark delete-btn">Hapus</a>
+                                                <a href="?controller=izin&method=delete&id=<?= $row['id_perizinan'] ?>" class="btn btn-sm btn-danger delete-btn">Hapus</a>
                                                 <a href="?controller=izin&method=cetak&id=<?= $row['id_perizinan'] ?>" class="btn btn-sm btn-info" target="_blank">Cetak</a>
                                             </td>
                                         <?php endif; ?>

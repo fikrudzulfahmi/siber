@@ -3,19 +3,6 @@
 <?php $ro = !empty($hanyaLihat) ? ' disabled' : ''; ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
     <div class="row">
         <div class="col-12">
             <div class="card my-4">

@@ -60,7 +60,7 @@
                         <!-- Tombol Submit -->
                         <div class="d-flex justify-content-end mt-3">
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-table"></i> Tampilkan Leger
+                                <i class="material-icons-round">table_chart</i> Tampilkan Leger
                             </button>
                         </div>
                     </form>
@@ -71,8 +71,8 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5>Leger Nilai Kelas: <?= htmlspecialchars($info_kelas['kelas']) ?></h5>
                             <?php $export_url = http_build_query($filter_terpilih); ?>
-                            <a href="?controller=leger&method=exportExcel&<?= $export_url ?>" class="btn btn-dark" target="_blank">
-                                <i class="fas fa-file-excel"></i>&nbsp; Export Excel
+                            <a href="?controller=leger&method=exportExcel&<?= $export_url ?>" class="btn btn-outline-dark" target="_blank">
+                                <i class="material-icons-round">table_view</i>&nbsp; Export Excel
                             </a>
                         </div>
                         <div class="table-responsive">

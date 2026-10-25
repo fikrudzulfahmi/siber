@@ -53,7 +53,7 @@
                                                         <?= htmlspecialchars($s['nama_siswa']) ?>
                                                         <?php if ($is_filled): ?>
                                                             <span class="badge badge-sm bg-gradient-success ms-2" style="font-size: 0.6rem;">
-                                                                <i class="fas fa-check"></i> Terisi
+                                                                <i class="material-icons-round">check</i> Terisi
                                                             </span>
                                                         <?php endif; ?>
                                                     </h6>

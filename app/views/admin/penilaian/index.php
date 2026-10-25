@@ -4,19 +4,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
 
@@ -35,9 +22,9 @@
                     <?php if (function_exists('sec_has_level') && sec_has_level([1])): ?>
                     <div class="px-4 pt-3">
                         <form method="post" action="index.php?controller=kategori&method=syncAll"
-                              onsubmit="return confirm('Sinkronkan baris nilai untuk SEMUA kelas? Hanya menambah baris yang belum ada, nilai lama tidak berubah.');">
+                              data-confirm="Sinkronkan baris nilai untuk SEMUA kelas? Hanya menambah baris yang belum ada, nilai lama tidak berubah.">
                             <button type="submit" class="btn btn-outline-success btn-sm mb-0">
-                                <i class="fas fa-sync"></i> Sinkronkan Semua Nilai
+                                <i class="material-icons-round">sync</i> Sinkronkan Semua Nilai
                             </button>
                             <small class="text-muted ms-2">Untuk siswa baru yang masuk setelah kategori dibuat.</small>
                         </form>

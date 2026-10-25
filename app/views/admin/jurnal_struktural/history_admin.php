@@ -3,19 +3,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <style>
         .table-responsive .table {
@@ -84,8 +71,8 @@
                     <div class="col-md-4 d-flex gap-2">
                         <button class="btn btn-success">Tampilkan</button>
                         <a href="?controller=jurnalStruktural&method=cetakLaporan&tanggal_awal=<?= sec_e($tanggalAwal) ?>&tanggal_akhir=<?= sec_e($tanggalAkhir) ?>"
-                            class="btn btn-dark" target="_blank">
-                            <i class="fas fa-print me-1"></i> Cetak Laporan
+                            class="btn btn-outline-dark" target="_blank">
+                            <i class="material-icons-round me-1">print</i> Cetak Laporan
                         </a>
                     </div>
                 </form>

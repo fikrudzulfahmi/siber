@@ -9,7 +9,8 @@
 </style>
 
 <style>
-    /* Kelas ini akan kita tambahkan ke <table> Anda.
+    /* Kelas ini akan kita tambahkan ke <div class="table-responsive">
+<table> Anda.
       Ini adalah kunci utamanya.
     */
     .tabel-presensi {
@@ -60,7 +61,7 @@
 
                         <button type="submit" class="btn btn-success">Filter</button>
 
-                        <a href="?controller=repres&method=cetak&start=<?= urlencode($startDate) ?>&end=<?= urlencode($endDate) ?>&jabatan=<?= urlencode($idJabatan) ?>" class="btn btn-dark" target="_blank">Cetak PDF</a>
+                        <a href="?controller=repres&method=cetak&start=<?= urlencode($startDate) ?>&end=<?= urlencode($endDate) ?>&jabatan=<?= urlencode($idJabatan) ?>" class="btn btn-outline-dark" target="_blank">Cetak PDF</a>
                         <a href="?controller=repres&method=exportExcel&start=<?= urlencode($startDate) ?>&end=<?= urlencode($endDate) ?>&jabatan=<?= urlencode($idJabatan) ?>"
                             class="btn btn-outline-dark">
                             Export Excel
@@ -75,16 +76,16 @@
                     <table id="datatable7" class="table tabel-presensi table-bordered table-striped align-items-center mb-0">
                         <thead>
                             <tr>
-                                <th style="width: 45%;">Nama</th>
-                                <th style="width: 25%;">Jabatan</th>
-                                <th class="wrap-text" style="width: 12%;">Hari efektif</th>
-                                <th class="wrap-text" style="width: 10%;">Kehadiran</th>
-                                <th class="wrap-text" style="width: 9%;">Alpa</th>
-                                <th class="wrap-text" style="width: 10%;">Terlambat</th>
-                                <th class="wrap-text" style="width: 13%;">Pulang Cepat</th>
-                                <th class="wrap-text" style="width: 10%;">Sakit</th>
-                                <th class="wrap-text" style="width: 8%;">Izin</th>
-                                <th class="wrap-text" style="width: 12%;">Dinas Luar</th>
+                                <th>Nama</th>
+                                <th>Jabatan</th>
+                                <th class="wrap-text">Hari efektif</th>
+                                <th class="wrap-text">Kehadiran</th>
+                                <th class="wrap-text">Alpa</th>
+                                <th class="wrap-text">Terlambat</th>
+                                <th class="wrap-text">Pulang Cepat</th>
+                                <th class="wrap-text">Sakit</th>
+                                <th class="wrap-text">Izin</th>
+                                <th class="wrap-text">Dinas Luar</th>
                             </tr>
                         </thead>
                         <tbody class="text-center">
@@ -110,6 +111,7 @@
                             <?php endif; ?>
                         </tbody>
                     </table>
+</div>
                     </div>
                 </div>
 

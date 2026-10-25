@@ -4,22 +4,41 @@ require_once '../app/models/TahunPelajaran.php';
 require_once '../app/models/ProgramStruktural.php';
 require_once '../app/models/JenisProgramStruktural.php';
 require_once '../app/models/DeadlineProgramStruktural.php';
+require_once '../app/models/PengingatDeadline.php';
 
 class ProgramStrukturalController extends BaseController
 {
-    private $allowedLevels = [5,6,10,11,12,13,14,15,16];
+    /** Level yang punya jabatan struktural (termasuk tenaga kependidikan). */
+    private function allowedLevels(): array
+    {
+        return PengingatDeadline::LEVEL_STRUKTURAL;
+    }
+
+    /** Semua level user (hasil decode session), tanpa difilter. */
+    private function allLevels(): array
+    {
+        if (!isset($_SESSION['user']['level'])) return [];
+        return array_map('intval', explode(',', base64_decode($_SESSION['user']['level'])));
+    }
 
     private function getUserLevels()
     {
-        if (!isset($_SESSION['user']['level'])) return [];
-        $decoded = base64_decode($_SESSION['user']['level']);
-        $userLevels = array_map('intval', explode(',', $decoded));
-        return array_values(array_intersect($userLevels, $this->allowedLevels));
+        return array_values(array_intersect($this->allLevels(), $this->allowedLevels()));
     }
 
+    /**
+     * Boleh mengakses Program Struktural bila punya level struktural, atau
+     * sudah pernah mengunggah program (akun tendik lama / level baru).
+     */
     private function checkAccess()
     {
-        return count($this->getUserLevels()) > 0;
+        // Admin (level 1) boleh membuka halaman untuk memantau.
+        if (in_array(1, $this->allLevels(), true)) {
+            return true;
+        }
+
+        $model = new PengingatDeadline($this->db);
+        return $model->bolehProgramStruktural($this->allLevels(), $_SESSION['user']['id'] ?? null);
     }
 
 public function index()
@@ -54,15 +73,7 @@ public function index()
     // ================================
     // Hitung level yang diperbolehkan
     // ================================
-    $allowedLevels = [5,6,10,11,12,13,14,15,16];
-    $userLevelsEncoded = $_SESSION['user']['level'] ?? '';
-    $filteredLevels = [];
-
-    if (!empty($userLevelsEncoded)) {
-        $decoded = base64_decode($userLevelsEncoded);
-        $allLevels = array_map('intval', explode(',', $decoded));
-        $filteredLevels = array_values(array_intersect($allLevels, $allowedLevels));
-    }
+    $filteredLevels = $this->getUserLevels();
 
     $levelText = '';
     if (!empty($filteredLevels)) {

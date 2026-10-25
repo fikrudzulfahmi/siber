@@ -24,7 +24,7 @@
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                         <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Kegiatan Guru & Struktural</h6>
                         <a href="?controller=kegiatan&method=tambah" class="btn btn-sm btn-outline-white me-3 mb-0">
-                            <i class="fas fa-plus me-2"></i>Tambah Kegiatan
+                            <i class="material-icons-round me-2">add</i>Tambah Kegiatan
                         </a>
                     </div>
                 </div>
@@ -54,10 +54,10 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    <i class="far fa-calendar-alt me-1"></i> <?= date('d/m/Y', strtotime($kg['tanggal'])) ?>
+                                                    <i class="material-icons-round me-1">calendar_month</i> <?= date('d/m/Y', strtotime($kg['tanggal'])) ?>
                                                 </p>
                                                 <p class="text-xs text-secondary mb-0">
-                                                    <i class="far fa-clock me-1"></i> <?= substr($kg['jam_mulai'], 0, 5) ?> - <?= substr($kg['jam_selesai'], 0, 5) ?>
+                                                    <i class="material-icons-round me-1">schedule</i> <?= substr($kg['jam_mulai'], 0, 5) ?> - <?= substr($kg['jam_selesai'], 0, 5) ?>
                                                 </p>
                                             </td>
                                             <td class="align-middle text-center text-sm">
@@ -68,18 +68,18 @@
                                             <td class="align-middle text-center">
                                                 <a href="?controller=kegiatan&method=detail&id_kegiatan=<?= $kg['id_kegiatan'] ?>"
                                                     class="btn btn-link text-success font-weight-bold text-xs mb-0 px-2">
-                                                    <i class="fas fa-eye me-1"></i> Detail
+                                                    <i class="material-icons-round me-1">visibility</i> Detail
                                                 </a>
 
                                                 <a href="?controller=kegiatan&method=edit&id_kegiatan=<?= $kg['id_kegiatan'] ?>"
                                                     class="btn btn-link text-info font-weight-bold text-xs mb-0 px-2">
-                                                    <i class="fas fa-edit me-1"></i> Edit
+                                                    <i class="material-icons-round me-1">edit</i> Edit
                                                 </a>
 
                                                 <a href="?controller=kegiatan&method=hapus&id_kegiatan=<?= $kg['id_kegiatan'] ?>"
                                                     class="btn btn-link text-danger font-weight-bold text-xs mb-0 px-2"
-                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus kegiatan ini beserta seluruh datanya?');">
-                                                    <i class="fas fa-trash me-1"></i> Hapus
+                                                    data-confirm="Apakah Anda yakin ingin menghapus kegiatan ini beserta seluruh datanya?">
+                                                    <i class="material-icons-round me-1">delete</i> Hapus
                                                 </a>
                                             </td>
                                         </tr>

@@ -138,7 +138,7 @@
                     <h5 class="text-dark font-weight-bolder">Backup Database</h5>
                     <p class="text-sm text-secondary mb-4">Buat cadangan data aplikasi Anda saat ini. Proses ini akan menghasilkan file .sql berisi database, menyimpannya secara lokal, dan mengunggahnya ke Google Drive.</p>
                     <div>
-                        <a href="?controller=backup&method=createBackup" class="btn btn-success" onclick="return confirm('Apakah Anda yakin ingin memulai proses backup sekarang? Proses ini akan memakan waktu beberapa saat.')">
+                        <a href="?controller=backup&method=createBackup" class="btn btn-success" data-confirm="Apakah Anda yakin ingin memulai proses backup sekarang? Proses ini akan memakan waktu beberapa saat.">
                             Buat Backup Sekarang
                         </a>
                     </div>
@@ -156,7 +156,7 @@
                     <h5 class="text-dark font-weight-bolder">Restore Database</h5>
                     <p class="text-sm text-secondary mb-4">Pulihkan database dari file `.sql` mentah hasil backup sebelumnya.</p>
                     
-                    <form action="?controller=backup&method=restore" method="POST" enctype="multipart/form-data" onsubmit="return confirm('PERINGATAN Keras! Semua data Anda saat ini akan dihapus permanen dan diganti dengan data dari file backup. Lanjutkan?');">
+                    <form action="?controller=backup&method=restore" method="POST" enctype="multipart/form-data" data-confirm="PERINGATAN Keras! Semua data Anda saat ini akan dihapus permanen dan diganti dengan data dari file backup. Lanjutkan?">
                         <div class="d-flex justify-content-center align-items-center mb-3">
                             <input type="file" name="backup_file" class="form-control form-control-sm border px-2" accept=".sql" style="max-width: 250px;" required>
                         </div>
@@ -243,7 +243,7 @@
                                                 <a href="?controller=backup&method=downloadBackup&file=<?= urlencode($rb['nama_file']) ?>" class="text-info font-weight-bold text-xs mx-2">
                                                     Unduh
                                                 </a>
-                                                <a href="?controller=backup&method=deleteBackup&file=<?= urlencode($rb['nama_file']) ?>" class="text-danger font-weight-bold text-xs mx-2" onclick="return confirm('Yakin ingin menghapus file backup ini secara permanen?')">
+                                                <a href="?controller=backup&method=deleteBackup&file=<?= urlencode($rb['nama_file']) ?>" class="text-danger font-weight-bold text-xs mx-2" data-confirm="Yakin ingin menghapus file backup ini secara permanen?">
                                                     Hapus
                                                 </a>
                                             </td>
@@ -314,7 +314,7 @@
                                 message.style.display = 'none';
                             }, 3000);
                         } else {
-                            alert("Gagal memperbarui database.");
+                            SiberToast.error("Gagal memperbarui database.");
                             this.checked = !isChecked;
                         }
                     })

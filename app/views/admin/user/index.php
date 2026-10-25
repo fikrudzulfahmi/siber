@@ -1,19 +1,6 @@
 <?php include '../app/views/layouts/header.php'; ?>
 <?php include '../app/views/layouts/sidebar.php'; ?>
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
 
     <div class="row">
@@ -63,7 +50,7 @@
                                         </td>
                                         <td>
                                             <a href="?controller=user&method=jadwal&id=<?= $user['id_employe'] ?>" class="btn btn-info btn-sm">Jadwal</a>
-                                            <a href="?controller=user&method=edit&id=<?= $user['id_employe'] ?>" class="btn btn-dark btn-sm">Edit</a>
+                                            <a href="?controller=user&method=edit&id=<?= $user['id_employe'] ?>" class="btn btn-success btn-sm">Edit</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

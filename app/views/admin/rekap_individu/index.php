@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-success">Tampilkan</button>
-                    <a href="?controller=repres&method=index" class="btn btn-secondary">Kembali</a>
+                    <a href="?controller=repres&method=index" class="btn btn-outline-secondary">Kembali</a>
                 </div>
             </form>
 
@@ -31,7 +31,7 @@
                 <hr class="my-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4>Hasil Rekap</h4>
-                    <a href="?controller=rekapIndividu&method=cetak&pin=<?= urlencode($pin) ?>&periode=<?= urlencode($periode) ?>" class="btn btn-dark" target="_blank"><i class="material-icons opacity-10">print</i> Cetak PDF</a>
+                    <a href="?controller=rekapIndividu&method=cetak&pin=<?= urlencode($pin) ?>&periode=<?= urlencode($periode) ?>" class="btn btn-outline-dark" target="_blank"><i class="material-icons opacity-10">print</i> Cetak PDF</a>
                 </div>
 
                 <div class="text-center my-3">
@@ -44,7 +44,8 @@
                 </div>
 
                 <h5 class="mt-4">Rincian Kehadiran</h5>
-                <table class="table table-bordered">
+                <div class="table-responsive">
+<table class="table table-bordered">
                     <thead>
                         <tr class="text-center">
                             <th>No</th>
@@ -66,11 +67,13 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+</div>
 
                 <h5 class="mt-4">Ringkasan</h5>
                 <div class="row">
                     <div class="col-md-6">
-                        <table class="table table-sm table-bordered">
+                        <div class="table-responsive">
+<table class="table table-sm table-bordered">
                             <?php $summary = $rekapDataFormatted['summary']; ?>
                             <tr>
                                 <td>Terlambat</td>
@@ -109,6 +112,7 @@
                                 <td class="text-center"><?= $summary['Hari_Efektif'] ?></td>
                             </tr>
                         </table>
+</div>
                     </div>
                 </div>
             <?php endif; ?>

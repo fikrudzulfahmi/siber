@@ -23,7 +23,7 @@
         <div class="col-md-5">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <strong><i class="fas fa-sign-out-alt"></i> Dari Kelas (Asal)</strong>
+                    <strong><i class="material-icons-round">logout</i> Dari Kelas (Asal)</strong>
                 </div>
                 <div class="card-body">
                     <div class="row mb-2">
@@ -60,7 +60,7 @@
                             </select>
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-secondary btn-sm w-100 mt-2" onclick="loadSiswaAsal()">Tampilkan Siswa</button>
+                            <button class="btn btn-success btn-sm w-100 mt-2" onclick="loadSiswaAsal()">Tampilkan Siswa</button>
                         </div>
                     </div>
 
@@ -87,12 +87,12 @@
         <div class="col-md-2 d-flex align-items-center justify-content-center py-3">
             <div class="text-center">
                 <button id="btnProses" class="btn btn-success btn-lg shadow rounded-circle p-4">
-                    <i class="fas fa-arrow-right fa-2x"></i>
+                    <i class="material-icons-round">arrow_forward</i>
                 </button>
                 <div class="mt-2 font-weight-bold text-success">PROSES</div>
 
                 <button id="btnLuluskan" class="btn btn-warning btn-sm shadow rounded-circle p-3 mt-4">
-                    <i class="fas fa-user-graduate"></i>
+                    <i class="material-icons-round">school</i>
                 </button>
                 <div class="mt-2 font-weight-bold text-warning" style="font-size: 0.8rem;">LULUSKAN</div>
             </div>
@@ -101,7 +101,7 @@
         <div class="col-md-5">
             <div class="card border-success">
                 <div class="card-header bg-success text-white">
-                    <strong><i class="fas fa-sign-in-alt"></i> Ke Kelas (Tujuan)</strong>
+                    <strong><i class="material-icons-round">login</i> Ke Kelas (Tujuan)</strong>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -223,7 +223,7 @@
             },
             error: function(xhr, status, error) {
                 console.error(xhr.responseText);
-                alert('Terjadi kesalahan server');
+                SiberToast.error('Terjadi kesalahan server');
             }
         });
     }
@@ -253,7 +253,7 @@
                     $.each(response, function(i, item) {
                         html += `<tr>
                             <td>${i+1}</td>
-                            <td class="text-start ps-3">${item.nama_siswa} <i class="fas fa-check-circle text-success small"></i></td>
+                            <td class="text-start ps-3">${item.nama_siswa} <i class="material-icons-round text-success small">check_circle</i></td>
                         </tr>`;
                     });
                 }
@@ -298,7 +298,7 @@
                     },
                     dataType: 'json',
                     success: function(response) {
-                        Swal.fire('Selesai!', response.msg, 'success');
+                        SiberToast.success(response.msg);
 
                         loadSiswaAsal(); // Refresh kiri (siswa yg lulus akan hilang dari daftar)
 
@@ -361,7 +361,7 @@
                     },
                     dataType: 'json',
                     success: function(response) {
-                        Swal.fire('Selesai!', response.msg, 'success');
+                        SiberToast.success(response.msg);
 
                         loadSiswaTujuan(); // Refresh Kanan
 

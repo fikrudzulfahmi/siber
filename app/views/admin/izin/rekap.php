@@ -16,7 +16,8 @@
     <h4>Ponpes Roudlotul Mutaallimin Minggirsari</h4>
     <p>Periode: <?= date('d/m/Y', strtotime($tanggalAwal)) ?> s.d. <?= date('d/m/Y', strtotime($tanggalAkhir)) ?></p>
     <br>
-    <table>
+    <div class="table-responsive">
+<table>
         <thead>
             <tr>
                 <th>No</th>
@@ -44,6 +45,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+</div>
 
     <br><br>
     <p style="text-align:right;">Dicetak: <?= $tanggalCetak ?></p>

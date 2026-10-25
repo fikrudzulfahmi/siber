@@ -2,19 +2,6 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>, // agar aman dari karakter khusus
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -41,7 +28,7 @@
                         </div>
                         <div>
                             <a href="index.php?controller=rapor&method=cetak_peringkat&id_kelas=<?= $kelas['id_kelas'] ?>" class="btn bg-profile-button btn-sm text-white mb-0 shadow-sm" target="_blank" style="background-color: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);">
-                                <i class="fa fa-print me-1"></i> Cetak Peringkat
+                                <i class="material-icons-round me-1">print</i> Cetak Peringkat
                             </a>
                         </div>
                     </div>

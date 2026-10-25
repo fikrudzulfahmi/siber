@@ -2,18 +2,6 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50'
-                });
-            });
-        </script>
-    <?php endif; ?>
 
     <style>
         .table-responsive .table {
@@ -79,8 +67,8 @@
                 </div>
 
                 <div class="my-4 mx-4">
-                    <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#modalCetak">
-                        <i class="fas fa-print me-1"></i> Cetak Laporan
+                    <button type="button" class="btn btn-outline-dark mb-3" data-bs-toggle="modal" data-bs-target="#modalCetak">
+                        <i class="material-icons-round me-1">print</i> Cetak Laporan
                     </button>
                 </div>
 
@@ -103,7 +91,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                                     <button type="submit" class="btn btn-success">Cetak PDF</button>
                                 </div>
                             </form>
@@ -129,7 +117,7 @@
                                 <?php if (empty($jurnalList)): ?>
                                     <tr>
                                         <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="fas fa-info-circle mb-2" style="font-size: 2rem;"></i><br>
+                                            <i class="material-icons-round mb-2" style="font-size: 2rem;">info</i><br>
                                             Belum ada data jurnal pada Tahun Ajaran ini.
                                         </td>
                                     </tr>
@@ -155,7 +143,7 @@
                                             <td class="text-center align-middle">
                                                 <div class="d-flex flex-column gap-1">
                                                     <a href="?controller=jurnal&method=edit&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-warning mb-0">Edit</a>
-                                                    <a href="?controller=jurnal&method=hapus&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-dark mb-0 delete-btn">Hapus</a>
+                                                    <a href="?controller=jurnal&method=hapus&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-danger mb-0 delete-btn">Hapus</a>
                                                 </div>
                                             </td>
                                         </tr>

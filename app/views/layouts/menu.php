@@ -177,7 +177,7 @@ if (!function_exists('siber_menu')) {
                 'levels' => [1, 5, 6, 10, 11, 12, 13, 14, 15, 16],
                 'controllers' => ['programStruktural', 'deadlineProgramStruktural', 'verifikasiProgramStruktural', 'jenisProgramStruktural'],
                 'items' => [
-                    ['label' => 'Program Struktural', 'icon' => 'source', 'href' => '?controller=programStruktural&method=index', 'controllers' => ['programStruktural'], 'levels' => [1, 5, 6, 10, 11, 12, 13, 14, 15, 16]],
+                    ['label' => 'Program Struktural', 'icon' => 'source', 'href' => '?controller=programStruktural&method=index', 'controllers' => ['programStruktural'], 'levels' => [1, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16]],
                     ['label' => 'Pengaturan Deadline', 'icon' => 'settings', 'href' => '?controller=deadlineProgramStruktural&method=index', 'controllers' => ['deadlineProgramStruktural'], 'levels' => [1, 5]],
                     ['label' => 'Verifikasi Program', 'icon' => 'task', 'href' => '?controller=verifikasiProgramStruktural&method=index', 'controllers' => ['verifikasiProgramStruktural'], 'levels' => [1, 5]],
                     ['label' => 'Jenis Program Struktural', 'icon' => 'category', 'href' => '?controller=jenisProgramStruktural&method=index', 'controllers' => ['jenisProgramStruktural'], 'levels' => [1]],

@@ -2,23 +2,10 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
-    <?php if ($msg = getFlash('success')): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: <?= sec_js($msg) ?>,
-                    confirmButtonColor: '#4caf50',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-    <?php endif; ?>
     <div class="row mb-3">
         <div class="col-12">
             <a href="?controller=ekstra&method=index" class="btn btn-sm btn-outline-secondary shadow-none">
-                <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar Ekstra
+                <i class="material-icons-round me-2">arrow_back</i> Kembali ke Daftar Ekstra
             </a>
         </div>
     </div>
@@ -73,7 +60,7 @@
                                             <td class="align-middle text-center">
                                                 <a href="?controller=ekstra&method=hapusPendampingSatu&id_p=<?= $p['id_pendamping'] ?>&id_ekstra=<?= $id_ekstra ?>"
                                                     class="text-danger font-weight-bold text-xs"
-                                                    onclick="return confirm('Hapus pendamping ini?')">
+                                                    data-confirm="Hapus pendamping ini?">
                                                     Hapus
                                                 </a>
                                             </td>
@@ -119,7 +106,7 @@
                                             <td><span class="text-xs font-weight-bold"><?= htmlspecialchars($ang['kelas']) ?></span></td>
                                             <td class="text-center">
                                                 <a href="?controller=ekstra&method=hapusAnggota&id_anggota=<?= $ang['id_ekstra_anggota'] ?>&id_ekstra=<?= $id_ekstra ?>"
-                                                    onclick="return confirm('Keluarkan siswa ini?')" class="btn btn-link text-danger mb-0 px-2">
+                                                    data-confirm="Keluarkan siswa ini?" class="btn btn-link text-danger mb-0 px-2">
                                                     <i class="material-icons text-sm">person_remove</i>
                                                 </a>
                                             </td>
@@ -149,7 +136,7 @@
                         <input type="hidden" name="id_ekstra" value="<?= $id_ekstra ?>">
 
                         <div class="mb-4">
-                            <h6 class="text-sm font-weight-bold"><i class="fas fa-chalkboard-teacher me-2"></i>Guru Pendamping</h6>
+                            <h6 class="text-sm font-weight-bold"><i class="material-icons-round me-2">co_present</i>Guru Pendamping</h6>
                             <div class="table-responsive" style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px;">
                                 <table class="table table-sm align-items-center mb-0">
                                     <tbody id="tableGuru">
@@ -177,7 +164,7 @@
                         <hr class="horizontal dark">
 
                         <div class="mb-3">
-                            <h6 class="text-sm font-weight-bold"><i class="fas fa-user-graduate me-2"></i>Siswa Anggota</h6>
+                            <h6 class="text-sm font-weight-bold"><i class="material-icons-round me-2">school</i>Siswa Anggota</h6>
 
                             <div class="row px-2 mb-2">
                                 <div class="col-6 px-1">

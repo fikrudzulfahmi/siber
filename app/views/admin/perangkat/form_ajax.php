@@ -123,5 +123,5 @@ foreach ($perangkat as $item) {
         </table>
     </div>
 
-    <button type="submit" class="btn btn-dark mt-3">Upload Semua</button>
+    <button type="submit" class="btn btn-success mt-3">Upload Semua</button>
 </form>

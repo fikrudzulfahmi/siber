@@ -2,31 +2,7 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 
-<?php if ($msg = getFlash('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#4caf50'
-            });
-        });
-    </script>
-<?php endif; ?>
 
-<?php if ($msg = getFlash('danger')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: <?= sec_js($msg) ?>,
-                confirmButtonColor: '#e53935'
-            });
-        });
-    </script>
-<?php endif; ?>
 
 <style>
     /* Perbaiki lebar form control agar tidak melebihi parent */

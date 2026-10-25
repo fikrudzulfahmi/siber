@@ -75,7 +75,7 @@
                         <div class="d-flex justify-content-end mt-4 mb-2">
                             <a href="?controller=kegiatan&method=index" class="btn btn-outline-secondary me-2">Batal</a>
                             <button type="submit" class="btn bg-gradient-success px-5">
-                                <i class="fas fa-save me-2"></i>Simpan Kegiatan
+                                <i class="material-icons-round me-2">save</i>Simpan Kegiatan
                             </button>
                         </div>
                     </form>

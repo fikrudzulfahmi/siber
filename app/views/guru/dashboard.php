@@ -49,11 +49,11 @@
                         <div class="mb-3">
                             <?php if (isset($presensiHariIni['is_kegiatan']) && $presensiHariIni['is_kegiatan']): ?>
                                 <span class="badge bg-warning text-dark border-0 py-2 px-3 shadow-sm" style="font-size: 0.8rem;">
-                                    <i class="fas fa-star me-1"></i> Presensi Kegiatan: <?= htmlspecialchars($presensiHariIni['nama_kegiatan']) ?>
+                                    <i class="material-icons-round me-1">star</i> Presensi Kegiatan: <?= htmlspecialchars($presensiHariIni['nama_kegiatan']) ?>
                                 </span>
                             <?php else: ?>
                                 <span class="badge bg-info text-white border-0 py-1 px-2 opacity-8">
-                                    <i class="fas fa-calendar-day me-1"></i> Presensi Harian
+                                    <i class="material-icons-round me-1">today</i> Presensi Harian
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -170,7 +170,7 @@
     </div>
 
 
-    <?php if (!empty($deadlineProgram) && $showProgramDeadline): ?>
+    <?php if ($showProgramDeadline): ?>
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
@@ -180,7 +180,10 @@
                         </div>
                     </div>
                     <div class="card-body px-4 py-3">
-                        <ul class="list-group list-group-flush">
+                        <?php if (empty($deadlineProgram)): ?>
+<p class="text-sm text-muted mb-0">Belum ada deadline program struktural untuk tahun pelajaran ini.</p>
+<?php else: ?>
+<ul class="list-group list-group-flush">
                             <?php foreach ($deadlineProgram as $dp): ?>
                                 <?php
                                 $itemClass = match ($dp['status']) {
@@ -217,6 +220,7 @@
                                 </li>
                             <?php endforeach; ?>
                         </ul>
+<?php endif; ?>
                     </div>
                 </div>
             </div>

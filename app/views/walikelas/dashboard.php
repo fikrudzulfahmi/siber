@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<?php if(!empty($deadlineProgram) && $showProgramDeadline): ?>
+<?php if($showProgramDeadline): ?>
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -87,7 +87,10 @@
                 </div>
             </div>
             <div class="card-body px-4 py-3">
-                <ul class="list-group list-group-flush">
+                <?php if (empty($deadlineProgram)): ?>
+<p class="text-sm text-muted mb-0">Belum ada deadline program struktural untuk tahun pelajaran ini.</p>
+<?php else: ?>
+<ul class="list-group list-group-flush">
                     <?php foreach($deadlineProgram as $dp): ?>
                         <?php
                         $itemClass = match($dp['status']) {
@@ -124,6 +127,7 @@ Deadline: <?= date('d/m/Y', strtotime($dp['deadline'])) ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
+<?php endif; ?>
             </div>
         </div>
     </div>
