@@ -151,6 +151,14 @@ if (!function_exists('siber_menu')) {
             ],
             [
                 'type' => 'item',
+                'label' => 'Urutkan Siswa',
+                'icon' => 'low_priority',
+                'href' => '?controller=urutkanSiswa&method=index',
+                'controllers' => ['urutkanSiswa'],
+                'levels' => [1, 3, 5, 6],
+            ],
+            [
+                'type' => 'item',
                 'label' => 'Prestasi Siswa',
                 'icon' => 'emoji_events',
                 'href' => '?controller=prestasi&method=index',

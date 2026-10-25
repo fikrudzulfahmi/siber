@@ -108,7 +108,10 @@ class LaporanModel
             FROM nilai n
             JOIN siswa s ON s.id_siswa = n.id_siswa
             JOIN kategori_nilai kn ON kn.id_kategori = n.id_kategori
-            WHERE n.id_kategori = ? AND " . siswa_aktif_sql('s') . " ORDER BY s.nama_siswa ASC
+            JOIN mapel_guru mg ON mg.id_mapel_guru = kn.id_mapel_guru
+            LEFT JOIN ploting_siswa ps ON ps.id_siswa = n.id_siswa
+                 AND ps.id_kelas = mg.id_kelas AND ps.id_tahun = kn.id_tahun_pelajaran
+            WHERE n.id_kategori = ? AND " . siswa_aktif_sql('s') . " ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC
         ");
         $stmt->execute([$id_kategori]);
         $nilaiList = $stmt->fetchAll(PDO::FETCH_ASSOC);

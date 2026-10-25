@@ -101,7 +101,7 @@ class SiswaKeluar
                 JOIN siswa s ON s.id_siswa = ps.id_siswa
                 WHERE ps.id_kelas = ? AND ps.id_tahun = ?
                   AND " . siswa_aktif_sql('s') . "
-                ORDER BY s.nama_siswa ASC";
+                ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([(int) $id_kelas, (int) $id_tahun]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

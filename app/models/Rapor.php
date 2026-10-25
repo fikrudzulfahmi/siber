@@ -257,7 +257,7 @@ class Rapor
     WHERE ps.id_kelas = ? AND ps.id_tahun = ? 
       AND " . siswa_aktif_sql('s') . " 
     GROUP BY s.id_siswa
-    ORDER BY s.nama_siswa ASC";
+    ORDER BY (MIN(ps.urutan) IS NULL) ASC, MIN(ps.urutan) ASC, s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_kelas, $id_tahun, $id_kelas, $id_tahun]);

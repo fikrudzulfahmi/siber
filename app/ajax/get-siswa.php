@@ -25,7 +25,11 @@ $id_tahun = $pdo->query("SELECT id_tahun_pelajaran FROM tahun_pelajaran WHERE st
 //    DISTINCT mencegah nama dobel (satu siswa bisa punya lebih dari satu baris
 //    ploting pada id_kelas yang sama) sekaligus aman untuk sql_mode
 //    ONLY_FULL_GROUP_BY — berbeda dengan GROUP BY di MySQL/MariaDB ketat.
-$sql = "SELECT DISTINCT s.id_siswa, s.nama_siswa 
+$sql = "SELECT DISTINCT s.id_siswa, s.nama_siswa, 
+               (SELECT MIN(p2.urutan) FROM ploting_siswa p2
+                 WHERE p2.id_siswa = s.id_siswa
+                   AND p2.id_kelas = ps.id_kelas
+                   AND p2.id_tahun = ps.id_tahun) AS urutan_tampil 
         FROM ploting_siswa ps
         JOIN siswa s ON ps.id_siswa = s.id_siswa 
         WHERE ps.id_kelas = ?
@@ -37,7 +41,7 @@ if ($id_tahun) {
     $params[] = $id_tahun;
 }
 
-$sql .= " ORDER BY s.nama_siswa ASC";
+$sql .= " ORDER BY (urutan_tampil IS NULL) ASC, urutan_tampil ASC, s.nama_siswa ASC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);

@@ -101,7 +101,7 @@ class RaporController extends BaseController
         JOIN siswa s ON p.id_siswa = s.id_siswa 
         LEFT JOIN rapor_siswa rs ON s.id_siswa = rs.id_siswa AND rs.id_rapor = ?
         WHERE p.id_kelas = ? AND p.id_tahun = ? AND " . siswa_aktif_sql('s') . "
-        ORDER BY s.nama_siswa ASC";
+        ORDER BY (p.urutan IS NULL) ASC, p.urutan ASC, s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
 

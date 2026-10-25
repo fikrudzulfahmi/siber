@@ -268,6 +268,8 @@ function sec_policy(): array
         'prestasi'                  => [1, 2, 6, 7],
         // PD keluar: admin, kesiswaan, kepala pondok.
         'siswaKeluar'               => [1, 6, 7],
+        // Urutan tampil siswa: admin, walikelas (kelasnya sendiri), waka kurikulum, waka kesiswaan.
+        'urutkanSiswa'              => [1, 3, 5, 6],
     ];
 }
 

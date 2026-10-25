@@ -53,7 +53,7 @@ class Jurnal
               AND s.status = 'Aktif'
               AND " . siswa_aktif_sql('s') . "
             GROUP BY s.id_siswa, s.nama_siswa
-            ORDER BY s.nama_siswa ASC
+            ORDER BY (MIN(ps.urutan) IS NULL) ASC, MIN(ps.urutan) ASC, s.nama_siswa ASC
         ");
         $stmt->execute([$id_kelas, $id_tahun]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

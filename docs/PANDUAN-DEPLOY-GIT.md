@@ -618,3 +618,62 @@ Tanpa perubahan skema database. Semua file di-commit bersama, cukup `git pull`.
 - Hasil uji lokal: level 5, 6, 7, 10-16 melihat kartu; level 1-4 tidak.
 
 Setelah `git pull`: hard refresh (Ctrl+F5) karena ada CSS/JS baru `?v=1`.
+
+## 19. Menu Urutkan Siswa (drag & drop) — butuh 1 kolom baru
+
+Fitur: merapikan urutan tampil siswa per kelas. Dulu semua daftar dipaksa
+abjad; sekarang sekolah bisa menentukan urutannya sendiri (mis. urut absen
+atau urut sesuai keputusan rapat), dan urutan itu dipakai di semua halaman.
+
+### 19.1 Akses
+- Admin (level 1), waka kurikulum (5), waka kesiswaan (6): **semua kelas**.
+- Walikelas (3): **hanya kelas yang diampu** (`kelas.wali_kelas` = id employe).
+- Level lain: menu tidak tampil, POST ditolak 403 (`sec_policy()`).
+
+### 19.2 Database
+Satu kolom baru: `ploting_siswa.urutan` (INT NULL). Jalankan sekali:
+
+```
+php scripts/migrasi_urutan_siswa.php
+```
+
+atau lewat phpMyAdmin:
+
+```sql
+ALTER TABLE ploting_siswa
+  ADD COLUMN urutan INT NULL DEFAULT NULL AFTER id_tahun,
+  ADD INDEX idx_ploting_urut (id_kelas, id_tahun, urutan);
+```
+
+Skrip aman diulang (`--cek` hanya melaporkan status). Tidak ada data yang
+diubah/dihapus: baris lama `urutan = NULL` tetap tampil dan diurutkan abjad.
+
+### 19.3 Cara pakai
+Menu **Master > Urutkan Siswa** → pilih kelas + tahun pelajaran → geser kartu
+(handle `⋮⋮`, bisa ke atas/bawah) atau pakai tombol ↑/↓ di HP → **Simpan
+Urutan**. Tombol **Kembali ke Abjad** mengosongkan urutan kelas itu.
+
+Siswa baru otomatis masuk di belakang (urutan NULL) sampai diatur manual.
+
+### 19.4 Titik yang ikut urutan manual
+Semua query daftar siswa memakai satu pola:
+
+```
+ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC
+```
+
+Dipakai di: ploting/anggota kelas, jurnal & absensi, rekap kehadiran, leger,
+input & daftar siswa rapor, prestasi, ekstrakurikuler, konseling, siswa keluar,
+kategori nilai/laporan, dan dropdown siswa (`ajax.php?action=get_siswa`).
+Query ber-`GROUP BY` memakai `MIN(ps.urutan)`; query ber-`DISTINCT`
+(konseling, dropdown ajax) memakai subquery `urutan_tampil` agar tetap aman
+untuk `ONLY_FULL_GROUP_BY`.
+
+### 19.5 Uji lokal
+- Halaman: 6 siswa urut abjad → simpan urutan terbalik → urutan tersimpan dan
+  terbaca ulang di halaman; reset mengembalikan abjad.
+- Siswa tanpa urutan tampil paling belakang.
+- Walikelas kelas lain → 403; tanpa token CSRF → 419; level 2 → 403.
+- Menu tampil untuk level 1/3/5/6, tidak tampil untuk level 2.
+
+Setelah `git pull`: jalankan migrasi, lalu hard refresh browser.

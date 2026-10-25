@@ -86,7 +86,7 @@ class EkstraModel
             JOIN siswa s ON ps.id_siswa = s.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
             WHERE ae.id_ekstra = ? 
-            ORDER BY s.nama_siswa ASC";
+            ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ekstra]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -103,7 +103,7 @@ class EkstraModel
             AND ps.id_ploting NOT IN (
                 SELECT id_ploting_siswa FROM ekstra_anggota WHERE id_ekstra = ?
             )
-            ORDER BY k.kelas ASC, s.nama_siswa ASC";
+            ORDER BY k.kelas ASC, (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_tahun, $id_ekstra]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -310,7 +310,7 @@ class EkstraModel
             LEFT JOIN ekstra_kegiatan ek ON ep.id_ekstra_kegiatan = ek.id_ekstra_kegiatan
             WHERE ea.id_ekstra = ?
             GROUP BY ps.id_ploting
-            ORDER BY s.nama_siswa ASC";
+            ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ekstra]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -393,7 +393,7 @@ class EkstraModel
                 JOIN siswa s ON ps.id_siswa = s.id_siswa
                 JOIN kelas k ON ps.id_kelas = k.id_kelas
                 WHERE ea.id_ekstra = ?
-                ORDER BY s.nama_siswa ASC";
+                ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ekstra]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

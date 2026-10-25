@@ -46,7 +46,7 @@ class PrestasiModel
                   JOIN siswa s ON ps.id_siswa = s.id_siswa
                   JOIN kelas k ON ps.id_kelas = k.id_kelas
                   WHERE ps.id_tahun = ? 
-                  ORDER BY k.kelas, s.nama_siswa";
+                  ORDER BY k.kelas, (ps.urutan IS NULL), ps.urutan, s.nama_siswa";
         $stmt = $this->db->prepare($query);
         $stmt->execute([$id_tahun]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

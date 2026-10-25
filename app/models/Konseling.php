@@ -93,7 +93,11 @@ class Konseling
         }
 
         $sql = "
-            SELECT DISTINCT s.id_siswa, s.nama_siswa 
+            SELECT DISTINCT s.id_siswa, s.nama_siswa, 
+                   (SELECT MIN(p2.urutan) FROM ploting_siswa p2
+                     WHERE p2.id_siswa = s.id_siswa
+                       AND p2.id_kelas = ps.id_kelas
+                       AND p2.id_tahun = ps.id_tahun) AS urutan_tampil 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
@@ -107,7 +111,7 @@ class Konseling
             $params[] = $id_tahun;
         }
 
-        $sql .= " ORDER BY s.nama_siswa ASC";
+        $sql .= " ORDER BY (urutan_tampil IS NULL) ASC, urutan_tampil ASC, s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -378,7 +382,11 @@ class Konseling
         // memakai sql_mode ONLY_FULL_GROUP_BY. Deduplikasi tetap sama: satu siswa
         // hanya muncul sekali walau punya beberapa baris ploting di kelas yang sama.
         $sql = "
-            SELECT DISTINCT s.id_siswa, s.nama_siswa 
+            SELECT DISTINCT s.id_siswa, s.nama_siswa, 
+                   (SELECT MIN(p2.urutan) FROM ploting_siswa p2
+                     WHERE p2.id_siswa = s.id_siswa
+                       AND p2.id_kelas = ps.id_kelas
+                       AND p2.id_tahun = ps.id_tahun) AS urutan_tampil 
             FROM siswa s
             JOIN ploting_siswa ps ON s.id_siswa = ps.id_siswa
             WHERE ps.id_kelas = ? 
@@ -391,7 +399,7 @@ class Konseling
             $params[] = $id_tahun;
         }
 
-        $sql .= " ORDER BY s.nama_siswa ASC";
+        $sql .= " ORDER BY (urutan_tampil IS NULL) ASC, urutan_tampil ASC, s.nama_siswa ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

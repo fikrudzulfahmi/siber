@@ -67,7 +67,7 @@ class LegerModel
       AND ps.id_tahun = :id_tahun_pelajaran 
         AND " . siswa_aktif_sql('s') . "
       AND mg.id_kelas = :id_kelas_filter -- KUNCI PERBAIKAN: Filter mapel berdasarkan kelas
-    ORDER BY s.nama_siswa ASC, m.nama_mapel ASC
+    ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC, m.nama_mapel ASC
     ";
 
         $stmt = $this->db->prepare($query);

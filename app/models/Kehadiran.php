@@ -170,7 +170,7 @@ class Kehadiran
         WHERE ps.id_kelas = ?
           AND ps.id_tahun = ?
           AND s.status = 'Aktif'
-        ORDER BY s.nama_siswa ASC
+        ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC
     ");
         $stmtSiswa->execute([$id_kelas, $id_tahun]);
         $daftarSiswa = $stmtSiswa->fetchAll(PDO::FETCH_ASSOC);
