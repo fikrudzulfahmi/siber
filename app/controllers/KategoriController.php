@@ -195,6 +195,78 @@ class KategoriController
         header("Location: ?controller=kategori&method=index&id_mapel_guru=" . $_POST['id_mapel_guru']);
     }
 
+    // Tombol "Sinkronkan Siswa": lengkapi baris nilai untuk siswa yang masuk
+    // setelah kategori dibuat. Hanya menambah baris yang belum ada.
+    public function sync()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?controller=penilaian&method=index');
+            exit;
+        }
+
+        $id_mapel_guru = $_POST['id_mapel_guru'] ?? null;
+        $model = new Kategori($this->db);
+
+        if (!$id_mapel_guru) {
+            setFlash('danger', 'Gagal sinkronisasi: data mapel tidak ditemukan.');
+            header('Location: index.php?controller=penilaian&method=index');
+            exit;
+        }
+
+        $info = $model->getInfoMapelGuru($id_mapel_guru);
+        if (!$info) {
+            setFlash('danger', 'Gagal sinkronisasi: kelas/mapel tidak ditemukan.');
+            header('Location: index.php?controller=penilaian&method=index');
+            exit;
+        }
+
+        $added = $model->syncNilaiKelas($info['id_kelas'], $info['id_tahun']);
+
+        if ($added > 0) {
+            setFlash('success', "Sinkronisasi selesai: $added baris nilai dibuat untuk siswa yang belum punya nilai.");
+        } else {
+            setFlash('success', 'Sinkronisasi selesai: semua siswa di kelas ini sudah punya baris nilai.');
+        }
+
+        header('Location: index.php?controller=kategori&method=index&id_mapel_guru=' . urlencode($id_mapel_guru));
+        exit;
+    }
+
+    // Tombol "Sinkronkan Semua" (khusus admin): sapu semua kelas pada tahun aktif.
+    public function syncAll()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?controller=penilaian&method=index');
+            exit;
+        }
+        if (!function_exists('sec_has_level') || !sec_has_level([1])) {
+            http_response_code(403);
+            echo 'Akses ditolak.';
+            exit;
+        }
+
+        $model = new Kategori($this->db);
+        $pasangan = $this->db->query("SELECT DISTINCT id_kelas, id_tahun_pelajaran FROM mapel_guru")
+                             ->fetchAll(PDO::FETCH_ASSOC);
+
+        $total = 0;
+        $kelas = 0;
+        foreach ($pasangan as $row) {
+            $n = $model->syncNilaiKelas($row['id_kelas'], $row['id_tahun_pelajaran']);
+            $total += $n;
+            if ($n > 0) $kelas++;
+        }
+
+        if ($total > 0) {
+            setFlash('success', "Sinkronisasi selesai: $total baris nilai dibuat di $kelas kelas/mapel.");
+        } else {
+            setFlash('success', 'Sinkronisasi selesai: tidak ada siswa yang kehilangan baris nilai.');
+        }
+
+        header('Location: index.php?controller=penilaian&method=index');
+        exit;
+    }
+
     public function delete()
     {
         $id_kategori = $_GET['id'] ?? null;

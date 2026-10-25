@@ -54,6 +54,14 @@ include '../app/views/layouts/sidebar.php';
                                 </a>
                             <?php endif; ?>
 
+                            <form method="post" action="index.php?controller=kategori&method=sync" class="d-inline"
+                                  onsubmit="return confirm('Tambahkan baris nilai untuk siswa yang belum punya nilai di kelas ini? Nilai yang sudah ada tidak berubah.');">
+                                <input type="hidden" name="id_mapel_guru" value="<?= sec_e($id_mapel_guru) ?>">
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="fas fa-sync"></i> Sinkronkan Siswa
+                                </button>
+                            </form>
+
                             <script>
                                 function alertSudahAda() {
                                     Swal.fire({

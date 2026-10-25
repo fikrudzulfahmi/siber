@@ -500,6 +500,15 @@ otomatis di dua titik:
 1. saat siswa diploting ke kelas (menu **Ploting** → Simpan), dan
 2. saat guru membuka halaman **input nilai** sebuah kategori.
 
+Ada juga tombol manual kalau ingin menyapu data lama sekaligus:
+
+- **Sinkronkan Siswa** — di halaman daftar kategori sebuah mapel
+  (`Penilaian` → `Detail`). Menyinkronkan satu kelas + satu mapel.
+- **Sinkronkan Semua Nilai** — di halaman `Penilaian`, hanya tampil untuk admin.
+  Menyapu semua kelas/mapel yang punya kategori.
+
+Keduanya hanya menambah baris yang belum ada, jadi aman ditekan berkali-kali.
+
 Sifatnya idempotent dan hanya menambah:
 
 - hanya membuat baris untuk pasangan kategori–siswa yang belum ada;
