@@ -32,6 +32,7 @@
     }
 
     .us-handle {
+        flex: 0 0 auto;
         cursor: grab;
         color: #9aa0a6;
         display: inline-flex;
@@ -45,6 +46,7 @@
     }
 
     .us-no {
+        flex: 0 0 auto;
         min-width: 2rem;
         height: 2rem;
         border-radius: 50%;
@@ -69,12 +71,14 @@
     }
 
     .us-nisn {
+        flex: 0 0 auto;
         font-size: .72rem;
         color: #8392ab;
         white-space: nowrap;
     }
 
     .us-aksi {
+        flex: 0 0 auto;
         display: flex;
         gap: .25rem;
     }
@@ -84,6 +88,11 @@
         --bs-btn-padding-x: .35rem;
         --bs-btn-font-size: .8rem;
         line-height: 1.2;
+        flex: 0 0 auto;
+        min-width: 2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .us-kosong {
@@ -93,9 +102,49 @@
         font-size: .9rem;
     }
 
+    /* HP: nama dapat barisnya sendiri supaya tidak tertutup tombol panah */
     @media (max-width: 575.98px) {
         .us-nisn {
             display: none;
+        }
+
+        .us-item {
+            flex-wrap: wrap;
+            gap: .3rem .5rem;
+            padding: .55rem .7rem;
+        }
+
+        .us-handle {
+            order: 1;
+        }
+
+        .us-no {
+            order: 2;
+            min-width: 1.75rem;
+            height: 1.75rem;
+            font-size: .75rem;
+        }
+
+        .us-aksi {
+            order: 3;
+            margin-left: auto;
+        }
+
+        .us-aksi .btn {
+            --bs-btn-padding-y: .28rem;
+            --bs-btn-padding-x: .5rem;
+            min-width: 2.1rem;
+        }
+
+        .us-nama {
+            order: 4;
+            flex: 1 0 100%;
+            white-space: normal;
+            text-overflow: clip;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.3;
         }
     }
 </style>
