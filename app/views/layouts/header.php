@@ -20,6 +20,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link id="pagestyle" href="assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+    <link href="assets/css/siber-nav.css?v=1" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
@@ -216,11 +217,11 @@
 
 
 <body class="g-sidenav-show bg-gray-200">
-    <nav class="navbar navbar-main navbar-expand-lg px-3 shadow-none bg-gradient-dark d-xl-none">
-        <div class="container-fluid py-1 px-2 d-flex justify-content-end align-items-center">
-            <button class="btn btn-sm text-white" id="menu-toggle">
-                <i class="mdi mdi-menu mdi-24px"></i>
-            </button>
-        </div>
-    </nav>
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+    <!-- Topbar mobile: pengganti tombol hamburger. Navigasi utama ada di bottom bar. -->
+    <header class="siber-topbar d-xl-none">
+        <img src="assets/img/logo-ct2.png" alt="Logo SiBer">
+        <h1 class="siber-topbar__title">
+            SiBer PPRM
+            <small><?= sec_e(autoTitle($_GET['controller'] ?? '', $_GET['method'] ?? '')) ?></small>
+        </h1>
+    </header>

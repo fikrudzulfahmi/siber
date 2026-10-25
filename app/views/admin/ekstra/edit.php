@@ -2,6 +2,8 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
+    <?php include '../app/views/layouts/alert_status.php'; ?>
+
     <div class="row">
         <div class="col-md-12 mx-auto">
             <div class="card my-4">

@@ -45,11 +45,11 @@ include '../app/views/layouts/sidebar.php';
                     <div class="d-flex justify-content-between align-items-center mx-4 mt-3 mb-3">
                         <div>
                             <?php if ($cekKategori): ?>
-                                <button type="button" class="btn btn-primary" onclick="alertSudahAda()">
+                                <button type="button" class="btn btn-success" onclick="alertSudahAda()">
                                     <i class="fas fa-plus"></i> Tambah Kategori
                                 </button>
                             <?php else: ?>
-                                <a href="?controller=kategori&method=create&id_mapel_guru=<?= $id_mapel_guru ?>" class="btn btn-primary">
+                                <a href="?controller=kategori&method=create&id_mapel_guru=<?= $id_mapel_guru ?>" class="btn btn-success">
                                     <i class="fas fa-plus"></i> Tambah Kategori
                                 </a>
                             <?php endif; ?>

@@ -17,10 +17,6 @@
 
 <div class="container-fluid py-4">
 
-    <?php if ($msg = getFlash('success')): ?>
-        <div class="alert alert-success"><?= sec_e($msg) ?></div>
-    <?php endif; ?>
-
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -36,10 +32,10 @@
                         <?php if (!isLevel($id_level, 7)): ?>
                             <div class="d-flex gap-2">
                                 <a href="?controller=siswa&method=create" class="btn btn-success">
-                                    <i class="bi bi-plus-circle me-1"></i> Tambah Siswa
+                                    <i class="material-icons-round align-middle me-1" style="font-size:18px">add_circle</i> Tambah Siswa
                                 </a>
                                 <a href="TemplateUpload.xlsx" class="btn btn-dark">
-                                    <i class="bi bi-file-earmark-excel me-1"></i> Download Template
+                                    <i class="material-icons-round align-middle me-1" style="font-size:18px">description</i> Download Template
                                 </a>
                             </div>
 
@@ -56,7 +52,7 @@
                                     style="max-width: 250px;">
 
                                 <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-upload me-1"></i> Upload
+                                    <i class="material-icons-round align-middle me-1" style="font-size:18px">upload</i> Upload
                                 </button>
                             </form>
                         <?php endif; ?>

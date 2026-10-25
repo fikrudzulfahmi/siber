@@ -199,7 +199,7 @@
                                     <small class="text-success text-xs fw-bold">ID Tersimpan saat ini: <?= htmlspecialchars($realFolderId ?: 'Belum ada') ?></small>
                                 </div>
                                 <div class="col-md-3">
-                                    <button type="submit" class="btn btn-primary w-100">Simpan ID Folder</button>
+                                    <button type="submit" class="btn btn-success w-100">Simpan ID Folder</button>
                                 </div>
                             </div>
                         </form>

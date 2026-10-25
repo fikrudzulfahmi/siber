@@ -31,7 +31,7 @@
                         </div>
 
                         <div class="col-md-2">
-                            <button class="btn btn-primary">Filter</button>
+                            <button class="btn btn-success">Filter</button>
                         </div>
                     </form>
 

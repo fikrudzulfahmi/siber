@@ -31,7 +31,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                icon: 'danger',
+                icon: 'error',
                 title: 'Gagal',
                 text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',

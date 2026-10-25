@@ -24,6 +24,9 @@
 </div>
 </main>
 
+<!-- Navigasi mobile (bottom bar + sheet) -->
+<?php require __DIR__ . '/mobile_nav.php'; ?>
+
 
 <!-- Core JS Files -->
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
@@ -223,24 +226,8 @@
     });
 </script>
 
-<!-- ==================== JS TOGGLE MOBILE ==================== -->
-<script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileSidebar = document.getElementById('sidenav-mobile');
-    const closeSidebar = document.getElementById('close-sidebar-mobile');
-
-    menuToggle?.addEventListener('click', () => {
-        mobileSidebar.style.transform =
-            mobileSidebar.style.transform === 'translateX(0px)' ? 'translateX(-100%)' : 'translateX(0)';
-    });
-    closeSidebar?.addEventListener('click', () => mobileSidebar.style.transform = 'translateX(-100%)');
-
-    document.addEventListener('click', e => {
-        if (!mobileSidebar.contains(e.target) && !e.target.closest('#menu-toggle') && window.innerWidth < 1200) {
-            mobileSidebar.style.transform = 'translateX(-100%)';
-        }
-    });
-</script>
+<!-- ==================== Navigasi mobile ==================== -->
+<script src="assets/js/siber-nav.js?v=1"></script>
 <?php
 $controller = $_GET['controller'] ?? '';
 $method = $_GET['method'] ?? '';

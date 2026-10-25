@@ -31,7 +31,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                icon: 'danger',
+                icon: 'error',
                 title: 'Gagal',
                 text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
@@ -64,10 +64,6 @@
 
     /* Responsif untuk padding dan layout */
     @media (max-width: 768px) {
-        .row {
-            flex-direction: column;
-        }
-
         .col-md-4 {
             width: 100%;
         }

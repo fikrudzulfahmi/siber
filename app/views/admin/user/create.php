@@ -20,7 +20,7 @@
                 <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-success">Simpan</button>
     </form>
 </div>
 <?php include '../app/views/layouts/footer.php'; ?>

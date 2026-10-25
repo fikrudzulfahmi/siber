@@ -115,7 +115,7 @@
                         <div class="col-12 col-md-2">
                             <button type="submit" class="btn btn-danger btn-sm w-100 mb-0"
                                     onclick="return confirm('Keluarkan siswa ini? Data nilai tetap tersimpan dan bisa dikembalikan.')">
-                                <i class="bi bi-box-arrow-right me-1"></i> Keluarkan
+                                <i class="material-icons-round align-middle me-1" style="font-size:18px">logout</i> Keluarkan
                             </button>
                         </div>
                     </form>
@@ -154,7 +154,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-2">
-                            <button type="submit" class="btn btn-dark btn-sm w-100 mb-0"><i class="bi bi-search me-1"></i> Filter</button>
+                            <button type="submit" class="btn btn-dark btn-sm w-100 mb-0"><i class="material-icons-round align-middle me-1" style="font-size:18px">search</i> Filter</button>
                         </div>
                     </form>
 
@@ -202,7 +202,7 @@
                                                         <?php if ($filter['riwayat']): ?><input type="hidden" name="riwayat" value="1"><?php endif; ?>
                                                         <button type="submit" class="btn btn-outline-success btn-sm mb-0"
                                                                 onclick="return confirm('Kembalikan siswa ini ke status aktif? Nilainya akan tampil lagi.')">
-                                                            <i class="bi bi-arrow-counterclockwise"></i> Kembalikan
+                                                            <i class="material-icons-round align-middle" style="font-size:18px">undo</i> Kembalikan
                                                         </button>
                                                     </form>
                                                 <?php else: ?>

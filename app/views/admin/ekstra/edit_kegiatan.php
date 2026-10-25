@@ -2,6 +2,8 @@
 <?php include '../app/views/layouts/sidebar.php'; ?>
 
 <div class="container-fluid py-4">
+    <?php include '../app/views/layouts/alert_status.php'; ?>
+
     <form action="?controller=ekstra&method=updateKegiatan" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id_ekstra_kegiatan" value="<?= $jurnal['id_ekstra_kegiatan'] ?>">
         <input type="hidden" name="id_ekstra" value="<?= $ekstra['id_ekstra'] ?>">

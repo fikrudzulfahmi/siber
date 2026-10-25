@@ -56,7 +56,7 @@
                     </form>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-items-center mb-0"" id="table-perangkat">
+                        <table class="table table-bordered table-striped align-items-center mb-0" id="table-perangkat">
                             <thead>
                                 <tr>
                                     <th>Jenis Perangkat</th>

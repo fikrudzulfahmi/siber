@@ -536,3 +536,29 @@ ORDER BY mg.id_kelas, s.nama_siswa;
 
 Kalau query di atas mengembalikan baris, cukup buka halaman input nilai kategori terkait
 sekali (atau ploting ulang siswanya) — baris yang kurang akan dibuat otomatis.
+
+
+## 17. Navigasi desktop dan mobile (bottom menu)
+
+Sidebar dan menu mobile sekarang dibaca dari **satu sumber**: `app/views/layouts/menu.php`.
+Menambah/mengubah menu cukup di file itu, supaya tampilan desktop dan mobile tidak
+pernah berbeda lagi (dulu ada menu yang muncul di desktop tetapi hilang di mobile).
+
+- **Desktop (>= 1200px)**: sidebar kiri seperti biasa (`layouts/sidebar.php`), dirender
+  dari `siber_menu_for_level()`. Di bawah 1200px sidebar Material Dashboard memang
+  digeser keluar layar, jadi navigasi mobile dipakai sampai breakpoint itu.
+- **Mobile/tablet (< 1200px)**: tidak ada sidebar. Yang tampil bottom bar 5 slot:
+  **Beranda · Penilaian · Jurnal · Rapor · Lainnya** (`layouts/mobile_nav.php`),
+  dengan CSS `public/assets/css/siber-nav.css` dan JS `public/assets/js/siber-nav.js`.
+  - Slot diisi dari daftar prioritas sesuai level; menu yang tidak boleh diakses
+    tidak ditampilkan. Role tanpa akses rapor mendapat slot **Rekap Kehadiran**.
+  - Tombol **Lainnya** membuka bottom sheet berisi seluruh menu terkelompok
+    (Master, Pembelajaran, Layanan Rapor, dst.) plus tombol Keluar.
+  - Halaman yang tidak ada di bottom bar otomatis menyorot tombol **Lainnya**.
+- **Topbar mobile**: header tipis berisi logo + judul halaman, menggantikan tombol
+  hamburger lama. Tidak ada drawer samping lagi.
+- `<main>` hanya dibuka satu kali (di `layouts/sidebar.php`), bukan lagi di
+  `header.php`, sehingga tidak ada lagi elemen `<main>` bersarang.
+
+Setelah `git pull`, lakukan hard refresh (Ctrl+F5) di HP karena CSS/JS baru
+(`?v=1`) bisa tersimpan di cache browser.

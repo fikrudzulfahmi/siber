@@ -31,7 +31,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                icon: 'danger',
+                icon: 'error',
                 title: 'Gagal',
                 text: <?= sec_js($msg) ?>,
                 confirmButtonColor: '#4caf50',
@@ -211,7 +211,7 @@
                 <strong>Info:</strong> Jam yang sudah terpakai di hari ini: <span id="list-jam-terpakai">-</span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Simpan Jadwal</button>
+            <button type="submit" class="btn btn-success">Simpan Jadwal</button>
             <a href="index.php?controller=jadwal&method=index&id_kelas=<?= $id_kelas_terpilih ?>" class="btn btn-secondary">Batal</a>
         </form>
 
