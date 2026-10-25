@@ -146,14 +146,13 @@
                         <?php foreach ($hariList as $hari): ?>
                             <div class="tab-pane fade <?= (strtolower($hari) == strtolower($hariAktif)) ? 'show active' : '' ?>"
                                 id="<?= strtolower($hari) ?>" role="tabpanel">
+                                <?php if (!isLevel($id_level, 7)): ?>
+                                    <div class="my-4 mx-4">
+    <a href="?controller=jadwal&method=create&id_kelas=<?= $id_kelas; ?>&hari=<?= $hari; ?>" class="btn btn-success mb-3">Tambah Jadwal</a>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="table-responsive">
-<table
-                                    class="table table-bordered table-striped align-items-center mb-0">
-                                    <?php if (!isLevel($id_level, 7)): ?>
-                                        <div class="my-4 mx-4">
-                                            <a href="?controller=jadwal&method=create&id_kelas=<?= $id_kelas; ?>&hari=<?= $hari; ?>" class="btn btn-success mb-3">Tambah Jadwal</a>
-                                        </div>
-                                    <?php endif; ?>
+                                    <table class="table table-bordered table-striped align-items-center mb-0">
                                     <thead>
                                         <tr>
                                             <th>Jam</th>

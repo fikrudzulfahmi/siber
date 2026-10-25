@@ -26,10 +26,10 @@
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="5%">No</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="25%">Nama Siswa</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="10%">Kelas</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="15%">Nilai (Predikat)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Siswa</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kelas</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nilai (Predikat)</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Keterangan / Capaian Kompetensi</th>
                                     </tr>
                                 </thead>

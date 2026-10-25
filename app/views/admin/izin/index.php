@@ -54,14 +54,14 @@
                         <table id="datatable5" class="table table-bordered table-striped align-items-center mb-0">
                             <thead class="text-center">
                                 <tr>
-                                    <th width="3%">No</th>
-                                    <th width="20%">Nama Siswa</th>
-                                    <th width="10%">Kelas</th>
-                                    <th width="20%">Keperluan</th>
-                                    <th width="15%">Waktu Meninggalkan</th>
-                                    <th width="15%">Waktu Kembali</th>
-                                    <th width="15%">Rekomendasi</th>
-                                    <th width="25%">Keterangan</th>
+                                    <th>No</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Keperluan</th>
+                                    <th>Waktu Meninggalkan</th>
+                                    <th>Waktu Kembali</th>
+                                    <th>Rekomendasi</th>
+                                    <th>Keterangan</th>
                                     <?php if (isAnyLevel($id_level, [3, 1, 5, 6, 7])): // ✅ Ditambahkan Pimpinan bisa edit/hapus juga 
                                     ?>
                                         <th>Aksi</th>

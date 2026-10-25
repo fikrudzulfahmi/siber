@@ -148,7 +148,7 @@
                         <table class="table table-sm table-hover align-items-center mb-0" id="tabelKeluar">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="text-center text-xs" width="4%">No</th>
+                                    <th class="text-center text-xs">No</th>
                                     <th class="text-xs">Nama Siswa</th>
                                     <th class="text-xs">NISN</th>
                                     <th class="text-xs">Kelas</th>

@@ -68,7 +68,7 @@
                         <table class="table table-bordered table-sm text-center align-middle">
                             <thead class="table-dark text-white">
                                 <tr>
-                                    <th width="10%"><input type="checkbox" id="checkAll"></th>
+                                    <th><input type="checkbox" id="checkAll"></th>
                                     <th>Nama Siswa</th>
                                     <th>NISN</th>
                                 </tr>

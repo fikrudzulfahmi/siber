@@ -52,7 +52,7 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Kegiatan</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" width="15%">Nilai</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nilai</th>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Keterangan</th>
                                             </tr>
                                         </thead>
@@ -90,7 +90,7 @@
                                     <table class="table align-items-center">
                                         <thead>
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" width="40%">Jenis Prestasi</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Jenis Prestasi</th>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Keterangan</th>
                                             </tr>
                                         </thead>

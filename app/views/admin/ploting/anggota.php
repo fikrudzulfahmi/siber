@@ -70,7 +70,7 @@
                         <table class="table align-items-center mb-0 text-center">
                             <thead class="table-dark text-white">
                                 <tr>
-                                    <th class="text-uppercase text-white text-xs font-weight-bolder" width="5%">No</th>
+                                    <th class="text-uppercase text-white text-xs font-weight-bolder">No</th>
                                     <th class="text-uppercase text-white text-xs font-weight-bolder text-start ps-4">Nama Siswa</th>
                                     <th class="text-uppercase text-white text-xs font-weight-bolder">NISN</th>
                                 </tr>

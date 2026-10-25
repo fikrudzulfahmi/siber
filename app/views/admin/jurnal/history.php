@@ -142,8 +142,8 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 <div class="d-flex flex-column gap-1">
-                                                    <a href="?controller=jurnal&method=edit&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-warning mb-0">Edit</a>
-                                                    <a href="?controller=jurnal&method=hapus&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-xs btn-danger mb-0 delete-btn">Hapus</a>
+                                                    <a href="?controller=jurnal&method=edit&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-sm btn-warning mb-0">Edit</a>
+                                                    <a href="?controller=jurnal&method=hapus&id=<?= sec_e($j['id_jurnal']) ?>" class="btn btn-sm btn-danger mb-0 delete-btn">Hapus</a>
                                                 </div>
                                             </td>
                                         </tr>

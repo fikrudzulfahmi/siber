@@ -30,13 +30,13 @@ class AuthController
             $wait = sec_throttle_wait($throttleKey, 5, 900);
             if ($wait > 0) {
                 $menit = (int) ceil($wait / 60);
-                echo "<script>alert('Terlalu banyak percobaan login. Coba lagi dalam {$menit} menit.');window.location.href='index.php';</script>";
+                header('Location: index.php?error=limit&m=' . $menit);
                 exit;
             }
 
             if ($username === '' || $password === '') {
                 sec_throttle_fail($throttleKey);
-                echo "<script>alert('Username atau password salah');window.location.href='index.php';</script>";
+                header('Location: index.php?error=1');
                 exit;
             }
 
@@ -50,7 +50,7 @@ class AuthController
                 $userLevels = $levelStmt->fetchAll(PDO::FETCH_COLUMN);
 
                 if (empty($userLevels)) {
-                    echo "<script>alert('Login gagal: Akun Anda tidak memiliki level akses. Hubungi admin.');window.location.href='index.php';</script>";
+                    header('Location: index.php?error=level');
                     exit;
                 }
 
@@ -81,7 +81,7 @@ class AuthController
             }
 
             sec_throttle_fail($throttleKey);
-            echo "<script>alert('Username atau password salah');window.location.href='index.php';</script>";
+            header('Location: index.php?error=1');
             exit;
         }
 

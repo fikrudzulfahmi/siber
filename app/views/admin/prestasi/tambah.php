@@ -83,7 +83,7 @@
                                     <table class="table align-items-center mb-0" id="tableSiswa">
                                         <thead class="sticky-top bg-white z-index-1">
                                             <tr>
-                                                <th class="text-center p-2" width="10%">Pilih</th>
+                                                <th class="text-center p-2">Pilih</th>
                                                 <th class="text-xs font-weight-bolder opacity-7 p-2">Nama Siswa</th>
                                                 <th class="text-xs font-weight-bolder opacity-7 p-2">Kelas</th>
                                             </tr>

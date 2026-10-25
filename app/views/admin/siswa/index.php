@@ -74,7 +74,7 @@
                         <table id="datatable2" class="table table-striped table-bordered align-items-center mb-0 text-sm">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
+                                    <th class="text-center">No</th>
                                     <th>Nama Siswa</th>
                                     <th>NISN</th>
                                     <th>TTL</th>

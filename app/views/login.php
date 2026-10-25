@@ -168,8 +168,20 @@
         <h4>Login Admin</h4>
         <h6>Silakan masuk untuk memulai administrasi</h6>
 
-        <?php if (isset($_GET['error'])): ?>
-          <div class="alert alert-danger text-center mt-3">Login gagal. Coba lagi.</div>
+        <?php
+          $pesanLogin = '';
+          $kodeError = $_GET['error'] ?? '';
+          if ($kodeError === 'limit') {
+              $menitTunggu = isset($_GET['m']) ? max(1, (int) $_GET['m']) : 15;
+              $pesanLogin = 'Terlalu banyak percobaan login. Coba lagi dalam ' . $menitTunggu . ' menit.';
+          } elseif ($kodeError === 'level') {
+              $pesanLogin = 'Akun Anda belum memiliki level akses. Hubungi admin.';
+          } elseif ($kodeError !== '') {
+              $pesanLogin = 'Username atau password salah.';
+          }
+        ?>
+        <?php if ($pesanLogin !== ''): ?>
+          <div class="alert alert-danger text-center mt-3"><?= htmlspecialchars($pesanLogin, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
 
         <form method="POST" action="?controller=auth&method=login">

@@ -18,6 +18,14 @@
         width: 100%;         /* Pastikan tabel memenuhi lebar kontainer */
     }
 
+    /* Di HP, 10 kolom tidak boleh dipaksa selebar layar: biarkan menggulir */
+    @media (max-width: 1199.98px) {
+        .tabel-presensi {
+            table-layout: auto;
+            min-width: 900px;
+        }
+    }
+
     /* Opsional: Kelas ini bisa Anda tambahkan ke <td> 
       jika ada teks yang perlu dipaksa turun baris (wrap).
     */

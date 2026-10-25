@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 px-3 d-flex align-items-center justify-content-between">
+                    <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 px-3 d-flex flex-wrap gap-2 align-items-center justify-content-between">
                         <div>
                             <h6 class="text-white text-capitalize m-0">
                                 Manajemen Rapor: <?= htmlspecialchars($setting['jenis_rapor']) ?> (<?= htmlspecialchars($setting['tahun_pelajaran']) ?>)
@@ -39,11 +39,11 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="5%">No</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="25%">Nama Siswa</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Siswa</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progres Nilai Mapel</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Rapor</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" width="20%">Aksi</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>

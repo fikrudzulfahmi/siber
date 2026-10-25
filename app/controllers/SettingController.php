@@ -103,7 +103,8 @@ class SettingController
 
             // Hanya ID folder Google Drive yang aman (huruf, angka, -, _).
             if (!preg_match('/^[A-Za-z0-9_\-]{1,120}$/', $folder_id)) {
-                echo "<script>alert('ID Folder tidak valid. Gunakan huruf, angka, tanda hubung, atau garis bawah.'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('error', 'ID Folder tidak valid. Gunakan huruf, angka, tanda hubung, atau garis bawah.');
+                header('Location: ?controller=setting&method=index');
                 exit;
             }
 
@@ -131,10 +132,14 @@ class SettingController
 
                 file_put_contents($configFile, $configContent);
 
-                echo "<script>alert('ID Folder Google Drive berhasil disimpan!'); window.location.href='?controller=setting&method=index';</script>";
-            } else {
-                echo "<script>alert('Gagal! File config.php tidak memiliki izin tulis (writeable).'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('success', 'ID Folder Google Drive berhasil disimpan!');
+                header('Location: ?controller=setting&method=index');
+                exit;
             }
+
+            setFlash('error', 'Gagal! File config tidak memiliki izin tulis (writeable).');
+            header('Location: ?controller=setting&method=index');
+            exit;
         } else {
             header('Location: ?controller=setting&method=index');
         }

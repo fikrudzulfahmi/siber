@@ -144,12 +144,12 @@ if (!function_exists('activityLogPageUrl')) {
                         <table id="tabelLog" class="table table-striped table-bordered align-items-center mb-0 text-sm">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="text-center" width="4%">No</th>
-                                    <th width="14%">Waktu</th>
-                                    <th width="15%">User</th>
+                                    <th class="text-center">No</th>
+                                    <th>Waktu</th>
+                                    <th>User</th>
                                     <th>Aktivitas</th>
-                                    <th width="18%">Perangkat</th>
-                                    <th width="11%">IP</th>
+                                    <th>Perangkat</th>
+                                    <th>IP</th>
                                 </tr>
                             </thead>
                             <tbody>

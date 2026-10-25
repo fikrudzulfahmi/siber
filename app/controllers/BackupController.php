@@ -187,10 +187,12 @@ class BackupController extends BaseController
         // 3. Redirect ke Halaman Setting
         if ($hasil['ok']) {
             $info = $hasil['gzip'] ? ' (dikompres: ' . $hasil['nama'] . ')' : '';
-            echo "<script>alert('Backup berhasil disimpan lokal dan diunggah ke Google Drive" . $info . "!'); window.location.href='?controller=setting&method=index';</script>";
+            setFlash('success', 'Backup berhasil disimpan lokal dan diunggah ke Google Drive' . $info . '!');
+            header('Location: ?controller=setting&method=index');
         } else {
-            $errorMsg = addslashes((string) $hasil['pesan']);
-            echo "<script>alert('Backup disimpan lokal, TETAPI gagal diunggah ke Google Drive: $errorMsg'); window.location.href='?controller=setting&method=index';</script>";
+            $errorMsg = (string) $hasil['pesan'];
+            setFlash('error', 'Backup disimpan lokal, TETAPI gagal diunggah ke Google Drive: ' . $errorMsg);
+            header('Location: ?controller=setting&method=index');
         }
         exit;
     }
@@ -262,7 +264,8 @@ class BackupController extends BaseController
             readfile($filePath);
             exit;
         } else {
-            echo "<script>alert('File tidak ditemukan!'); window.location.href='?controller=setting&method=index';</script>";
+            setFlash('error', 'File tidak ditemukan!');
+            header('Location: ?controller=setting&method=index');
             exit;
         }
     }
@@ -278,9 +281,11 @@ class BackupController extends BaseController
 
         if ($filePath !== null) {
             unlink($filePath);
-            echo "<script>alert('File backup berhasil dihapus.'); window.location.href='?controller=setting&method=index';</script>";
+            setFlash('success', 'File backup berhasil dihapus.');
+            header('Location: ?controller=setting&method=index');
         } else {
-            echo "<script>alert('File tidak ditemukan!'); window.location.href='?controller=setting&method=index';</script>";
+            setFlash('error', 'File tidak ditemukan!');
+            header('Location: ?controller=setting&method=index');
         }
         exit;
     }
@@ -295,30 +300,35 @@ class BackupController extends BaseController
             $file = $_FILES['backup_file'];
             
             if ($file['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>alert('Gagal mengunggah file.'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('error', 'Gagal mengunggah file.');
+            header('Location: ?controller=setting&method=index');
                 exit;
             }
 
             // Validasi ekstensi
             $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
             if (strtolower($ext) !== 'sql') {
-                echo "<script>alert('File harus berformat .sql'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('error', 'File harus berformat .sql');
+            header('Location: ?controller=setting&method=index');
                 exit;
             }
 
             $sqlContent = file_get_contents($file['tmp_name']);
             if (empty(trim($sqlContent))) {
-                echo "<script>alert('File SQL kosong.'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('error', 'File SQL kosong.');
+            header('Location: ?controller=setting&method=index');
                 exit;
             }
 
             try {
                 // Eksekusi skrip SQL
                 $this->db->exec($sqlContent);
-                echo "<script>alert('Database berhasil direstore!'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('success', 'Database berhasil direstore!');
+            header('Location: ?controller=setting&method=index');
             } catch (PDOException $e) {
                 error_log('[SIBER restore] ' . $e->getMessage());
-                echo "<script>alert('Gagal restore database. Periksa format berkas lalu coba lagi.'); window.location.href='?controller=setting&method=index';</script>";
+                setFlash('error', 'Gagal restore database. Periksa format berkas lalu coba lagi.');
+            header('Location: ?controller=setting&method=index');
             }
         } else {
             header('Location: ?controller=setting&method=index');
