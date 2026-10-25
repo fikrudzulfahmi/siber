@@ -1,3 +1,9 @@
+<?php
+// Level user (raw base64 dari session) dipakai banyak view: isLevel()/isAnyLevel().
+// Sebelumnya variabel ini tidak pernah diisi sehingga semua pengecekan level
+// di view selalu bernilai "bukan level tersebut".
+$id_level = $_SESSION['user']['level'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="id">
 

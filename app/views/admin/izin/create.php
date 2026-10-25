@@ -15,12 +15,11 @@
 
                         <?php
                         $id_kelas = $_SESSION['user']['id_kelas'] ?? null;
-                        $id_level = $_SESSION['user']['level'] ?? null;
 
                         $kelas = null;
 
                         // Jika wali kelas
-                        if ($id_kelas && $id_level != 4) {
+                        if ($id_kelas && !isLevel($id_level, 4)) {
                             $stmt = $this->db->prepare("SELECT kelas FROM kelas WHERE id_kelas = ?");
                             $stmt->execute([$id_kelas]);
                             $kelas = $stmt->fetchColumn();
@@ -30,7 +29,7 @@
                         <div class="mb-3">
                             <label class="form-label">Kelas</label>
 
-                            <?php if ($id_level == 4): ?>
+                            <?php if (isLevel($id_level, 4)): ?>
                                 <!-- User BK: tampilkan semua kelas -->
                                 <select name="id_kelas" class="form-select" required>
                                     <option value="">-- Pilih Kelas --</option>
