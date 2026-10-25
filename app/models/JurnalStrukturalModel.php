@@ -52,6 +52,34 @@ class JurnalStrukturalModel
         ]);
     }
 
+    /**
+     * Status jurnal struktural pegawai pada satu tanggal.
+     * Mengembalikan null jika belum mengisi.
+     */
+    public function getStatusHariIni($id_employe, $tanggal, $id_tahun = null)
+    {
+        $sql = "SELECT
+                    js.id_jurnal,
+                    TIME(js.created_at) AS jam_isi,
+                    js.catatan_akhir,
+                    (SELECT COUNT(*) FROM jurnal_program_kerja jpk WHERE jpk.id_jurnal = js.id_jurnal) AS jumlah_program
+                FROM jurnal_struktural js
+                WHERE js.id_employe = ? AND js.tanggal = ?";
+        $params = [$id_employe, $tanggal];
+
+        if (!empty($id_tahun)) {
+            $sql .= " AND js.id_tahun_pelajaran = ?";
+            $params[] = $id_tahun;
+        }
+
+        $sql .= " ORDER BY js.id_jurnal DESC LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
     public function getHistoryByUserAndTahun($id_user, $id_tahun)
     {
         $sql = "

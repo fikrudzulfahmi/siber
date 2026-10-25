@@ -677,3 +677,61 @@ untuk `ONLY_FULL_GROUP_BY`.
 - Menu tampil untuk level 1/3/5/6, tidak tampil untuk level 2.
 
 Setelah `git pull`: jalankan migrasi, lalu hard refresh browser.
+
+## 20. Dashboard rekap harian (jam masuk, jurnal mengajar, jurnal struktural) — tanpa perubahan database
+
+Halaman utama (`controller=dashboard`) kini menampilkan sampai tiga kartu rekap untuk **hari ini**:
+
+1. **Presensi Harian** — jam masuk/pulang dari finger (`attendance`), status Tepat Waktu / Terlambat N menit / Pulang Cepat N menit. Sumber urutan prioritas: kegiatan lembaga (`kegiatan` + `kegiatan_peserta.pin_guru`) → jadwal kerja (`jadwal`) → jam scan mentah. Tanpa scan sama sekali tetap tampil "Belum melakukan Presensi" / "Alpa" (kecuali hari libur nasional). Sudah scan tapi tidak punya jadwal maupun kegiatan → jam scan tetap ditampilkan dengan catatan **tidak terekap karena tidak terjadwal**.
+2. **Jurnal Mengajar Hari Ini** — semua slot `jadwal_pelajaran` hari itu (bukan hanya yang kosong), badge **Sudah** (+ jam input), **Belum** (jam sudah lewat), **Belum waktunya** (jam belum mulai). Satu mapel+kelas = satu jurnal per hari. Kartu tidak muncul bila guru tidak punya jam mengajar hari itu.
+3. **Jurnal Struktural Hari Ini** — hanya untuk **Tenaga Kependidikan** (`employe.id_jabatan = 2`). Tetap tampil di hari tanpa jadwal kerja. Sudah isi → ringkasan catatan + jumlah program kerja; belum → badge merah + tombol isi.
+
+### Yang berubah
+
+- Partial baru `app/views/partials/rekap_harian.php`, dipakai 7 dashboard (admin, guru, walikelas, bk, kurikulum, kesiswaan, kaponpes). Blok "Card Presensi" lama (91 baris per view) diganti satu `require`.
+- `DashboardController`: tiga method rekap (`rekapPresensiHariIni`, `rekapJurnalMengajarHariIni`, `rekapJurnalStrukturalHariIni`) + `namaHariIndo()`. Rekap bersifat **pribadi** — admin/waka tidak melihat angka guru lain.
+- `Presensi::getRingkasanJadwal($pin, $hari)` — MIN/MAX jam kerja dari `jadwal`.
+- `Jurnal::getJadwalHariIniStatus($id_guru, $id_tahun, $hari)` — slot mengajar + status jurnal.
+- `LevelHelper`: `siber_jabatan()` dan `is_jabatan()`; sesi login kini menyimpan `id_jabatan`.
+- Menu `Jurnal Struktural` memakai filter `'jabatan' => [2]` untuk entri **Input Jurnal**; `Rekap Jurnal` tetap untuk admin/waka (`[1,5]`).
+- `JurnalStrukturalController` menolak `index/store/history/edit/update` untuk selain Tenaga Kependidikan.
+
+### Bug yang ikut diperbaiki
+
+`Presensi::getKehadiranLengkap()` memakai `strtolower(date('l'))` sedangkan `jadwal.day` menyimpan nama hari **kapital** (`'Monday'`, dari `date('l')` / `DAYNAME()`). Akibatnya pencarian jadwal selalu gagal: pegawai dianggap "Libur Rutin" dan toleransi terlambat jatuh ke default 08:00. Sekarang memakai `date('l')`. Tidak ada data yang diubah.
+
+### Perbedaan nama hari di dua tabel
+
+- `jadwal.day` → **Inggris** kapital: `Sunday … Saturday` (`date('l')`, `DAYNAME(CURDATE())`).
+- `jadwal_pelajaran.hari` → **Indonesia**: `Senin … Sabtu` (diisi dari form jadwal).
+
+Jangan menyamakan keduanya; `DashboardController::namaHariIndo()` dipakai untuk memetakan.
+
+### Sebelum `git pull` — cek dulu (read-only)
+
+```sql
+-- 1. Pastikan kolom id_jabatan ada dan terisi. Tendik WAJIB id_jabatan = 2,
+--    kalau NULL mereka akan kehilangan akses Input Jurnal setelah deploy.
+SELECT id_jabatan, COUNT(*) FROM employe GROUP BY id_jabatan;
+
+-- 2. Pastikan nilai hari di jadwal pelajaran memang bahasa Indonesia.
+SELECT DISTINCT hari FROM jadwal_pelajaran;
+```
+
+Kalau hasil (1) menunjukkan banyak `NULL` pada staf tata usaha, isi dulu `id_jabatan` sebelum deploy — atau tunda deploy dan laporkan.
+
+### Deploy
+
+```bash
+cd ~/domains/pondokminggirsari.com/public_html/subdomain/siber
+git pull origin main
+```
+
+Tidak ada migrasi, tidak ada tabel/kolom baru. Setelah pull: hard refresh (Ctrl+F5) karena ada view dan file JS yang berubah.
+
+### Verifikasi setelah deploy
+
+- Login **guru** → kartu Presensi Harian tampil jam masuk/pulang sesuai finger; kartu Jurnal Mengajar hanya bila ada jam hari itu; menu Jurnal Struktural **tidak** memuat "Input Jurnal".
+- Login **tenaga kependidikan** (`id_jabatan = 2`) → kartu Jurnal Struktural tampil; tombol isi membuka form; menu memuat "Input Jurnal".
+- Login **admin** → kartu Jurnal Struktural tidak tampil (admin bukan tendik); menu hanya "Rekap Jurnal"; membuka URL `?controller=jurnalStruktural&method=index` dialihkan ke dashboard dengan pesan error.
+- Hari libur nasional → kartu presensi menampilkan keterangan libur; kartu jurnal struktural tetap tampil.

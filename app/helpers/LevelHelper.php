@@ -125,6 +125,26 @@ function isAnyLevel($user_levels, $targets = [])
 }
 
 
+if (!function_exists('siber_jabatan')) {
+    /**
+     * Kategori pegawai dari employe.id_jabatan.
+     * 1 = Guru, 2 = Tenaga Kependidikan, 3 = Satpam. Bukan role/level.
+     */
+    function siber_jabatan(): int
+    {
+        return (int) ($_SESSION['user']['id_jabatan'] ?? 0);
+    }
+}
+
+if (!function_exists('is_jabatan')) {
+    /** Cek kategori pegawai; $target boleh int atau array. */
+    function is_jabatan($target): bool
+    {
+        return in_array(siber_jabatan(), array_map('intval', (array) $target), true);
+    }
+}
+
+
 // Flash Message
 function setFlash($key, $message)
 {

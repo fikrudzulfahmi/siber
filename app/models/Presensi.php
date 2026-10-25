@@ -29,7 +29,10 @@ class Presensi
 
     public function getKehadiranLengkap($pin, $today)
     {
-        $hari = strtolower(date('l', strtotime($today)));
+        // jadwal.day menyimpan nama hari bahasa Inggris berkapital ('Monday'),
+        // bukan huruf kecil. strtolower() membuat pencarian jadwal selalu gagal
+        // sehingga keterlambatan dihitung terhadap default 08:00.
+        $hari = date('l', strtotime($today));
 
         // 1. Cek Libur Nasional
         $libur = $this->cekLibur($today);
@@ -142,6 +145,25 @@ class Presensi
             'waktu_datang' => $infoIn,
             'waktu_pulang' => $infoOut,
         ];
+    }
+
+    /**
+     * Ringkasan jam kerja dari tabel jadwal untuk satu hari.
+     * Dipakai kartu dashboard & rekap jurnal struktural.
+     */
+    public function getRingkasanJadwal($pin, $hari)
+    {
+        $stmt = $this->db->prepare("
+            SELECT MIN(waktu_datang) AS jam_masuk, MAX(waktu_pulang) AS jam_pulang, COUNT(*) AS jumlah_baris
+            FROM jadwal
+            WHERE id_employee = ? AND day = ?
+        ");
+        $stmt->execute([$pin, $hari]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row || !$row['jumlah_baris']) {
+            return null;
+        }
+        return $row;
     }
 
     public function cekLibur($tanggal)

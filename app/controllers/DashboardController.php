@@ -4,6 +4,8 @@ require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../models/Izin.php';
 require_once __DIR__ . '/../models/Presensi.php';
 require_once __DIR__ . '/../models/PengingatDeadline.php';
+require_once __DIR__ . '/../models/Jurnal.php';
+require_once __DIR__ . '/../models/JurnalStrukturalModel.php';
 
 class DashboardController extends BaseController
 {
@@ -83,32 +85,9 @@ class DashboardController extends BaseController
 
         $pengingat = new PengingatDeadline($this->db);
         $id_guru = $_SESSION['user']['id'] ?? null;
-        $semuaJurnalTerisi = true;
-
         // Pengingat deadline perangkat pembelajaran (guru mapel)
         $deadlineList = $pengingat->perangkat($id_guru, $id_tahun_pelajaran_aktif);
 
-        if ($id_tahun_pelajaran_aktif && $id_guru) {
-
-            // Logika untuk pengecekan jurnal harian
-            // Hanya dijalankan jika user yang login memiliki level guru (2)
-            if (in_array(2, $userLevelsInt)) {
-                $hari_ini = date('l'); // e.g., Monday, Tuesday
-                $stmtJurnal = $this->db->prepare("
-                    SELECT COUNT(jp.id_jadwal) 
-                    FROM jadwal_pelajaran jp
-                    JOIN mapel_guru mg ON mg.id_mapel_guru = jp.id_mapel_guru
-                    LEFT JOIN jurnal j ON j.id_mapel_guru = mg.id_mapel_guru AND j.tanggal = CURDATE()
-                    WHERE mg.id_guru = :id_employe AND jp.hari = :hari_ini AND j.id_jurnal IS NULL
-                ");
-                $stmtJurnal->execute(['id_employe' => $id_guru, 'hari_ini' => $hari_ini]);
-                $jumlahJurnalBelumDiisi = $stmtJurnal->fetchColumn();
-
-                if ($jumlahJurnalBelumDiisi > 0) {
-                    $semuaJurnalTerisi = false;
-                }
-            }
-        }
         // ===============================
         // Deadline Program Struktural (jabatan struktural & tenaga kependidikan)
         // ===============================
@@ -119,161 +98,253 @@ class DashboardController extends BaseController
 
 
         // ===============================
-        // Logika Presensi Hari Ini (Support Kegiatan)
+        // Rekap hari ini: presensi, jurnal mengajar, jurnal struktural
         // ===============================
-        date_default_timezone_set('Asia/Jakarta');
-        $today = date('Y-m-d');
-        $jam_sekarang = date('H:i:s');
-        $hari_ini = date('l');
+        $presensiHariIni       = $this->rekapPresensiHariIni($id_user);
+        $rekapJurnalMengajar   = $this->rekapJurnalMengajarHariIni($id_guru, $id_tahun_pelajaran_aktif);
+        $rekapJurnalStruktural = $this->rekapJurnalStrukturalHariIni($id_user, $id_tahun_pelajaran_aktif);
 
-        $presensiHariIni = ['ada_jadwal' => false, 'is_kegiatan' => false];
-
-        if ($id_user) {
-            $stmtPin = $this->db->prepare("SELECT pin FROM employe WHERE id_employe = :id_employe LIMIT 1");
-            $stmtPin->execute(['id_employe' => $id_user]);
-            $userPin = $stmtPin->fetchColumn();
-
-            if ($userPin) {
-                // 1. CEK APAKAH ADA KEGIATAN HARI INI
-                $stmtKegiatan = $this->db->prepare("
-                    SELECT k.nama_kegiatan, k.jam_mulai, k.jam_selesai 
-                    FROM kegiatan k
-                    JOIN kegiatan_peserta kp ON k.id_kegiatan = kp.id_kegiatan
-                    WHERE k.tanggal = :today AND kp.pin_guru = :pin
-                    LIMIT 1
-                ");
-                $stmtKegiatan->execute(['today' => $today, 'pin' => $userPin]);
-                $kegiatanHariIni = $stmtKegiatan->fetch(PDO::FETCH_ASSOC);
-
-                if ($kegiatanHariIni) {
-                    // --- MODE KEGIATAN ---
-                    $nama_kegiatan = $kegiatanHariIni['nama_kegiatan'];
-                    $jam_mulai_kegiatan = $kegiatanHariIni['jam_mulai'];
-                    $jam_pulang_jadwal = $kegiatanHariIni['jam_selesai'];
-
-                    // Ambil scan langsung dari tabel attendance
-                    $stmtScan = $this->db->prepare("
-                        SELECT MIN(TIME(scan_date)) as jam_masuk, MAX(TIME(scan_date)) as jam_pulang 
-                        FROM attendance 
-                        WHERE pin = :pin AND DATE(scan_date) = :today
-                    ");
-                    $stmtScan->execute(['pin' => $userPin, 'today' => $today]);
-                    $scan = $stmtScan->fetch(PDO::FETCH_ASSOC);
-
-                    $waktu_datang_bersih = $scan['jam_masuk'] ? substr($scan['jam_masuk'], 0, 5) : null;
-                    $waktu_pulang_bersih = $scan['jam_pulang'] ? substr($scan['jam_pulang'], 0, 5) : null;
-
-                    // Jika absen baru 1 kali, jam_masuk dan jam_pulang dari query MIN MAX akan sama nilainya
-                    // Maka kita set waktu_pulang jadi null agar statusnya "Belum Absen"
-                    if ($waktu_datang_bersih === $waktu_pulang_bersih && $waktu_datang_bersih !== null) {
-                        $waktu_pulang_bersih = null;
-                    }
-
-                    // Tentukan Status Datang
-                    if (!$waktu_datang_bersih) {
-                        $status_datang = ($jam_sekarang > $jam_pulang_jadwal) ? 'Alpa' : 'Belum Absen';
-                        $waktu_datang_tampil = '--:--';
-                    } else {
-                        $waktu_datang_tampil = $waktu_datang_bersih;
-                        // Jika jam masuk lebih dari jam mulai kegiatan + toleransi keterlambatan
-                        $status_datang = ($scan['jam_masuk'] > $jam_mulai_kegiatan) ? 'Terlambat' : 'Tepat Waktu';
-                    }
-
-                    // Tentukan Status Pulang
-                    $is_blinking = false;
-                    if (!$waktu_pulang_bersih) {
-                        if ($status_datang === 'Alpa') {
-                            $status_pulang = 'Alpa';
-                            $waktu_pulang_tampil = '--:--';
-                        } else {
-                            $status_pulang = 'Belum Absen';
-                            $waktu_pulang_tampil = 'Belum Absen';
-                            $is_blinking = true;
-                        }
-                    } else {
-                        $waktu_pulang_tampil = $waktu_pulang_bersih;
-                        $status_pulang = ($scan['jam_pulang'] < $jam_pulang_jadwal) ? 'Pulang Cepat' : 'Sesuai';
-                    }
-
-                    $presensiHariIni = [
-                        'ada_jadwal'    => true,
-                        'is_kegiatan'   => true,
-                        'nama_kegiatan' => $nama_kegiatan,
-                        'waktu_datang'  => $waktu_datang_tampil,
-                        'status_datang' => $status_datang,
-                        'waktu_pulang'  => $waktu_pulang_tampil,
-                        'status_pulang' => $status_pulang,
-                        'is_blinking'   => $is_blinking
-                    ];
-                } else {
-                    // --- MODE REGULER (Jadwal Mengajar Biasa) ---
-                    $presensiModel = new Presensi($this->db);
-                    $jadwalPegawai = $presensiModel->getJadwalHariIni($userPin, $hari_ini);
-                    $kehadiran = $presensiModel->getKehadiranLengkap($userPin, $today);
-
-                    if ($jadwalPegawai && !empty($kehadiran)) {
-                        $jam_pulang_jadwal = $jadwalPegawai['jam_pulang'] ?? '15:00:00'; // Sesuikan kolom database
-
-                        $isLibur = (isset($kehadiran['keterangan']) && (stripos($kehadiran['keterangan'], 'libur') !== false || stripos($kehadiran['keterangan'], 'tidak ada jadwal') !== false));
-
-                        if (!$isLibur) {
-                            $waktu_datang_raw = $kehadiran['waktu_datang'] ?? '';
-                            $waktu_pulang_raw = $kehadiran['waktu_pulang'] ?? '';
-
-                            preg_match('/(\d{2}:\d{2})/', $waktu_datang_raw, $match_datang);
-                            preg_match('/(\d{2}:\d{2})/', $waktu_pulang_raw, $match_pulang);
-
-                            $waktu_datang_bersih = $match_datang[1] ?? null;
-                            $waktu_pulang_bersih = $match_pulang[1] ?? null;
-
-                            if (!$waktu_datang_bersih) {
-                                $status_datang = ($jam_sekarang > $jam_pulang_jadwal) ? 'Alpa' : 'Belum Absen';
-                                $waktu_datang_tampil = '--:--';
-                            } else {
-                                $waktu_datang_tampil = $waktu_datang_bersih;
-                                $status_datang = (stripos($waktu_datang_raw, 'Terlambat') !== false) ? 'Terlambat' : 'Tepat Waktu';
-                            }
-
-                            $is_blinking = false;
-                            if (!$waktu_pulang_bersih) {
-                                if ($status_datang === 'Alpa') {
-                                    $status_pulang = 'Alpa';
-                                    $waktu_pulang_tampil = '--:--';
-                                } else {
-                                    $status_pulang = 'Belum Absen';
-                                    $waktu_pulang_tampil = 'Belum Absen';
-                                    $is_blinking = true;
-                                }
-                            } else {
-                                $waktu_pulang_tampil = $waktu_pulang_bersih;
-                                $status_pulang = (stripos($waktu_pulang_raw, 'Pulang cepat') !== false) ? 'Pulang Cepat' : 'Sesuai';
-                            }
-
-                            $presensiHariIni = [
-                                'ada_jadwal'    => true,
-                                'is_kegiatan'   => false,
-                                'waktu_datang'  => $waktu_datang_tampil,
-                                'status_datang' => $status_datang,
-                                'waktu_pulang'  => $waktu_pulang_tampil,
-                                'status_pulang' => $status_pulang,
-                                'is_blinking'   => $is_blinking
-                            ];
-                        }
-                    }
-                }
-            }
-        }
         // 4. Kirim semua data ke view yang sudah ditentukan
         view($view, [
             'jumlahSiswa'       => $jumlahSiswa,
             'jumlahGuru'        => $jumlahGuru,
             'jumlahKelas'       => $jumlahKelas,
             'deadlineList'      => $deadlineList,
-            'semuaJurnalTerisi' => $semuaJurnalTerisi,
             'deadlineProgram'   => $deadlineProgram,
             'showProgramDeadline' => $showProgramDeadline,
-            'presensiHariIni'   => $presensiHariIni
+            'presensiHariIni'   => $presensiHariIni,
+            'rekapJurnalMengajar'   => $rekapJurnalMengajar,
+            'rekapJurnalStruktural' => $rekapJurnalStruktural
         ]);
+    }
+
+    /** Nama hari bahasa Indonesia dari nama hari English (Monday -> Senin). */
+    private function namaHariIndo($hari)
+    {
+        $map = [
+            'Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu',
+        ];
+        return $map[$hari] ?? $hari;
+    }
+
+    /**
+     * Rekap presensi hari ini.
+     * Sumber: kegiatan lembaga (kegiatan + kegiatan_peserta), jadwal kerja (tabel jadwal),
+     * dan scan finger (tabel attendance). Scan tetap ditampilkan walau tidak terjadwal.
+     */
+    private function rekapPresensiHariIni($id_user)
+    {
+        date_default_timezone_set('Asia/Jakarta');
+        $today       = date('Y-m-d');
+        $hariEnglish = date('l');
+        $jamSekarang = date('H:i:s');
+
+        $hasil = [
+            'mode'          => 'tanpa_jadwal',
+            'ada_jadwal'    => false,
+            'is_kegiatan'   => false,
+            'nama_kegiatan' => null,
+            'jam_kerja'     => null,
+            'waktu_datang'  => '--:--',
+            'status_datang' => '-',
+            'waktu_pulang'  => '--:--',
+            'status_pulang' => '-',
+            'is_blinking'   => false,
+            'scan_masuk'    => null,
+            'scan_pulang'   => null,
+            'jumlah_scan'   => 0,
+            'keterangan'    => null,
+        ];
+
+        if (!$id_user) {
+            return $hasil;
+        }
+
+        $stmt = $this->db->prepare("SELECT pin, id_jabatan FROM employe WHERE id_employe = ? LIMIT 1");
+        $stmt->execute([$id_user]);
+        $pegawai = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$pegawai || empty($pegawai['pin'])) {
+            return $hasil;
+        }
+
+        $pin       = $pegawai['pin'];
+        $idJabatan = (int) ($pegawai['id_jabatan'] ?? 0);
+
+        // Ringkasan scan finger hari ini (dipakai semua mode)
+        $stmt = $this->db->prepare("
+            SELECT MIN(TIME(scan_date)) AS masuk,
+                   MAX(TIME(scan_date)) AS pulang,
+                   COUNT(*) AS jumlah,
+                   SUBSTRING_INDEX(GROUP_CONCAT(LOWER(keterangan) ORDER BY scan_date ASC SEPARATOR ','), ',', 1) AS keterangan_awal
+            FROM attendance
+            WHERE pin = ? AND DATE(scan_date) = ?
+        ");
+        $stmt->execute([$pin, $today]);
+        $scan = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+        $scanMasuk  = !empty($scan['masuk']) ? substr($scan['masuk'], 0, 5) : null;
+        $scanPulang = !empty($scan['pulang']) ? substr($scan['pulang'], 0, 5) : null;
+        if ($scanMasuk !== null && $scanMasuk === $scanPulang) {
+            $scanPulang = null; // baru satu kali scan
+        }
+
+        $hasil['scan_masuk']  = $scanMasuk;
+        $hasil['scan_pulang'] = $scanPulang;
+        $hasil['jumlah_scan'] = (int) ($scan['jumlah'] ?? 0);
+
+        $presensiModel = new Presensi($this->db);
+        $libur = $presensiModel->cekLibur($today);
+
+        // 1. Kegiatan lembaga hari ini (menang atas jadwal harian)
+        $stmt = $this->db->prepare("
+            SELECT k.nama_kegiatan, k.jam_mulai, k.jam_selesai
+            FROM kegiatan k
+            JOIN kegiatan_peserta kp ON k.id_kegiatan = kp.id_kegiatan
+            WHERE k.tanggal = ? AND kp.pin_guru = ?
+            ORDER BY k.jam_mulai ASC
+            LIMIT 1
+        ");
+        $stmt->execute([$today, $pin]);
+        $kegiatan = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // 2. Jadwal kerja (tabel jadwal, day berbahasa Inggris)
+        $jadwal = $presensiModel->getRingkasanJadwal($pin, $hariEnglish);
+
+        $jamMulai   = null;
+        $jamSelesai = null;
+
+        if ($kegiatan) {
+            $hasil['mode']          = 'kegiatan';
+            $hasil['ada_jadwal']    = true;
+            $hasil['is_kegiatan']   = true;
+            $hasil['nama_kegiatan'] = $kegiatan['nama_kegiatan'];
+            $jamMulai   = $kegiatan['jam_mulai'];
+            $jamSelesai = $kegiatan['jam_selesai'];
+        } elseif ($jadwal) {
+            $jamMulai   = $jadwal['jam_masuk'];
+            $jamSelesai = $jadwal['jam_pulang'];
+            $hasil['mode']       = 'jadwal';
+            $hasil['ada_jadwal'] = true;
+        }
+
+        // Tidak ada jadwal & tidak terploting kegiatan lembaga
+        if (!$kegiatan && !$jadwal) {
+            if ($libur && $scanMasuk === null && $idJabatan !== 3) {
+                $hasil['mode']       = 'libur';
+                $hasil['keterangan'] = 'Libur ' . trim((string) ($libur['keterangan'] ?? ''));
+            } else {
+                $hasil['mode']       = 'tanpa_jadwal';
+                $hasil['keterangan'] = 'Tidak ada jadwal';
+            }
+            return $hasil;
+        }
+
+        $hasil['jam_kerja'] = substr($jamMulai, 0, 5) . ' - ' . substr($jamSelesai, 0, 5);
+
+        // Libur nasional (satpam tetap wajib masuk)
+        if ($libur && $scanMasuk === null && $idJabatan !== 3 && !$kegiatan) {
+            $hasil['mode']       = 'libur';
+            $hasil['keterangan'] = 'Libur ' . trim((string) ($libur['keterangan'] ?? ''));
+            return $hasil;
+        }
+
+        // Scan dengan keterangan selain "hadir" (izin/sakit/cuti)
+        $keteranganAbsen = strtolower(trim((string) ($scan['keterangan_awal'] ?? '')));
+        if ($keteranganAbsen !== '' && $keteranganAbsen !== 'hadir') {
+            $hasil['status_datang'] = ucwords($keteranganAbsen);
+            $hasil['waktu_datang']  = '--:--';
+            $hasil['status_pulang'] = '-';
+            $hasil['waktu_pulang']  = '--:--';
+            return $hasil;
+        }
+
+        // Datang
+        if ($scanMasuk === null) {
+            $hasil['status_datang'] = ($jamSekarang > $jamSelesai) ? 'Alpa' : 'Belum Absen';
+            $hasil['waktu_datang']  = '--:--';
+        } else {
+            $hasil['waktu_datang']  = $scanMasuk;
+            $hasil['status_datang'] = ($scan['masuk'] > $jamMulai) ? 'Terlambat' : 'Tepat Waktu';
+        }
+
+        // Pulang
+        if ($scanPulang === null) {
+            if ($hasil['status_datang'] === 'Alpa') {
+                $hasil['status_pulang'] = 'Alpa';
+                $hasil['waktu_pulang']  = '--:--';
+            } else {
+                $hasil['status_pulang'] = 'Belum Absen';
+                $hasil['waktu_pulang']  = 'Belum Absen';
+                $hasil['is_blinking']   = ($scanMasuk !== null);
+            }
+        } else {
+            $hasil['waktu_pulang']  = $scanPulang;
+            $hasil['status_pulang'] = ($scan['pulang'] < $jamSelesai) ? 'Pulang Cepat' : 'Sesuai';
+        }
+
+        return $hasil;
+    }
+
+    /** Daftar jam mengajar hari ini beserta status jurnalnya (kosong = tidak ada jam mengajar). */
+    private function rekapJurnalMengajarHariIni($id_guru, $id_tahun)
+    {
+        if (!$id_guru || !$id_tahun) {
+            return [];
+        }
+
+        $model = new Jurnal($this->db);
+        $baris = $model->getJadwalHariIniStatus($id_guru, $id_tahun, $this->namaHariIndo(date('l')));
+        $jamSekarang = date('H:i:s');
+
+        foreach ($baris as &$b) {
+            if (!empty($b['id_jurnal'])) {
+                $b['status'] = 'Sudah';
+            } elseif ($jamSekarang >= $b['jam_mulai']) {
+                $b['status'] = 'Belum';
+            } else {
+                $b['status'] = 'Belum waktunya';
+            }
+            $b['jam'] = substr($b['jam_mulai'], 0, 5) . ' - ' . substr($b['jam_selesai'], 0, 5);
+        }
+        unset($b);
+
+        return $baris;
+    }
+
+    /** Status jurnal struktural hari ini. Hanya untuk Tenaga Kependidikan (employe.id_jabatan = 2). */
+    private function rekapJurnalStrukturalHariIni($id_user, $id_tahun)
+    {
+        if (!$id_user) {
+            return null;
+        }
+
+        $stmt = $this->db->prepare("SELECT pin, id_jabatan FROM employe WHERE id_employe = ? LIMIT 1");
+        $stmt->execute([$id_user]);
+        $pegawai = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$pegawai || (int) ($pegawai['id_jabatan'] ?? 0) !== 2) {
+            return null;
+        }
+
+        date_default_timezone_set('Asia/Jakarta');
+
+        $presensiModel = new Presensi($this->db);
+        $jadwal = $presensiModel->getRingkasanJadwal($pegawai['pin'], date('l'));
+
+        $model  = new JurnalStrukturalModel($this->db);
+        $hariIni = $model->getStatusHariIni($id_user, date('Y-m-d'), $id_tahun);
+
+        return [
+            'jadwal' => $jadwal ? [
+                'jam_masuk'  => substr($jadwal['jam_masuk'], 0, 5),
+                'jam_pulang' => substr($jadwal['jam_pulang'], 0, 5),
+            ] : null,
+            'sudah'          => (bool) $hariIni,
+            'jam_isi'        => $hariIni && !empty($hariIni['jam_isi']) ? substr($hariIni['jam_isi'], 0, 5) : null,
+            'catatan'        => trim((string) ($hariIni['catatan_akhir'] ?? '')),
+            'jumlah_program' => (int) ($hariIni['jumlah_program'] ?? 0),
+        ];
     }
 
     public function index2()

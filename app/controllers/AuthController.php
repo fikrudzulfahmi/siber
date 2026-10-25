@@ -69,7 +69,8 @@ class AuthController
                     'level'    => base64_encode(implode(',', $userLevels)),
                     'id_tahun' => $tp['id_tahun_pelajaran'] ?? null,
                     'id_kelas' => $kelas['id_kelas'] ?? null,
-                    'pin'      => $user['pin']
+                    'pin'      => $user['pin'],
+                    'id_jabatan' => (int) ($user['id_jabatan'] ?? 0)
                 ];
 
                 if (in_array(8, array_map('intval', $userLevels), true)) {

@@ -108,6 +108,40 @@ class Jurnal
         }
     }
 
+    /**
+     * Daftar jam mengajar guru pada satu hari + status jurnalnya.
+     * $hari memakai nama hari bahasa Indonesia (Senin..Sabtu) sesuai isi
+     * kolom jadwal_pelajaran.hari.
+     */
+    public function getJadwalHariIniStatus($id_guru, $id_tahun, $hari)
+    {
+        $sql = "SELECT
+                    jp.id_jadwal,
+                    jp.jam_mulai,
+                    jp.jam_selesai,
+                    mg.id_mapel_guru,
+                    m.nama_mapel,
+                    k.kelas,
+                    jj.id_jurnal,
+                    jj.jam_isi
+                FROM jadwal_pelajaran jp
+                JOIN mapel_guru mg ON mg.id_mapel_guru = jp.id_mapel_guru
+                JOIN mapel m ON m.id_mapel = mg.id_mapel
+                JOIN kelas k ON k.id_kelas = mg.id_kelas
+                LEFT JOIN (
+                    SELECT id_mapel_guru, MIN(id_jurnal) AS id_jurnal, MIN(TIME(created_at)) AS jam_isi
+                    FROM jurnal
+                    WHERE COALESCE(tanggal, DATE(created_at)) = CURDATE()
+                    GROUP BY id_mapel_guru
+                ) jj ON jj.id_mapel_guru = mg.id_mapel_guru
+                WHERE mg.id_guru = ? AND mg.id_tahun_pelajaran = ? AND jp.hari = ?
+                ORDER BY jp.jam_mulai ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id_guru, $id_tahun, $hari]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function cekJurnalHariIni($id_kelas, $id_mapel_guru)
     {
         $query = "SELECT COUNT(*) FROM jurnal WHERE id_kelas = ? AND id_mapel_guru = ? AND DATE(created_at) = CURDATE()";

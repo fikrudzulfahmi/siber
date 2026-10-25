@@ -15,12 +15,28 @@ class JurnalStrukturalController
     }
 
     /**
+     * Jurnal struktural hanya untuk Tenaga Kependidikan (employe.id_jabatan = 2).
+     * Admin/waka tetap bisa membuka rekap lewat historyAdmin.
+     */
+    private function wajibTenagaKependidikan()
+    {
+        if (is_jabatan(2)) {
+            return;
+        }
+        setFlash('error', 'Jurnal struktural hanya bisa diisi oleh Tenaga Kependidikan.');
+        redirect('?controller=dashboard');
+        exit;
+    }
+
+    /**
      * =========================
      * FORM INPUT JURNAL
      * =========================
      */
     public function index()
     {
+        $this->wajibTenagaKependidikan();
+
         $id_user = $_SESSION['user']['id'];
 
         $tahunModel   = new TahunPelajaran($this->db);
@@ -50,6 +66,8 @@ class JurnalStrukturalController
      */
     public function store()
     {
+        $this->wajibTenagaKependidikan();
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('?controller=jurnalStruktural');
             exit;
@@ -107,6 +125,8 @@ class JurnalStrukturalController
 
     public function history()
     {
+        $this->wajibTenagaKependidikan();
+
         $id_user = $_SESSION['user']['id'];
 
         $tahunModel = new TahunPelajaran($this->db);
@@ -131,6 +151,8 @@ class JurnalStrukturalController
 
     public function edit()
     {
+        $this->wajibTenagaKependidikan();
+
         if (!isset($_GET['id'])) {
             setFlash('danger', 'ID jurnal tidak ditemukan.');
             redirect('?controller=jurnalStruktural&method=history');
@@ -168,6 +190,8 @@ class JurnalStrukturalController
 
     public function update()
     {
+        $this->wajibTenagaKependidikan();
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('?controller=jurnalStruktural&method=history');
             exit;

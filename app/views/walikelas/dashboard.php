@@ -20,6 +20,8 @@
       </div>
     </div>
   </div>
+  <?php require __DIR__ . '/../partials/rekap_harian.php'; ?>
+
   <div class="row">
     <div class="col-12">
         <div class="card my-4">

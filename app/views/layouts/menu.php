@@ -208,10 +208,11 @@ if (!function_exists('siber_menu')) {
                 'id' => 'collapseJurnalStruktural',
                 'label' => 'Jurnal Struktural',
                 'icon' => 'book',
-                'levels' => [1, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16],
+                'levels' => $semua,
                 'controllers' => ['jurnalStruktural'],
                 'items' => [
-                    ['label' => 'Input Jurnal', 'icon' => 'edit_note', 'href' => '?controller=jurnalStruktural&method=index', 'controllers' => ['jurnalStruktural'], 'levels' => [1, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16]],
+                    // Input jurnal hanya untuk Tenaga Kependidikan (id_jabatan = 2).
+                    ['label' => 'Input Jurnal', 'icon' => 'edit_note', 'href' => '?controller=jurnalStruktural&method=index', 'controllers' => ['jurnalStruktural'], 'levels' => $semua, 'jabatan' => [2]],
                     ['label' => 'Rekap Jurnal', 'icon' => 'history', 'href' => '?controller=jurnalStruktural&method=historyAdmin', 'controllers' => ['jurnalStruktural'], 'method' => 'historyAdmin', 'levels' => [1, 5]],
                 ],
             ],
@@ -306,9 +307,15 @@ if (!function_exists('siber_menu_for_level')) {
             if (!isAnyLevel($level, array_values((array) $entry['levels']))) {
                 continue;
             }
+            if (isset($entry['jabatan']) && !is_jabatan($entry['jabatan'])) {
+                continue;
+            }
             if ($entry['type'] === 'group') {
                 $anak = [];
                 foreach ($entry['items'] as $anakItem) {
+                    if (isset($anakItem['jabatan']) && !is_jabatan($anakItem['jabatan'])) {
+                        continue;
+                    }
                     if (isAnyLevel($level, array_values((array) $anakItem['levels']))) {
                         $anak[] = $anakItem;
                     }
@@ -423,6 +430,9 @@ if (!function_exists('siber_bottom_nav')) {
                 break;
             }
             if (!isset($index[$href]) || in_array($href, $dipakai, true)) {
+                continue;
+            }
+            if (!empty($index[$href]['jabatan']) && !is_jabatan($index[$href]['jabatan'])) {
                 continue;
             }
             $item = $index[$href];
