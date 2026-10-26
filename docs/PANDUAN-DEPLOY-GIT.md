@@ -739,3 +739,44 @@ Tidak ada migrasi, tidak ada tabel/kolom baru. Setelah pull: hard refresh (Ctrl+
 - Login **tenaga kependidikan** (`id_jabatan = 2`) → kartu Jurnal Struktural tampil; tombol isi membuka form; menu memuat "Input Jurnal".
 - Login **admin** → kartu Jurnal Struktural tidak tampil (admin bukan tendik); menu hanya "Rekap Jurnal"; membuka URL `?controller=jurnalStruktural&method=index` dialihkan ke dashboard dengan pesan error.
 - Hari libur nasional → kartu presensi menampilkan keterangan libur; kartu jurnal struktural tetap tampil.
+
+---
+
+## 21. Zona waktu: semua tampilan memakai WIB (GMT+7)
+
+**Masalah.** Server hosting (PHP `date.timezone = UTC`, MySQL `@@system_time_zone = UTC`) membuat
+setiap `date()` di aplikasi dan setiap `CURRENT_TIMESTAMP`/`NOW()`/`CURDATE()` menghasilkan jam UTC.
+Akibatnya jam isi **Jurnal Mengajar** di dashboard tampil mundur 7 jam, dan penilaian "Belum diisi" /
+"Alpa" pada kartu presensi memakai jam yang salah.
+
+**Perbaikan (kode, sudah ikut repo).**
+- `public/index.php` — `date_default_timezone_set('Asia/Jakarta')` paling awal.
+- `config/database.php` — timezone PHP yang sama (untuk skrip CLI/cron yang tidak lewat `index.php`)
+  dan `SET time_zone = '+07:00'` pada setiap koneksi PDO, sehingga `NOW()`, `CURDATE()`, dan
+  `DEFAULT CURRENT_TIMESTAMP` ikut WIB.
+- Tidak ada kolom/tabel baru; tidak ada perubahan pada data finger (`attendance.scan_date` sudah WIB
+  dari mesin finger).
+
+**Data lama masih UTC.** Skrip perbaikan menggeser timestamp historis +7 jam:
+
+```bash
+php scripts/perbaikan_timezone.php            # hanya memeriksa (aman)
+php scripts/perbaikan_timezone.php --apply    # geser +7 jam
+```
+
+- Default yang digeser: `jurnal.created_at` dan `jurnal_struktural.created_at` (dua kolom yang
+  tampil di dashboard). Tambah kolom lain bila perlu:
+  `--tabel=jurnal.created_at,aktivitas.created_at`
+- Output mode periksa menampilkan semua kolom `datetime`/`timestamp` di database beserta nilai
+  minimum/maksimum, jadi bisa dilihat kolom mana yang masih UTC.
+- Idempoten: setiap kolom yang sudah digeser dicatat di tabel `siber_migrasi`, sehingga skrip tidak
+  menggeser dua kali. **Jalankan setelah backup database.**
+- `jurnal.tanggal` tidak diubah karena mayoritas bernilai `NULL`; dashboard memakai
+  `COALESCE(tanggal, DATE(created_at))` yang otomatis ikut WIB setelah `created_at` digeser.
+
+**Verifikasi.**
+1. `php scripts/perbaikan_timezone.php` → baris `PHP zona aktif` = `Asia/Jakarta`,
+   `MySQL sesi` = `+07:00`, `MySQL NOW()` = `UTC_TIMESTAMP()` + 7 jam.
+2. Isi satu jurnal mengajar, lalu dashboard → jam pada baris "Sudah" sama dengan jam dinding WIB
+   (bukan 7 jam lebih awal).
+3. Kartu presensi: setelah jam pulang, status berubah "Alpa" pada hari yang sama (bukan 7 jam telat).

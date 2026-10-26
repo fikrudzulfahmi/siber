@@ -4,6 +4,10 @@
  * Menangani: sesi aman, header keamanan, CSRF, otorisasi per controller, routing.
  */
 
+// Server hosting berjalan di UTC; aplikasi memakai WIB (GMT+7) di semua
+// halaman. Ditaruh paling awal supaya helper yang memakai date() ikut benar.
+date_default_timezone_set('Asia/Jakarta');
+
 require_once __DIR__ . '/../app/helpers/Security.php';
 
 ini_set('display_errors', '0');

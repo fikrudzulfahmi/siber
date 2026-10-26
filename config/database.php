@@ -11,6 +11,12 @@ if (is_file(__DIR__ . '/secrets.php')) {
     require_once __DIR__ . '/secrets.php';
 }
 
+// Seluruh aplikasi memakai WIB (GMT+7). Server hosting berjalan di UTC, jadi
+// tanpa baris ini date()/strtotime() menghasilkan waktu mundur 7 jam.
+if (function_exists('date_default_timezone_set')) {
+    date_default_timezone_set('Asia/Jakarta');
+}
+
 class Database
 {
     private $host;
@@ -41,6 +47,14 @@ class Database
                 $this->password
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Samakan zona waktu MySQL dengan aplikasi supaya NOW(), CURDATE(),
+            // dan DEFAULT CURRENT_TIMESTAMP menghasilkan WIB — bukan UTC server.
+            try {
+                $this->conn->exec("SET time_zone = '+07:00'");
+            } catch (PDOException $e) {
+                error_log('[SIBER db] gagal set time_zone: ' . $e->getMessage());
+            }
         } catch (PDOException $e) {
             error_log('[SIBER db] koneksi gagal: ' . $e->getMessage());
             http_response_code(500);
