@@ -692,7 +692,11 @@ Halaman utama (`controller=dashboard`) kini menampilkan sampai tiga kartu rekap 
 - `DashboardController`: tiga method rekap (`rekapPresensiHariIni`, `rekapJurnalMengajarHariIni`, `rekapJurnalStrukturalHariIni`) + `namaHariIndo()`. Rekap bersifat **pribadi** — admin/waka tidak melihat angka guru lain.
 - `Presensi::getRingkasanJadwal($pin, $hari)` — MIN/MAX jam kerja dari `jadwal`.
 - `Jurnal::getJadwalHariIniStatus($id_guru, $id_tahun, $hari)` — slot mengajar + status jurnal.
-- `LevelHelper`: `siber_jabatan()` dan `is_jabatan()`; sesi login kini menyimpan `id_jabatan`.
+- `LevelHelper`: `siber_jabatan()`, `is_jabatan()`, dan `siber_sinkron_jabatan($db)`; sesi login kini menyimpan `id_jabatan`.
+- **Penting:** `User::findByUsername()` wajib ikut `SELECT ... id_jabatan` — kalau tidak, AuthController menyimpan `id_jabatan = 0`
+  dan semua tenaga kependidikan ditolak dari jurnal struktural. Sesi lama yang terlanjur bernilai 0 akan dilengkapi otomatis
+  (`BaseController` + konstruktor `JurnalStrukturalController` memanggil `siber_sinkron_jabatan()` saat nilainya kosong),
+  jadi tidak perlu logout paksa. Pemeriksaannya pakai `empty()`, bukan `isset()`.
 - Menu `Jurnal Struktural` memakai filter `'jabatan' => [2]` untuk entri **Input Jurnal**; `Rekap Jurnal` tetap untuk admin/waka (`[1,5]`).
 - `JurnalStrukturalController` menolak `index/store/history/edit/update` untuk selain Tenaga Kependidikan.
 

@@ -21,13 +21,12 @@ class BaseController
 
         $this->db = $pdo;
 
-        // Sesi yang dibuat sebelum fitur kategori pegawai ada belum punya
-        // id_jabatan; lengkapi sekali di sini supaya menu & kartu dashboard
-        // tidak salah mengenali Tenaga Kependidikan.
-        if (!isset($_SESSION['user']['id_jabatan']) && !empty($_SESSION['user']['id'])) {
-            $stmt = $this->db->prepare("SELECT id_jabatan FROM employe WHERE id_employe = ? LIMIT 1");
-            $stmt->execute([$_SESSION['user']['id']]);
-            $_SESSION['user']['id_jabatan'] = (int) $stmt->fetchColumn();
+        // Sesi lama bisa belum punya id_jabatan, atau punya tapi bernilai 0
+        // (login lama tidak mengambil kolomnya). Selama belum terisi, ambil
+        // ulang dari tabel employe — jangan pakai isset(), karena kunci 0
+        // tetap dianggap "ada" dan tendik jadi tidak dikenali.
+        if (empty($_SESSION['user']['id_jabatan']) && !empty($_SESSION['user']['id'])) {
+            siber_sinkron_jabatan($this->db);
         }
     }
 

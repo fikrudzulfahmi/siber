@@ -136,6 +136,27 @@ if (!function_exists('siber_jabatan')) {
     }
 }
 
+if (!function_exists('siber_sinkron_jabatan')) {
+    /**
+     * Sinkronkan $_SESSION['user']['id_jabatan'] dari tabel employe.
+     * Sumber kebenaran kategori pegawai HANYA employe.id_jabatan
+     * (1 Guru, 2 Tenaga Kependidikan, 3 Satpam) — bukan id_level/user_level.
+     */
+    function siber_sinkron_jabatan($db): int
+    {
+        $id = (int) ($_SESSION['user']['id'] ?? 0);
+        if ($id <= 0 || !$db) {
+            return (int) ($_SESSION['user']['id_jabatan'] ?? 0);
+        }
+
+        $stmt = $db->prepare("SELECT id_jabatan FROM employe WHERE id_employe = ? LIMIT 1");
+        $stmt->execute([$id]);
+        $_SESSION['user']['id_jabatan'] = (int) $stmt->fetchColumn();
+
+        return $_SESSION['user']['id_jabatan'];
+    }
+}
+
 if (!function_exists('is_jabatan')) {
     /** Cek kategori pegawai; $target boleh int atau array. */
     function is_jabatan($target): bool

@@ -12,6 +12,12 @@ class JurnalStrukturalController
     public function __construct($db)
     {
         $this->db = $db; // PDO
+
+        // Controller ini tidak mewarisi BaseController, jadi sesi yang
+        // id_jabatan-nya masih kosong/0 harus dilengkapi di sini sebelum guard.
+        if (!empty($_SESSION['user']['id']) && empty($_SESSION['user']['id_jabatan'])) {
+            siber_sinkron_jabatan($this->db);
+        }
     }
 
     /**

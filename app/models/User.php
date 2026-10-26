@@ -38,9 +38,19 @@ class User
 
     public function findByUsername($username)
     {
-        $stmt = $this->db->prepare("SELECT id_employe, nama, username, password, pin FROM employe WHERE username = ?");
-        $stmt->execute([$username]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        // id_jabatan = kategori pegawai (1 Guru, 2 Tenaga Kependidikan, 3 Satpam).
+        // Wajib ikut diambil: AuthController menyimpannya ke sesi dan menu/kartu
+        // dashboard memakainya untuk mengenali tenaga kependidikan.
+        try {
+            $stmt = $this->db->prepare("SELECT id_employe, nama, username, password, pin, id_jabatan FROM employe WHERE username = ?");
+            $stmt->execute([$username]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // DB lama tanpa kolom id_jabatan: login tetap jalan, jabatan 0.
+            $stmt = $this->db->prepare("SELECT id_employe, nama, username, password, pin FROM employe WHERE username = ?");
+            $stmt->execute([$username]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
     }
 
 
