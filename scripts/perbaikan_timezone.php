@@ -94,13 +94,23 @@ if (!$apply) {
     exit(0);
 }
 
-$db->exec("CREATE TABLE IF NOT EXISTS siber_migrasi (
-    id_migrasi VARCHAR(100) NOT NULL PRIMARY KEY,
-    dijalankan_pada DATETIME NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+$penandaAktif = true;
+try {
+    $db->exec("CREATE TABLE IF NOT EXISTS siber_migrasi (
+        id_migrasi VARCHAR(100) NOT NULL PRIMARY KEY,
+        dijalankan_pada DATETIME NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+} catch (PDOException $e) {
+    // User database tanpa hak CREATE TABLE: tetap boleh lanjut, tapi penanda
+    // tidak tersedia sehingga skrip TIDAK boleh dijalankan dua kali.
+    $penandaAktif = false;
+    echo "PERINGATAN: tabel penanda siber_migrasi tidak bisa dibuat ("
+        . $e->getMessage() . ").\n"
+        . "Jalankan --apply HANYA SEKALI; periksa manual sebelum mengulang.\n\n";
+}
 
-$markerStmt = $db->prepare("SELECT COUNT(*) FROM siber_migrasi WHERE id_migrasi = ?");
-$catatStmt = $db->prepare("INSERT INTO siber_migrasi (id_migrasi, dijalankan_pada) VALUES (?, NOW())");
+$markerStmt = $penandaAktif ? $db->prepare("SELECT COUNT(*) FROM siber_migrasi WHERE id_migrasi = ?") : null;
+$catatStmt = $penandaAktif ? $db->prepare("INSERT INTO siber_migrasi (id_migrasi, dijalankan_pada) VALUES (?, NOW())") : null;
 
 $dikerjakan = 0;
 foreach ($targets as $t) {
@@ -111,17 +121,21 @@ foreach ($targets as $t) {
     }
 
     $marker = 'tz_wib_' . $table . '_' . $column;
-    $markerStmt->execute([$marker]);
-    if ((int) $markerStmt->fetchColumn() > 0) {
-        echo "- {$t}: sudah pernah digeser, dilewati\n";
-        continue;
+    if ($markerStmt) {
+        $markerStmt->execute([$marker]);
+        if ((int) $markerStmt->fetchColumn() > 0) {
+            echo "- {$t}: sudah pernah digeser, dilewati\n";
+            continue;
+        }
     }
 
     $before = $db->query("SELECT MIN({$column}) AS awal, MAX({$column}) AS akhir FROM `{$table}`")->fetch(PDO::FETCH_ASSOC);
     $db->exec("UPDATE `{$table}` SET `{$column}` = DATE_ADD(`{$column}`, INTERVAL 7 HOUR) WHERE `{$column}` IS NOT NULL");
     $after = $db->query("SELECT MIN({$column}) AS awal, MAX({$column}) AS akhir FROM `{$table}`")->fetch(PDO::FETCH_ASSOC);
 
-    $catatStmt->execute([$marker]);
+    if ($catatStmt) {
+        $catatStmt->execute([$marker]);
+    }
     $dikerjakan++;
     printf(
         "- %s: %s .. %s  ->  %s .. %s\n",
