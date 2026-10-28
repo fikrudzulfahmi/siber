@@ -48,7 +48,7 @@ class IzinGuruController extends BaseController
                     "Tanggal   : {$_POST['tanggal_mulai']} s/d {$_POST['tanggal_selesai']}\n" .
                     "Alasan    : {$_POST['keterangan']}\n\n" .
                     "Status    : *Menunggu persetujuan*\n\n" .
-                    "Segera lakukan persetujuan pada laman https://siber.ingintau.my.id \n" .
+                    "Segera lakukan persetujuan pada laman https://siber.pondokminggirsari.com \n" .
                     "Terima kasih.\n\n*SIBER PPRM*";
 
                 $this->_sendWhatsAppNotification(WHATSAPP_RECIPIENTS, $pesan);
