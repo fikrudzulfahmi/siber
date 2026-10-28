@@ -131,6 +131,31 @@ class Mapel
         ]);
     }
 
+    /**
+     * Cek apakah kombinasi mapel + kelas + tahun + guru sudah ada.
+     * $kecuali dipakai saat update supaya baris yang sedang diedit tidak
+     * dianggap duplikat miliknya sendiri.
+     */
+    public function isDuplicateGuru($id_mapel, $id_kelas, $id_tahun, $kecuali = null, $id_guru = null)
+    {
+        $sql = "SELECT COUNT(*) FROM mapel_guru
+                WHERE id_mapel = ? AND id_kelas = ? AND id_tahun_pelajaran = ?";
+        $params = [$id_mapel, $id_kelas, $id_tahun];
+
+        if ($id_guru !== null && $id_guru !== '') {
+            $sql .= " AND id_guru = ?";
+            $params[] = $id_guru;
+        }
+        if ($kecuali !== null && $kecuali !== '') {
+            $sql .= " AND id_mapel_guru <> ?";
+            $params[] = $kecuali;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM mapel WHERE id_mapel = ?");

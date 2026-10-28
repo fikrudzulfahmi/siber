@@ -64,7 +64,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Tambah Kelas & Guru</h6>
+                        <h6 class="text-white text-capitalize ps-3">Edit Kelas & Guru</h6>
                     </div>
                     <p class="text-white text-sm ps-3 mb-0">
                         Tahun Pelajaran: <strong><?= sec_e($nama_tahun) ?></strong> |

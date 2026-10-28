@@ -70,17 +70,36 @@ class MapelController extends BaseController
     {
         $model = new Mapel($this->db);
 
-        // // Paksa id_tahun_pelajaran mengambil dari database yang statusnya 'Aktif'
-        // $_POST['id_tahun_pelajaran'] = $model->getActiveTahunPelajaran();
+        $id_mapel = trim($_POST['id_mapel'] ?? '');
+        $id_kelas = trim($_POST['id_kelas'] ?? '');
+        $id_guru  = trim($_POST['id_guru'] ?? '');
+        $id_tahun = trim($_POST['id_tahun_pelajaran'] ?? '');
 
-        // if (!$_POST['id_tahun_pelajaran']) {
-        //     die("Tidak ada Tahun Pelajaran yang Aktif di database!");
-        // }
-        // var_dump($_POST);
-        // die();
-        $model->insert_guru($_POST);
+        if ($id_tahun === '') {
+            $tahun_aktif = $model->getActiveTahunPelajaran();
+            $id_tahun = $tahun_aktif ? (string) $tahun_aktif['id_tahun_pelajaran'] : '';
+        }
+
+        if ($id_mapel === '' || $id_kelas === '' || $id_guru === '' || $id_tahun === '') {
+            setFlash('danger', 'Kelas, guru, dan tahun pelajaran wajib dipilih.');
+            header('Location: index.php?controller=mapel&method=create_guru&id=' . urlencode($id_mapel));
+            exit;
+        }
+
+        if ($model->isDuplicateGuru($id_mapel, $id_kelas, $id_tahun, null, $id_guru)) {
+            setFlash('danger', 'Guru tersebut sudah terdaftar untuk kelas ini pada mapel dan tahun pelajaran yang sama.');
+            header('Location: index.php?controller=mapel&method=create_guru&id=' . urlencode($id_mapel));
+            exit;
+        }
+
+        $model->insert_guru([
+            'id_mapel' => $id_mapel,
+            'id_kelas' => $id_kelas,
+            'id_guru' => $id_guru,
+            'id_tahun_pelajaran' => $id_tahun,
+        ]);
         setFlash('success', 'Kelas & Guru berhasil ditambahkan.');
-        header('Location: index.php?controller=mapel&method=guru&id=' . urlencode($_POST['id_mapel']));
+        header('Location: index.php?controller=mapel&method=guru&id=' . urlencode($id_mapel));
         exit;
     }
 
@@ -131,20 +150,47 @@ class MapelController extends BaseController
     }
     public function update_guru()
     {
-        $id_mapel = trim($_POST['id_mapel'] ?? '');
+        $id_mapel      = trim($_POST['id_mapel'] ?? '');
+        $id_mapel_guru = trim($_POST['id_mapel_guru'] ?? '');
+        $id_kelas      = trim($_POST['id_kelas'] ?? '');
+        $id_guru       = trim($_POST['id_guru'] ?? '');
         $model = new Mapel($this->db);
 
-        // Ambil ID tahun aktif langsung sebelum update untuk memastikan validitas
-        $tahun_aktif = $model->getActiveTahunPelajaran();
-        $_POST['id_tahun_pelajaran'] = $tahun_aktif['id_tahun_pelajaran'];
+        $baris = $id_mapel_guru !== '' ? $model->findGuru($id_mapel_guru) : null;
+        if (!$baris) {
+            setFlash('danger', 'Data kelas & guru tidak ditemukan.');
+            header('Location: index.php?controller=mapel&method=guru&id=' . urlencode($id_mapel));
+            exit;
+        }
 
-        var_dump($data);
-        die();
+        if ($id_kelas === '' || $id_guru === '') {
+            setFlash('danger', 'Kelas dan guru wajib dipilih.');
+            header('Location: index.php?controller=mapel&method=edit_guru&id=' . urlencode($id_mapel_guru));
+            exit;
+        }
 
-        $model->update_guru($_POST);
+        // Tahun pelajaran mengikuti baris yang diedit, bukan tahun aktif, supaya
+        // mengedit data tahun lama tidak memindahkannya ke tahun berjalan.
+        $id_tahun = trim($_POST['id_tahun_pelajaran'] ?? '');
+        if ($id_tahun === '') {
+            $id_tahun = (string) $baris['id_tahun_pelajaran'];
+        }
+
+        if ($model->isDuplicateGuru($baris['id_mapel'], $id_kelas, $id_tahun, $id_mapel_guru, $id_guru)) {
+            setFlash('danger', 'Guru tersebut sudah terdaftar untuk kelas ini pada mapel dan tahun pelajaran yang sama.');
+            header('Location: index.php?controller=mapel&method=edit_guru&id=' . urlencode($id_mapel_guru));
+            exit;
+        }
+
+        $model->update_guru([
+            'id_kelas' => $id_kelas,
+            'id_guru' => $id_guru,
+            'id_tahun_pelajaran' => $id_tahun,
+            'id_mapel_guru' => $id_mapel_guru,
+        ]);
 
         setFlash('success', 'Kelas & Guru berhasil diperbarui.');
-        header('Location: index.php?controller=mapel&method=guru&id=' . urlencode($id_mapel));
+        header('Location: index.php?controller=mapel&method=guru&id=' . urlencode($id_mapel !== '' ? $id_mapel : $baris['id_mapel']));
         exit;
     }
 
