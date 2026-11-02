@@ -187,18 +187,38 @@ class Rapor
 
     public function createSetting($data)
     {
-        $stmt = $this->db->prepare("
-        INSERT INTO rapor_setting (id_tahun_pelajaran, jenis_rapor, tgl_pembagian, is_kenaikan, is_active, is_locked) 
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
-        return $stmt->execute([
-            $data['id_tahun_pelajaran'],
-            $data['jenis_rapor'],
-            $data['tgl_pembagian'],
-            $data['is_kenaikan'],
-            0, // Default tidak aktif saat dibuat
-            0  // Default tidak terkunci
-        ]);
+        $kertasRapor = !empty($data['kertas_rapor']) ? $data['kertas_rapor'] : 'A4';
+        $kertasPeringkat = !empty($data['kertas_peringkat']) ? $data['kertas_peringkat'] : 'A4';
+
+        try {
+            $stmt = $this->db->prepare("
+            INSERT INTO rapor_setting (id_tahun_pelajaran, jenis_rapor, tgl_pembagian, is_kenaikan, is_active, is_locked, kertas_rapor, kertas_peringkat) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+            return $stmt->execute([
+                $data['id_tahun_pelajaran'],
+                $data['jenis_rapor'],
+                $data['tgl_pembagian'],
+                $data['is_kenaikan'],
+                0, // Default tidak aktif saat dibuat
+                0, // Default tidak terkunci
+                $kertasRapor,
+                $kertasPeringkat
+            ]);
+        } catch (Throwable $e) {
+            $stmt = $this->db->prepare("
+            INSERT INTO rapor_setting (id_tahun_pelajaran, jenis_rapor, tgl_pembagian, is_kenaikan, is_active, is_locked) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+            return $stmt->execute([
+                $data['id_tahun_pelajaran'],
+                $data['jenis_rapor'],
+                $data['tgl_pembagian'],
+                $data['is_kenaikan'],
+                0,
+                0
+            ]);
+        }
     }
 
     // Tambahkan di dalam Model Anda
@@ -212,21 +232,46 @@ class Rapor
 
     public function updateSetting($id, $data)
     {
-        $stmt = $this->db->prepare("
-        UPDATE rapor_setting 
-        SET id_tahun_pelajaran = ?, 
-            jenis_rapor = ?, 
-            tgl_pembagian = ?, 
-            is_kenaikan = ?
-        WHERE id_rapor = ?
-    ");
-        return $stmt->execute([
-            $data['id_tahun_pelajaran'],
-            $data['jenis_rapor'],
-            $data['tgl_pembagian'],
-            $data['is_kenaikan'],
-            $id
-        ]);
+        $kertasRapor = !empty($data['kertas_rapor']) ? $data['kertas_rapor'] : 'A4';
+        $kertasPeringkat = !empty($data['kertas_peringkat']) ? $data['kertas_peringkat'] : 'A4';
+
+        try {
+            $stmt = $this->db->prepare("
+            UPDATE rapor_setting 
+            SET id_tahun_pelajaran = ?, 
+                jenis_rapor = ?, 
+                tgl_pembagian = ?, 
+                is_kenaikan = ?,
+                kertas_rapor = ?,
+                kertas_peringkat = ?
+            WHERE id_rapor = ?
+        ");
+            return $stmt->execute([
+                $data['id_tahun_pelajaran'],
+                $data['jenis_rapor'],
+                $data['tgl_pembagian'],
+                $data['is_kenaikan'],
+                $kertasRapor,
+                $kertasPeringkat,
+                $id
+            ]);
+        } catch (Throwable $e) {
+            $stmt = $this->db->prepare("
+            UPDATE rapor_setting 
+            SET id_tahun_pelajaran = ?, 
+                jenis_rapor = ?, 
+                tgl_pembagian = ?, 
+                is_kenaikan = ?
+            WHERE id_rapor = ?
+        ");
+            return $stmt->execute([
+                $data['id_tahun_pelajaran'],
+                $data['jenis_rapor'],
+                $data['tgl_pembagian'],
+                $data['is_kenaikan'],
+                $id
+            ]);
+        }
     }
 
 

@@ -44,7 +44,9 @@ class AdminRaporController extends BaseController
                 'id_tahun_pelajaran' => $_POST['id_tahun'],
                 'jenis_rapor' => $_POST['jenis_rapor'],
                 'tgl_pembagian' => $_POST['tgl_pembagian'],
-                'is_kenaikan' => isset($_POST['is_kenaikan']) ? 1 : 0
+                'is_kenaikan' => isset($_POST['is_kenaikan']) ? 1 : 0,
+                'kertas_rapor' => in_array($_POST['kertas_rapor'] ?? '', ['A4', 'F4'], true) ? $_POST['kertas_rapor'] : 'A4',
+                'kertas_peringkat' => in_array($_POST['kertas_peringkat'] ?? '', ['A4', 'F4'], true) ? $_POST['kertas_peringkat'] : 'A4',
             ];
 
             $this->raporModel->createSetting($data);
@@ -82,7 +84,9 @@ class AdminRaporController extends BaseController
                 'id_tahun_pelajaran' => $_POST['id_tahun'],
                 'jenis_rapor' => $_POST['jenis_rapor'],
                 'tgl_pembagian' => $_POST['tgl_pembagian'],
-                'is_kenaikan' => isset($_POST['is_kenaikan']) ? 1 : 0
+                'is_kenaikan' => isset($_POST['is_kenaikan']) ? 1 : 0,
+                'kertas_rapor' => in_array($_POST['kertas_rapor'] ?? '', ['A4', 'F4'], true) ? $_POST['kertas_rapor'] : 'A4',
+                'kertas_peringkat' => in_array($_POST['kertas_peringkat'] ?? '', ['A4', 'F4'], true) ? $_POST['kertas_peringkat'] : 'A4',
             ];
 
             $this->raporModel->updateSetting($id, $data);

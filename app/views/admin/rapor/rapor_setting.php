@@ -41,6 +41,20 @@
                             <label for="tanggal_pembagian" class="ms-0">Tanggal Pembagian Rapor</label>
                             <input type="date" class="form-control" id="tgl_pembagian" name="tgl_pembagian" value="<?= sec_e($is_edit ? $edit_setting['tgl_pembagian'] : '') ?>" required>
                         </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label for="kertas_rapor" class="ms-0">Ukuran Kertas Cetak Rapor</label>
+                            <select class="form-control" id="kertas_rapor" name="kertas_rapor">
+                                <option value="A4" <?= (!$is_edit || ($edit_setting['kertas_rapor'] ?? 'A4') === 'A4') ? 'selected' : '' ?>>A4 (210 x 297 mm)</option>
+                                <option value="F4" <?= ($is_edit && ($edit_setting['kertas_rapor'] ?? '') === 'F4') ? 'selected' : '' ?>>F4 / Folio (215 x 330 mm)</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label for="kertas_peringkat" class="ms-0">Ukuran Kertas Cetak Peringkat</label>
+                            <select class="form-control" id="kertas_peringkat" name="kertas_peringkat">
+                                <option value="A4" <?= (!$is_edit || ($edit_setting['kertas_peringkat'] ?? 'A4') === 'A4') ? 'selected' : '' ?>>A4 (210 x 297 mm)</option>
+                                <option value="F4" <?= ($is_edit && ($edit_setting['kertas_peringkat'] ?? '') === 'F4') ? 'selected' : '' ?>>F4 / Folio (215 x 330 mm)</option>
+                            </select>
+                        </div>
 
                         <div class="form-check form-switch d-flex align-items-center mb-3">
                             <input class="form-check-input" type="checkbox" id="is_kenaikan" name="is_kenaikan" <?= ($is_edit && $edit_setting['is_kenaikan'] == 1) ? 'checked' : '' ?>>
@@ -73,6 +87,7 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Periode</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jenis</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kertas</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Pembagian</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
@@ -92,6 +107,10 @@
                                         <td class="align-middle text-center text-sm">
                                             <span class="badge badge-sm bg-gradient-secondary"><?= sec_e($s['jenis_rapor']) ?></span>
                                             <?= $s['is_kenaikan'] ? '<br><small class="text-info">Fitur Kenaikan ON</small>' : '' ?>
+                                        </td>
+                                        <td class="align-middle text-center text-xs">
+                                            <span class="badge badge-sm bg-light text-dark border">Rapor: <?= sec_e($s['kertas_rapor'] ?? 'A4') ?></span><br>
+                                            <span class="badge badge-sm bg-light text-dark border mt-1">Peringkat: <?= sec_e($s['kertas_peringkat'] ?? 'A4') ?></span>
                                         </td>
                                         <td class="align-middle text-center">
                                             <p class="text-xs text-secondary mb-0"><?= sec_e($s['tgl_pembagian']) ?></p>

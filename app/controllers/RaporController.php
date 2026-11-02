@@ -519,9 +519,12 @@ class RaporController extends BaseController
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
 
+        $kertasRapor = strtoupper((string) ($setting['kertas_rapor'] ?? 'A4'));
+        $ukuranKertasRapor = ($kertasRapor === 'F4') ? [0, 0, 609.45, 935.43] : 'A4';
+
         $dompdf = new \Dompdf\Dompdf($options);
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper($ukuranKertasRapor, 'portrait');
         $dompdf->render();
 
         // BERSIHKAN BUFFER sebelum stream untuk mencegah "Failed to load PDF"
@@ -610,9 +613,12 @@ class RaporController extends BaseController
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
 
+        $kertasPeringkat = strtoupper((string) ($setting['kertas_peringkat'] ?? 'A4'));
+        $ukuranKertasPeringkat = ($kertasPeringkat === 'F4') ? [0, 0, 609.45, 935.43] : 'A4';
+
         $dompdf = new \Dompdf\Dompdf($options);
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper($ukuranKertasPeringkat, 'portrait');
         $dompdf->render();
 
         if (ob_get_length()) ob_end_clean();
