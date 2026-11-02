@@ -47,7 +47,7 @@ register_shutdown_function(function () use ($__lockFp) {
     }
 });
 
-// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+// Helper pengiriman WA: kirim langsung ke endpoint WA Gateway
 require_once __DIR__ . '/_wa_outbox.php';
 
 // File: rekap_terlambat.php
@@ -184,9 +184,9 @@ try {
 
     foreach ($nomorTujuanRekap as $nomor) {
         if (!$debugMode) {
-            // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
-            $hasilAntre = wa_enqueue($pdo, $nomor, $pesan);
-            write_log("-> " . wa_enqueue_hasil_log($hasilAntre));
+            // Kirim langsung ke WA Gateway endpoint (mode PUSH)
+            $hasilKirim = wa_kirim($nomor, $pesan, $pdo);
+            write_log("-> " . wa_kirim_hasil_log($hasilKirim));
         } else {
             write_log("-> [SIMULASI] Ke nomor pimpinan: {$nomor}");
         }

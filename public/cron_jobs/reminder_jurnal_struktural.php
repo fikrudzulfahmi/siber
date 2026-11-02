@@ -47,7 +47,7 @@ register_shutdown_function(function () use ($__lockFp) {
     }
 });
 
-// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+// Helper pengiriman WA: kirim langsung ke endpoint WA Gateway
 require_once __DIR__ . '/_wa_outbox.php';
 
 // --- KONFIGURASI ---
@@ -115,9 +115,9 @@ try {
                 "Terima kasih,\n*SIBER PPRM*";
 
             if (!$debugMode) {
-                // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
-                $hasilAntre = wa_enqueue($pdo, $pegawai['no_wa'], $pesan);
-                echo "STATUS: " . wa_enqueue_hasil_log($hasilAntre) . PHP_EOL;
+                // Kirim langsung ke WA Gateway endpoint (mode PUSH)
+                $hasilKirim = wa_kirim($pegawai['no_wa'], $pesan, $pdo);
+                echo "STATUS: " . wa_kirim_hasil_log($hasilKirim) . PHP_EOL;
             } else {
                 echo "STATUS: [SIMULASI] Pesan tidak dikirim ke {$pegawai['no_wa']}\n";
                 echo "ISI PESAN:\n$pesan\n";

@@ -49,7 +49,7 @@ register_shutdown_function(function () use ($__lockFp) {
 // akibatnya tanggal 'hari ini' meleset 7 jam dan pesan pagi tidak ikut dibuat).
 date_default_timezone_set('Asia/Jakarta');
 
-// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+// Helper pengiriman WA: kirim langsung ke endpoint WA Gateway
 require_once __DIR__ . '/_wa_outbox.php';
 
 // ------------------- KONFIGURASI -------------------
@@ -177,9 +177,9 @@ foreach ($guruUntukDiingatkan as $id => $guru) {
     echo "ISI PESAN:\n\n$pesan\n";
 
     if (!$debugMode) {
-        // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
-        $hasilAntre = wa_enqueue($pdo, $guru['no_wa'], $pesan);
-        echo "[STATUS KIRIM]: " . wa_enqueue_hasil_log($hasilAntre) . PHP_EOL;
+        // Kirim langsung ke WA Gateway endpoint (mode PUSH)
+        $hasilKirim = wa_kirim($guru['no_wa'], $pesan, $pdo);
+        echo "[STATUS KIRIM]: " . wa_kirim_hasil_log($hasilKirim) . PHP_EOL;
     } else {
         echo "\n[STATUS]: Berhasil disimulasikan (Pesan tidak benar-benar dikirim)\n";
     }

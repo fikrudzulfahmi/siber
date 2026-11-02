@@ -47,7 +47,7 @@ register_shutdown_function(function () use ($__lockFp) {
     }
 });
 
-// Helper antrean WA: pesan disimpan ke tabel outbox_wa, dikirim oleh WA Gateway lokal
+// Helper pengiriman WA: kirim langsung ke endpoint WA Gateway
 require_once __DIR__ . '/_wa_outbox.php';
 
 // File: rekap_walas.php
@@ -215,9 +215,9 @@ try {
         write_log("--- Memproses {$counter}: {$walas['nama']} ({$walas['nama_kelas']}) | Status: {$status_laporan} ---");
 
         if (!$debugMode) {
-            // Antrekan ke tabel outbox_wa; WA Gateway lokal yang mengirim (mode PULL)
-            $hasilAntre = wa_enqueue($pdo, $nomorTujuan, $pesan);
-            write_log("STATUS: " . wa_enqueue_hasil_log($hasilAntre));
+            // Kirim langsung ke WA Gateway endpoint (mode PUSH)
+            $hasilKirim = wa_kirim($nomorTujuan, $pesan, $pdo);
+            write_log("STATUS: " . wa_kirim_hasil_log($hasilKirim));
         } else {
             write_log("STATUS: [SIMULASI] Pesan tidak dikirim ke {$nomorTujuan}");
             write_log("ISI PESAN:\n{$pesan}\n");

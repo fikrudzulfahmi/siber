@@ -150,13 +150,10 @@ class IzinGuruController extends BaseController
     }
 
     /**
-     * Antrekan notifikasi WhatsApp ke tabel outbox_wa.
+     * Kirim notifikasi WhatsApp langsung ke endpoint WA Gateway (mode PUSH).
      *
-     * Sejak aplikasi berhenti memakai Fonnte, pengiriman TIDAK lagi dilakukan
-     * langsung dari hosting. Pesan hanya disimpan sebagai status 'pending',
-     * lalu ditarik oleh gateway WA lokal (mode PULL) lewat
-     * /wa-gateway/jobs.php. Jalur ini sama dengan yang dipakai berkas cronjob,
-     * sehingga status antrean bisa dipantau di satu tempat.
+     * Mengirim POST ke REST endpoint WA Gateway (https://wa-pprm.almuhsinblitar.my.id/send).
+     * Token otorisasi dibaca dari config/wa_gateway.php.
      *
      * @param string|array $target satu nomor atau daftar nomor (WHATSAPP_RECIPIENTS)
      */
@@ -167,12 +164,12 @@ class IzinGuruController extends BaseController
         $targets = is_array($target) ? $target : [$target];
 
         foreach ($targets as $nomor) {
-            $hasil = wa_enqueue($this->db, (string) $nomor, (string) $message);
+            $hasil = wa_kirim((string) $nomor, (string) $message, $this->db);
 
             if (!$hasil['ok'] && empty($hasil['duplikat'])) {
-                // Nomor tidak valid / antrean bermasalah: catat ke log, jangan
+                // Nomor tidak valid / kirim bermasalah: catat ke log, jangan
                 // sampai pengajuan izin gagal hanya karena notifikasi.
-                error_log('[WA-IZIN] gagal antre ke ' . $hasil['nomor'] . ': ' . $hasil['error']);
+                error_log('[WA-IZIN] gagal kirim ke ' . $hasil['nomor'] . ': ' . $hasil['error']);
             }
         }
     }
