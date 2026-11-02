@@ -39,6 +39,13 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Header grup yang aktif (expand): aksen transparan halus tanpa menimpa anak hijau */
+.sidebar-item > a.nav-link.active:not(.bg-gradient-success) {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
+    font-weight: 600;
+}
+
 /* Sidebar Material Dashboard memakai fixed; di < 992px diganti bottom nav. */
 @media (max-width: 1199.98px) {
     #sidenav-main {

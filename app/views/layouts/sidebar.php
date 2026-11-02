@@ -25,7 +25,7 @@ $siber_menu_desktop = siber_menu_for_level();
         <ul class="navbar-nav accordion" id="accordionSidebar">
             <?php foreach ($siber_menu_desktop as $entry): ?>
                 <?php if ($entry['type'] === 'item'): ?>
-                    <?php $aktif = siber_nav_active($entry['controllers'], $entry['method'] ?? 'index'); ?>
+                    <?php $aktif = siber_nav_item_active($entry); ?>
                     <li class="sidebar-item">
                         <a class="nav-link text-white <?= $aktif ? 'active bg-gradient-success' : '' ?>"
                             href="<?= sec_e(siber_item_href($entry)) ?>">
@@ -34,21 +34,30 @@ $siber_menu_desktop = siber_menu_for_level();
                         </a>
                     </li>
                 <?php else: ?>
-                    <?php $grupAktif = siber_nav_active($entry['controllers'], null); ?>
+                    <?php
+                    $anakAdaAktif = false;
+                    foreach ($entry['items'] as $anak) {
+                        if (siber_nav_item_active($anak, $entry)) {
+                            $anakAdaAktif = true;
+                            break;
+                        }
+                    }
+                    ?>
                     <li class="sidebar-item">
-                        <a class="nav-link text-white d-flex justify-content-between align-items-center <?= $grupAktif ? 'active bg-gradient-success' : '' ?>"
+                        <a class="nav-link text-white d-flex justify-content-between align-items-center <?= $anakAdaAktif ? 'active' : '' ?>"
                             data-bs-toggle="collapse" href="#<?= sec_e($entry['id']) ?>" role="button"
-                            aria-expanded="<?= $grupAktif ? 'true' : 'false' ?>"
+                            aria-expanded="<?= $anakAdaAktif ? 'true' : 'false' ?>"
                             aria-controls="<?= sec_e($entry['id']) ?>">
                             <span><i class="material-icons opacity-10 me-2"><?= sec_e($entry['icon']) ?></i>
                                 <?= sec_e(siber_item_label($entry)) ?></span>
+                            <i class="material-icons text-xs opacity-6 me-1"><?= $anakAdaAktif ? 'expand_less' : 'expand_more' ?></i>
                         </a>
-                        <div class="collapse <?= $grupAktif ? 'show' : '' ?>" id="<?= sec_e($entry['id']) ?>"
+                        <div class="collapse <?= $anakAdaAktif ? 'show' : '' ?>" id="<?= sec_e($entry['id']) ?>"
                             data-bs-parent="#accordionSidebar">
-                            <ul class="nav flex-column ms-4">
+                            <ul class="nav flex-column ms-3 ps-1">
                                 <?php foreach ($entry['items'] as $anak): ?>
-                                    <?php $anakAktif = siber_nav_active($anak['controllers'], $anak['method'] ?? 'index'); ?>
-                                    <li class="sidebar-item">
+                                    <?php $anakAktif = siber_nav_item_active($anak, $entry); ?>
+                                    <li class="sidebar-item my-1">
                                         <a class="nav-link text-white <?= $anakAktif ? 'active bg-gradient-success' : '' ?>"
                                             href="<?= sec_e($anak['href']) ?>">
                                             <i class="material-icons me-2 opacity-10"><?= sec_e($anak['icon']) ?></i>

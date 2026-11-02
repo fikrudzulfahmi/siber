@@ -13,7 +13,7 @@ $siber_bottom      = siber_bottom_nav();
 // Kalau halaman aktif tidak ada di bottom bar, sorot tombol "Lainnya".
 $siber_ada_aktif = false;
 foreach ($siber_bottom as $siber_item) {
-    if (siber_nav_active($siber_item['controllers'], $siber_item['method'])) {
+    if (siber_nav_item_active($siber_item)) {
         $siber_ada_aktif = true;
         break;
     }
@@ -31,7 +31,7 @@ $siber_menu_mobile = array_values(array_filter($siber_menu_mobile, function ($en
 ?>
 <nav class="siber-bottomnav d-xl-none" aria-label="Navigasi utama">
     <?php foreach ($siber_bottom as $item): ?>
-        <?php $aktif = siber_nav_active($item['controllers'], $item['method']); ?>
+        <?php $aktif = siber_nav_item_active($item); ?>
         <a class="siber-bottomnav__item <?= $aktif ? 'is-active' : '' ?>" href="<?= sec_e($item['href']) ?>"
             <?= $aktif ? 'aria-current="page"' : '' ?>>
             <i class="material-icons-round"><?= sec_e($item['icon']) ?></i>
@@ -66,13 +66,21 @@ $siber_menu_mobile = array_values(array_filter($siber_menu_mobile, function ($en
     <div class="siber-sheet__body">
         <?php foreach ($siber_menu_mobile as $entry): ?>
             <?php if ($entry['type'] === 'item'): ?>
-                <?php $aktif = siber_nav_active($entry['controllers'], $entry['method'] ?? 'index'); ?>
+                <?php $aktif = siber_nav_item_active($entry); ?>
                 <a class="siber-sheet__link <?= $aktif ? 'is-active' : '' ?>" href="<?= sec_e(siber_item_href($entry)) ?>">
                     <i class="material-icons-round"><?= sec_e($entry['icon']) ?></i>
                     <span><?= sec_e(siber_item_label($entry)) ?></span>
                 </a>
             <?php else: ?>
-                <?php $grupAktif = siber_nav_active($entry['controllers'], null); ?>
+                <?php
+                $grupAktif = false;
+                foreach ($entry['items'] as $anak) {
+                    if (siber_nav_item_active($anak, $entry)) {
+                        $grupAktif = true;
+                        break;
+                    }
+                }
+                ?>
                 <section class="siber-sheet__group <?= $grupAktif ? 'is-active' : '' ?>">
                     <h2 class="siber-sheet__group-title">
                         <i class="material-icons-round"><?= sec_e($entry['icon']) ?></i>
@@ -80,7 +88,7 @@ $siber_menu_mobile = array_values(array_filter($siber_menu_mobile, function ($en
                     </h2>
                     <div class="siber-sheet__grid">
                         <?php foreach ($entry['items'] as $anak): ?>
-                            <?php $anakAktif = siber_nav_active($anak['controllers'], $anak['method'] ?? 'index'); ?>
+                            <?php $anakAktif = siber_nav_item_active($anak, $entry); ?>
                             <a class="siber-sheet__tile <?= $anakAktif ? 'is-active' : '' ?>"
                                 href="<?= sec_e($anak['href']) ?>">
                                 <i class="material-icons-round"><?= sec_e($anak['icon']) ?></i>

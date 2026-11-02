@@ -39,19 +39,99 @@ if (!function_exists('siber_can')) {
 
 if (!function_exists('siber_nav_active')) {
     /**
-     * @param array       $controllers daftar controller yang dianggap aktif
-     * @param string|null $method      null = semua method controller tersebut
+     * @param array             $controllers daftar controller yang dianggap aktif
+     * @param string|array|null $method      null = semua method controller tersebut
      */
-    function siber_nav_active(array $controllers, $method = 'index'): bool
+    function siber_nav_active(array $controllers, $method = null): bool
     {
-        $current = $_GET['controller'] ?? '';
-        if (!in_array($current, $controllers, true)) {
+        $currentCtrl = strtolower(trim((string) ($_GET['controller'] ?? 'dashboard')));
+        $currentMethod = strtolower(trim((string) ($_GET['method'] ?? 'index')));
+
+        $ctrlMatched = false;
+        foreach ($controllers as $c) {
+            if (strtolower((string) $c) === $currentCtrl) {
+                $ctrlMatched = true;
+                break;
+            }
+        }
+        if (!$ctrlMatched) {
             return false;
         }
+
         if ($method === null) {
             return true;
         }
-        return ($_GET['method'] ?? 'index') === $method;
+
+        $allowed = is_array($method)
+            ? array_map('strtolower', $method)
+            : [strtolower((string) $method)];
+
+        return in_array($currentMethod, $allowed, true);
+    }
+}
+
+if (!function_exists('siber_nav_item_active')) {
+    /**
+     * Deteksi konsisten apakah item menu sedang aktif.
+     * Menangani sub-aksi (edit, create, detail), case-insensitivity,
+     * dan pembagian method pada controller yang sama (misal ploting vs anggota, rapor vs urutan_mapel).
+     */
+    function siber_nav_item_active(array $item, ?array $group = null): bool
+    {
+        $currentCtrl = strtolower(trim((string) ($_GET['controller'] ?? 'dashboard')));
+        $currentMethod = strtolower(trim((string) ($_GET['method'] ?? 'index')));
+
+        // 1. Cek kecocokan controller
+        $ctrlMatched = false;
+        foreach ($item['controllers'] as $c) {
+            if (strtolower((string) $c) === $currentCtrl) {
+                $ctrlMatched = true;
+                break;
+            }
+        }
+        if (!$ctrlMatched) {
+            return false;
+        }
+
+        // 2. Jika item mendefinisikan method spesifik (string atau array method)
+        if (!empty($item['method'])) {
+            $allowedMethods = is_array($item['method'])
+                ? array_map('strtolower', $item['method'])
+                : [strtolower((string) $item['method'])];
+            return in_array($currentMethod, $allowedMethods, true);
+        }
+
+        // 3. Jika item tidak mendefinisikan method khusus, tapi berada dalam grup
+        // yang memiliki saudara (sibling) dengan controller sama dan method spesifik:
+        if ($group && !empty($group['items'])) {
+            $siblingSpecificMethods = [];
+            foreach ($group['items'] as $sibling) {
+                if ($sibling === $item) {
+                    continue;
+                }
+                $siblingSameCtrl = false;
+                foreach ($sibling['controllers'] as $sc) {
+                    if (strtolower((string) $sc) === $currentCtrl) {
+                        $siblingSameCtrl = true;
+                        break;
+                    }
+                }
+                if ($siblingSameCtrl && !empty($sibling['method'])) {
+                    $methods = is_array($sibling['method']) ? $sibling['method'] : [$sibling['method']];
+                    foreach ($methods as $sm) {
+                        $siblingSpecificMethods[] = strtolower((string) $sm);
+                    }
+                }
+            }
+
+            // Jika ada saudara dengan method khusus, item ini aktif hanya jika method BUKAN milik saudara
+            if (!empty($siblingSpecificMethods)) {
+                return !in_array($currentMethod, $siblingSpecificMethods, true);
+            }
+        }
+
+        // 4. Default: aktif untuk seluruh sub-aksi controller tersebut (create, edit, detail, index, dsb)
+        return true;
     }
 }
 
@@ -123,7 +203,7 @@ if (!function_exists('siber_menu')) {
                     ['label' => 'Penilaian', 'icon' => 'grading', 'href' => '?controller=penilaian&method=index', 'controllers' => ['penilaian'], 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
                     ['label' => 'Jurnal', 'icon' => 'book', 'href' => '?controller=jurnal&method=index', 'controllers' => ['jurnal'], 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
                     ['label' => 'Tujuan Pembelajaran', 'icon' => 'local_library', 'href' => '?controller=tp&method=index', 'controllers' => ['tp'], 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
-                    ['label' => 'Rekap Jurnal', 'icon' => 'summarize', 'href' => '?controller=jurnal&method=rekap', 'controllers' => ['jurnal'], 'method' => 'rekap', 'levels' => [1, 5]],
+                    ['label' => 'Rekap Jurnal', 'icon' => 'summarize', 'href' => '?controller=jurnal&method=rekap', 'controllers' => ['jurnal'], 'method' => ['rekap', 'history', 'historyAdmin', 'cetakLaporan'], 'levels' => [1, 5]],
                     ['label' => 'Rekap TP', 'icon' => 'summarize', 'href' => '?controller=tp&method=rekaptp', 'controllers' => ['tp'], 'method' => 'rekaptp', 'levels' => [1, 5]],
                     ['label' => 'Rekap Nilai', 'icon' => 'summarize', 'href' => '?controller=laporan&method=index', 'controllers' => ['laporan'], 'levels' => [1, 5]],
                     ['label' => 'Legger Nilai', 'icon' => 'summarize', 'href' => '?controller=leger&method=index', 'controllers' => ['leger'], 'levels' => [1, 3, 5]],
@@ -139,7 +219,7 @@ if (!function_exists('siber_menu')) {
                 'items' => [
                     ['label' => 'Setting Rapor', 'icon' => 'settings', 'href' => '?controller=adminRapor&method=index', 'controllers' => ['adminRapor'], 'levels' => [1]],
                     ['label' => 'Input Rapor Siswa', 'icon' => 'edit_note', 'href' => '?controller=rapor&method=index', 'controllers' => ['rapor'], 'levels' => [1, 3, 5]],
-                    ['label' => 'Urutan Mapel Rapor', 'icon' => 'format_list_numbered', 'href' => '?controller=rapor&method=urutkan_mapel', 'controllers' => ['rapor'], 'levels' => [1, 5]],
+                    ['label' => 'Urutan Mapel Rapor', 'icon' => 'format_list_numbered', 'href' => '?controller=rapor&method=urutkan_mapel', 'controllers' => ['rapor'], 'method' => ['urutkan_mapel', 'simpan_urutan_mapel', 'reset_urutan_mapel', 'salin_urutan_mapel'], 'levels' => [1, 5]],
                 ],
             ],
             [
@@ -175,7 +255,7 @@ if (!function_exists('siber_menu')) {
                 'controllers' => ['kehadiran'],
                 'items' => [
                     ['label' => 'Rekap Harian', 'icon' => 'today', 'href' => '?controller=kehadiran&method=index', 'controllers' => ['kehadiran'], 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
-                    ['label' => 'Rekap Bulanan', 'icon' => 'calendar_month', 'href' => '?controller=kehadiran&method=rekapBulanan', 'controllers' => ['kehadiran'], 'method' => 'rekapBulanan', 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
+                    ['label' => 'Rekap Bulanan', 'icon' => 'calendar_month', 'href' => '?controller=kehadiran&method=rekapBulanan', 'controllers' => ['kehadiran'], 'method' => ['rekapBulanan', 'cetakRekapBulanan'], 'levels' => [1, 2, 3, 4, 5, 6, 7, 9]],
                 ],
             ],
             [
@@ -214,7 +294,7 @@ if (!function_exists('siber_menu')) {
                 'items' => [
                     // Input jurnal hanya untuk Tenaga Kependidikan (id_jabatan = 2).
                     ['label' => 'Input Jurnal', 'icon' => 'edit_note', 'href' => '?controller=jurnalStruktural&method=index', 'controllers' => ['jurnalStruktural'], 'levels' => $semua, 'jabatan' => [2]],
-                    ['label' => 'Rekap Jurnal', 'icon' => 'history', 'href' => '?controller=jurnalStruktural&method=historyAdmin', 'controllers' => ['jurnalStruktural'], 'method' => 'historyAdmin', 'levels' => [1, 5]],
+                    ['label' => 'Rekap Jurnal', 'icon' => 'history', 'href' => '?controller=jurnalStruktural&method=historyAdmin', 'controllers' => ['jurnalStruktural'], 'method' => ['historyAdmin', 'history', 'cetakLaporan'], 'levels' => [1, 5]],
                 ],
             ],
             [
