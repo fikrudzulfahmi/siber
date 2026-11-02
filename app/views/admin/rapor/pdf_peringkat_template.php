@@ -199,7 +199,7 @@
                 Blitar, <?= $tglFormat ?><br>
                 Wali Kelas,
                 <br><br><br><br>
-                <strong><?= $_SESSION['user']['nama'] ?></strong>
+                <strong><?= !empty($dataKelas['nama_walikelas']) ? htmlspecialchars($dataKelas['nama_walikelas']) : htmlspecialchars($_SESSION['user']['nama'] ?? '') ?></strong>
             </td>
         </tr>
     </table>

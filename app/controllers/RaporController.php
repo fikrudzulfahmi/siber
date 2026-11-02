@@ -413,9 +413,11 @@ class RaporController extends BaseController
         $siswa->execute([$id_siswa]);
         $dataSiswa = $siswa->fetch(PDO::FETCH_ASSOC);
 
-        // 2. Data Kelas
-        $stmtKelas = $this->db->prepare("SELECT k.* FROM kelas k 
+        // 2. Data Kelas & Wali Kelas Asli
+        $stmtKelas = $this->db->prepare("SELECT k.*, e.nama AS nama_walikelas 
+                                     FROM kelas k 
                                      JOIN ploting_siswa ps ON k.id_kelas = ps.id_kelas 
+                                     LEFT JOIN employe e ON k.wali_kelas = e.id_employe
                                      WHERE ps.id_siswa = ? AND ps.id_tahun = ?");
         $stmtKelas->execute([$id_siswa, $id_tahun]);
         $dataKelas = $stmtKelas->fetch(PDO::FETCH_ASSOC);
@@ -550,8 +552,11 @@ class RaporController extends BaseController
         $jenis_rapor = $setting['jenis_rapor'];
         $semester = $setting['semester'];
 
-        // 1. Data Kelas
-        $stmtKelas = $this->db->prepare("SELECT * FROM kelas WHERE id_kelas = ?");
+        // 1. Data Kelas & Wali Kelas Asli
+        $stmtKelas = $this->db->prepare("SELECT k.*, e.nama AS nama_walikelas 
+                                         FROM kelas k 
+                                         LEFT JOIN employe e ON k.wali_kelas = e.id_employe 
+                                         WHERE k.id_kelas = ?");
         $stmtKelas->execute([$id_kelas]);
         $dataKelas = $stmtKelas->fetch(PDO::FETCH_ASSOC);
         if (!$dataKelas) {

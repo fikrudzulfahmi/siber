@@ -296,7 +296,7 @@
             <td width="33%">
                 Blitar, <?= formatTanggalIndo($setting['tgl_pembagian']) ?><br>
                 Wali Kelas<br><br><br><br>
-                <strong><u><?= $_SESSION['user']['nama'] ?></u></strong>
+                <strong><u><?= !empty($dataKelas['nama_walikelas']) ? htmlspecialchars($dataKelas['nama_walikelas']) : htmlspecialchars($_SESSION['user']['nama'] ?? '') ?></u></strong>
             </td>
         </tr>
     </table>

@@ -44,13 +44,12 @@ $siber_menu_desktop = siber_menu_for_level();
                     }
                     ?>
                     <li class="sidebar-item">
-                        <a class="nav-link text-white d-flex justify-content-between align-items-center <?= $anakAdaAktif ? 'active' : '' ?>"
+                        <a class="nav-link text-white <?= $anakAdaAktif ? 'active' : '' ?>"
                             data-bs-toggle="collapse" href="#<?= sec_e($entry['id']) ?>" role="button"
                             aria-expanded="<?= $anakAdaAktif ? 'true' : 'false' ?>"
                             aria-controls="<?= sec_e($entry['id']) ?>">
-                            <span><i class="material-icons opacity-10 me-2"><?= sec_e($entry['icon']) ?></i>
-                                <?= sec_e(siber_item_label($entry)) ?></span>
-                            <i class="material-icons text-xs opacity-6 me-1"><?= $anakAdaAktif ? 'expand_less' : 'expand_more' ?></i>
+                            <i class="material-icons opacity-10 me-2"><?= sec_e($entry['icon']) ?></i>
+                            <span class="nav-link-text ms-1"><?= sec_e(siber_item_label($entry)) ?></span>
                         </a>
                         <div class="collapse <?= $anakAdaAktif ? 'show' : '' ?>" id="<?= sec_e($entry['id']) ?>"
                             data-bs-parent="#accordionSidebar">
