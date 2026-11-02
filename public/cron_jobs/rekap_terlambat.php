@@ -66,6 +66,12 @@ $nomorTujuanRekap = [
     // '6285735119674',
     // '6282139315007',
     '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
+    '6281216898874', //nomor fikru untuk tes 
 ];
 // --------------------
 
