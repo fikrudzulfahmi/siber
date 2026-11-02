@@ -139,6 +139,7 @@ if (!function_exists('siber_menu')) {
                 'items' => [
                     ['label' => 'Setting Rapor', 'icon' => 'settings', 'href' => '?controller=adminRapor&method=index', 'controllers' => ['adminRapor'], 'levels' => [1]],
                     ['label' => 'Input Rapor Siswa', 'icon' => 'edit_note', 'href' => '?controller=rapor&method=index', 'controllers' => ['rapor'], 'levels' => [1, 3, 5]],
+                    ['label' => 'Urutan Mapel Rapor', 'icon' => 'format_list_numbered', 'href' => '?controller=rapor&method=urutkan_mapel', 'controllers' => ['rapor'], 'levels' => [1, 5]],
                 ],
             ],
             [

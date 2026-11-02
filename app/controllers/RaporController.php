@@ -616,4 +616,160 @@ class RaporController extends BaseController
         $dompdf->stream($filename, ["Attachment" => false]);
         exit;
     }
+
+    public function urutkan_mapel()
+    {
+        sec_require_level([1, 5], 'Hanya Admin dan Waka Kurikulum yang dapat mengatur urutan mapel rapor.');
+
+        $setting = $this->raporModel->getActiveSetting();
+        if (!$setting) {
+            setFlash('danger', 'Admin belum mengaktifkan periode rapor.');
+            header("Location: ?controller=dashboard");
+            exit;
+        }
+
+        $id_tahun = (int) $setting['id_tahun_pelajaran'];
+
+        // Daftar kelas pada tahun pelajaran aktif
+        $stmtKelas = $this->db->prepare("
+            SELECT DISTINCT k.id_kelas, k.kelas, k.tingkat
+            FROM kelas k
+            JOIN mapel_guru mg ON k.id_kelas = mg.id_kelas
+            WHERE mg.id_tahun_pelajaran = ?
+            ORDER BY k.tingkat ASC, k.kelas ASC
+        ");
+        $stmtKelas->execute([$id_tahun]);
+        $daftar_kelas = $stmtKelas->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($daftar_kelas)) {
+            // Fallback seluruh kelas bila belum ada mapel_guru
+            $daftar_kelas = $this->db->query("SELECT id_kelas, kelas, tingkat FROM kelas ORDER BY tingkat ASC, kelas ASC")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $id_kelas = (int) ($_GET['id_kelas'] ?? 0);
+        $kelas = null;
+        foreach ($daftar_kelas as $dk) {
+            if ($id_kelas > 0 && (int) $dk['id_kelas'] === $id_kelas) {
+                $kelas = $dk;
+                break;
+            }
+        }
+        if (!$kelas && !empty($daftar_kelas)) {
+            $kelas = $daftar_kelas[0];
+            $id_kelas = (int) $kelas['id_kelas'];
+        }
+
+        $mapelList = $this->raporModel->getMapelKelas($id_kelas, $id_tahun);
+
+        $data = [
+            'title'        => 'Urutan Mapel Rapor',
+            'setting'      => $setting,
+            'daftar_kelas' => $daftar_kelas,
+            'kelas'        => $kelas,
+            'id_kelas'     => $id_kelas,
+            'id_tahun'     => $id_tahun,
+            'mapelList'    => $mapelList,
+        ];
+
+        include '../app/views/admin/rapor/urutkan_mapel.php';
+    }
+
+    public function simpan_urutan_mapel()
+    {
+        sec_require_level([1, 5], 'Akses ditolak.');
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['ok' => false, 'error' => 'Metode request tidak sah.']);
+            exit;
+        }
+
+        $id_kelas = (int) ($_POST['id_kelas'] ?? 0);
+        $id_tahun = (int) ($_POST['id_tahun'] ?? 0);
+        $urutan   = $_POST['urutan'] ?? [];
+
+        if ($id_kelas <= 0 || $id_tahun <= 0) {
+            echo json_encode(['ok' => false, 'error' => 'Data kelas atau tahun tidak valid.']);
+            exit;
+        }
+
+        try {
+            $jumlah = $this->raporModel->simpanUrutanMapel($id_kelas, $id_tahun, (array) $urutan);
+            echo json_encode([
+                'ok'    => true,
+                'pesan' => "Urutan {$jumlah} mapel berhasil disimpan."
+            ]);
+        } catch (Throwable $e) {
+            echo json_encode(['ok' => false, 'error' => 'Gagal menyimpan: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function reset_urutan_mapel()
+    {
+        sec_require_level([1, 5], 'Akses ditolak.');
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['ok' => false, 'error' => 'Metode request tidak sah.']);
+            exit;
+        }
+
+        $id_kelas = (int) ($_POST['id_kelas'] ?? 0);
+        $id_tahun = (int) ($_POST['id_tahun'] ?? 0);
+
+        try {
+            $this->raporModel->resetUrutanMapel($id_kelas, $id_tahun);
+            echo json_encode([
+                'ok'    => true,
+                'pesan' => 'Urutan mapel berhasil direset kembali ke default abjad.'
+            ]);
+        } catch (Throwable $e) {
+            echo json_encode(['ok' => false, 'error' => 'Gagal reset: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function salin_urutan_mapel()
+    {
+        sec_require_level([1, 5], 'Akses ditolak.');
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['ok' => false, 'error' => 'Metode request tidak sah.']);
+            exit;
+        }
+
+        $id_kelas_asal   = (int) ($_POST['id_kelas_asal'] ?? 0);
+        $id_kelas_tujuan = (int) ($_POST['id_kelas_tujuan'] ?? 0);
+        $id_tahun        = (int) ($_POST['id_tahun'] ?? 0);
+
+        if ($id_kelas_asal <= 0 || $id_kelas_tujuan <= 0 || $id_tahun <= 0) {
+            echo json_encode(['ok' => false, 'error' => 'Kelas asal atau tujuan tidak valid.']);
+            exit;
+        }
+
+        if ($id_kelas_asal === $id_kelas_tujuan) {
+            echo json_encode(['ok' => false, 'error' => 'Kelas tujuan tidak boleh sama dengan kelas asal.']);
+            exit;
+        }
+
+        try {
+            $terupdate = $this->raporModel->salinUrutanMapel($id_kelas_asal, $id_kelas_tujuan, $id_tahun);
+            if ($terupdate > 0) {
+                echo json_encode([
+                    'ok'    => true,
+                    'pesan' => "Berhasil menyalin urutan {$terupdate} mapel ke kelas tujuan."
+                ]);
+            } else {
+                echo json_encode([
+                    'ok'    => false,
+                    'error' => 'Kelas asal belum memiliki urutan mapel yang diatur, atau tidak ada mapel yang cocok.'
+                ]);
+            }
+        } catch (Throwable $e) {
+            echo json_encode(['ok' => false, 'error' => 'Gagal menyalin: ' . $e->getMessage()]);
+        }
+        exit;
+    }
 }

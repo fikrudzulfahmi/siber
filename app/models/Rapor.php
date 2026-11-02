@@ -41,7 +41,7 @@ class Rapor
                 AND mg.id_tahun_pelajaran = ?
                 AND m.nama_mapel != 'BIMBINGAN KONSELING'
                 GROUP BY m.id_mapel
-                ORDER BY (m.urutan IS NULL OR m.urutan = 0) ASC, m.urutan ASC, m.id_mapel ASC";
+                ORDER BY (mg.urutan IS NULL OR mg.urutan = 0) ASC, mg.urutan ASC, m.nama_mapel ASC";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
@@ -300,7 +300,7 @@ class Rapor
     LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = ?
     WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ? AND m.nama_mapel != 'BIMBINGAN KONSELING'
     GROUP BY m.id_mapel, e.id_employe
-    ORDER BY (m.urutan IS NULL OR m.urutan = 0) ASC, m.urutan ASC, m.nama_mapel ASC";
+    ORDER BY (mg.urutan IS NULL OR mg.urutan = 0) ASC, mg.urutan ASC, m.nama_mapel ASC";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
@@ -389,5 +389,118 @@ class Rapor
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_siswa, $id_tahun]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // =========================================================================
+    // URUTAN MAPEL RAPOR PER KELAS & TAHUN (mapel_guru.urutan)
+    // =========================================================================
+
+    /** Daftar mapel yang diajarkan pada satu kelas & tahun pelajaran, diurutkan manual */
+    public function getMapelKelas($id_kelas, $id_tahun)
+    {
+        try {
+            $sql = "SELECT mg.id_mapel_guru, mg.id_mapel, mg.urutan, m.nama_mapel, m.kode_mapel, e.nama as nama_guru
+                    FROM mapel_guru mg
+                    JOIN mapel m ON mg.id_mapel = m.id_mapel
+                    LEFT JOIN employe e ON mg.id_guru = e.id_employe
+                    WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ?
+                      AND m.nama_mapel != 'BIMBINGAN KONSELING'
+                    ORDER BY (mg.urutan IS NULL OR mg.urutan = 0) ASC, mg.urutan ASC, m.nama_mapel ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([(int) $id_kelas, (int) $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Throwable $e) {
+            $sql = "SELECT mg.id_mapel_guru, mg.id_mapel, 0 as urutan, m.nama_mapel, m.kode_mapel, e.nama as nama_guru
+                    FROM mapel_guru mg
+                    JOIN mapel m ON mg.id_mapel = m.id_mapel
+                    LEFT JOIN employe e ON mg.id_guru = e.id_employe
+                    WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ?
+                      AND m.nama_mapel != 'BIMBINGAN KONSELING'
+                    ORDER BY m.nama_mapel ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([(int) $id_kelas, (int) $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        }
+    }
+
+    /** Simpan urutan mapel untuk satu kelas & tahun pelajaran */
+    public function simpanUrutanMapel($id_kelas, $id_tahun, array $urutan)
+    {
+        $mapelList = $this->getMapelKelas($id_kelas, $id_tahun);
+        $sah = [];
+        foreach ($mapelList as $row) {
+            $sah[(int) $row['id_mapel_guru']] = true;
+        }
+
+        $final = [];
+        foreach ($urutan as $id) {
+            $id = (int) $id;
+            if ($id > 0 && isset($sah[$id]) && !isset($final[$id])) {
+                $final[$id] = true;
+            }
+        }
+        foreach (array_keys($sah) as $id) {
+            if (!isset($final[$id])) {
+                $final[$id] = true;
+            }
+        }
+
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("UPDATE mapel_guru SET urutan = ? WHERE id_mapel_guru = ?");
+            $no = 1;
+            foreach (array_keys($final) as $id_mg) {
+                $stmt->execute([$no++, $id_mg]);
+            }
+            $this->db->commit();
+            return count($final);
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /** Reset urutan mapel satu kelas kembali ke 0 */
+    public function resetUrutanMapel($id_kelas, $id_tahun)
+    {
+        $stmt = $this->db->prepare("UPDATE mapel_guru SET urutan = 0 WHERE id_kelas = ? AND id_tahun_pelajaran = ?");
+        $stmt->execute([(int) $id_kelas, (int) $id_tahun]);
+        return $stmt->rowCount();
+    }
+
+    /** Salin urutan mapel dari satu kelas ke kelas lain pada tahun pelajaran yang sama */
+    public function salinUrutanMapel($id_kelas_asal, $id_kelas_tujuan, $id_tahun)
+    {
+        $asal = $this->getMapelKelas($id_kelas_asal, $id_tahun);
+        $tujuan = $this->getMapelKelas($id_kelas_tujuan, $id_tahun);
+
+        $petaUrutan = [];
+        foreach ($asal as $a) {
+            if (!empty($a['urutan'])) {
+                $petaUrutan[(int) $a['id_mapel']] = (int) $a['urutan'];
+            }
+        }
+
+        if (empty($petaUrutan)) {
+            return 0;
+        }
+
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("UPDATE mapel_guru SET urutan = ? WHERE id_mapel_guru = ?");
+            $terupdate = 0;
+            foreach ($tujuan as $t) {
+                $id_mapel = (int) $t['id_mapel'];
+                if (isset($petaUrutan[$id_mapel])) {
+                    $stmt->execute([$petaUrutan[$id_mapel], (int) $t['id_mapel_guru']]);
+                    $terupdate++;
+                }
+            }
+            $this->db->commit();
+            return $terupdate;
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

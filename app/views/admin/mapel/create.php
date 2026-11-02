@@ -38,16 +38,6 @@
                                 min="7" max="12" placeholder="Contoh: 7" required>
                         </div>
 
-                        <!-- Urutan di Rapor -->
-                        <div class="mb-4">
-                            <label class="form-label text-dark fw-bold">Nomor Urut di Rapor</label>
-                            <input type="number" name="urutan"
-                                class="form-control border focus-ring focus-ring-success rounded-3"
-                                min="1" placeholder="Contoh: 1, 2, 3... (opsional, urutan baris di rapor)">
-                            <small class="text-muted">Nomor urut tampil di lembar rapor. Angka lebih kecil tampil lebih atas.</small>
-                        </div>
-
-
                         <!-- Tombol -->
                         <div class="d-flex justify-content-end">
                             <a href="?controller=mapel&method=index" class="btn btn-outline-secondary me-2">Kembali</a>

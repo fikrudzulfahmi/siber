@@ -12,11 +12,7 @@ class Mapel
 
     public function getAll()
     {
-        try {
-            return $this->db->query("SELECT * FROM mapel ORDER BY tingkat_mapel ASC, (urutan IS NULL OR urutan = 0) ASC, urutan ASC, nama_mapel ASC")->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Throwable $e) {
-            return $this->db->query("SELECT * FROM mapel ORDER BY tingkat_mapel ASC, nama_mapel ASC")->fetchAll(PDO::FETCH_ASSOC);
-        }
+        return $this->db->query("SELECT * FROM mapel")->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function Guru($id_mapel = null, $id_tahun = null) // Tambahkan parameter id_tahun
@@ -84,23 +80,13 @@ class Mapel
 
     public function insert($data)
     {
-        $urutan = !empty($data['urutan']) ? (int) $data['urutan'] : 0;
-        try {
-            $stmt = $this->db->prepare("INSERT INTO mapel (kode_mapel, nama_mapel, tingkat_mapel, urutan) VALUES (?, ?, ?, ?)");
-            $stmt->execute([
-                $data['kode_mapel'],
-                $data['mapel'],
-                $data['tingkat'],
-                $urutan
-            ]);
-        } catch (Throwable $e) {
-            $stmt = $this->db->prepare("INSERT INTO mapel (kode_mapel, nama_mapel, tingkat_mapel) VALUES (?, ?, ?)");
-            $stmt->execute([
-                $data['kode_mapel'],
-                $data['mapel'],
-                $data['tingkat']
-            ]);
-        }
+
+        $stmt = $this->db->prepare("INSERT INTO mapel (kode_mapel, nama_mapel, tingkat_mapel) VALUES (?, ?, ?)");
+        $stmt->execute([
+            $data['kode_mapel'],
+            $data['mapel'],
+            $data['tingkat']
+        ]);
     }
     public function insert_guru($data)
     {
@@ -117,29 +103,17 @@ class Mapel
 
     public function update($data)
     {
-        $urutan = !empty($data['urutan']) ? (int) $data['urutan'] : 0;
-        try {
-            $sql = "UPDATE mapel SET kode_mapel = ?, nama_mapel = ?, tingkat_mapel = ?, urutan = ? WHERE id_mapel = ?";
-            $params = [
-                $data['kode_mapel'],
-                $data['mapel'],
-                $data['tingkat'],
-                $urutan,
-                $data['id_mapel']
-            ];
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute($params);
-        } catch (Throwable $e) {
-            $sql = "UPDATE mapel SET kode_mapel = ?, nama_mapel = ?, tingkat_mapel = ? WHERE id_mapel = ?";
-            $params = [
-                $data['kode_mapel'],
-                $data['mapel'],
-                $data['tingkat'],
-                $data['id_mapel']
-            ];
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute($params);
-        }
+
+        $sql = "UPDATE mapel SET kode_mapel = ?, nama_mapel = ?, tingkat_mapel = ? WHERE id_mapel = ?";
+        $params = [
+            $data['kode_mapel'],
+            $data['mapel'],
+            $data['tingkat'],
+            $data['id_mapel']
+        ];
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
     }
 
     public function update_guru($data)
