@@ -263,11 +263,21 @@
                 </tr>
             </table>
         </div>
+        <div style="clear: both;"></div>
     </div>
 
-    <div class="row" style="margin-top: 10px;">
+    <?php
+    $catatanVal = !empty($dataRaporSiswa['catatan_walikelas'])
+        ? $dataRaporSiswa['catatan_walikelas']
+        : (!empty($dataRaporSiswa['catatan'])
+            ? $dataRaporSiswa['catatan']
+            : (!empty($dataRaporSiswa['catatan_wali'])
+                ? $dataRaporSiswa['catatan_wali']
+                : ''));
+    ?>
+    <div class="row" style="margin-top: 10px; clear: both;">
         <p class="bold" style="margin: 2px 0;">CATATAN WALI KELAS</p>
-        <div class="box-catatan"><?= !empty($dataRaporSiswa['catatan_walikelas']) ? htmlspecialchars($dataRaporSiswa['catatan_walikelas']) : '-' ?></div>
+        <div class="box-catatan"><?= $catatanVal !== '' ? nl2br(htmlspecialchars($catatanVal)) : '-' ?></div>
 
         <p class="bold" style="margin: 2px 0;">CATATAN ORANG TUA</p>
         <div class="box-catatan"></div>

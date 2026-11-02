@@ -200,6 +200,9 @@ class RaporController extends BaseController
             // Pengawas tidak membuat/mengubah baris rapor, cukup tampilkan kosong.
             $rapor = ['id_rapor_siswa' => null, 'sakit' => null, 'izin' => null, 'alfa' => null, 'catatan_walikelas' => null];
         }
+        $catatanText = $rapor['catatan_walikelas'] ?? $rapor['catatan'] ?? $rapor['catatan_wali'] ?? '';
+        $rapor['catatan_walikelas'] = $catatanText;
+        $rapor['catatan'] = $catatanText;
         $id_rapor_siswa = $rapor['id_rapor_siswa'] ?? null;
 
         // =========================================================================
@@ -309,15 +312,26 @@ class RaporController extends BaseController
                 $this->db->beginTransaction();
 
                 // 1. Update Tabel Utama (Presensi & Catatan)
-                // Catatan: Gunakan nama kolom yang sesuai di tabel rapor_siswa (misal: 'catatan_wali')
-                $sqlRapor = "UPDATE rapor_siswa SET sakit = ?, izin = ?, alfa = ?, catatan_walikelas = ? WHERE id_rapor_siswa = ?";
-                $this->db->prepare($sqlRapor)->execute([
-                    $_POST['sakit'],
-                    $_POST['izin'],
-                    $_POST['alfa'],
-                    $_POST['catatan_walikelas'],
-                    $id_rapor_siswa
-                ]);
+                // Cek atau update kolom catatan_walikelas dengan fallback ke catatan jika skema DB berbeda
+                try {
+                    $sqlRapor = "UPDATE rapor_siswa SET sakit = ?, izin = ?, alfa = ?, catatan_walikelas = ? WHERE id_rapor_siswa = ?";
+                    $this->db->prepare($sqlRapor)->execute([
+                        $_POST['sakit'],
+                        $_POST['izin'],
+                        $_POST['alfa'],
+                        $_POST['catatan_walikelas'],
+                        $id_rapor_siswa
+                    ]);
+                } catch (Exception $e) {
+                    $sqlRapor = "UPDATE rapor_siswa SET sakit = ?, izin = ?, alfa = ?, catatan = ? WHERE id_rapor_siswa = ?";
+                    $this->db->prepare($sqlRapor)->execute([
+                        $_POST['sakit'],
+                        $_POST['izin'],
+                        $_POST['alfa'],
+                        $_POST['catatan_walikelas'],
+                        $id_rapor_siswa
+                    ]);
+                }
 
                 // 2. Sync Ekstrakurikuler (Hapus lama, Insert baru)
                 // Menggunakan kolom 'id_ekstra' sebagai Foreign Key sesuai error Anda
@@ -410,7 +424,15 @@ class RaporController extends BaseController
         // 3. Data Rapor & Catatan
         $dataRaporSiswa = $this->raporModel->getRaporSiswa($setting['id_rapor'], $id_siswa);
         if ($dataRaporSiswa) {
-            $dataRaporSiswa['catatan'] = $dataRaporSiswa['catatan_walikelas'];
+            $catatanText = !empty($dataRaporSiswa['catatan_walikelas'])
+                ? $dataRaporSiswa['catatan_walikelas']
+                : (!empty($dataRaporSiswa['catatan'])
+                    ? $dataRaporSiswa['catatan']
+                    : (!empty($dataRaporSiswa['catatan_wali'])
+                        ? $dataRaporSiswa['catatan_wali']
+                        : ''));
+            $dataRaporSiswa['catatan_walikelas'] = $catatanText;
+            $dataRaporSiswa['catatan'] = $catatanText;
         }
 
         // 4. Nilai & Peringkat

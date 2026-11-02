@@ -29,22 +29,41 @@ class Rapor
     {
         $kolomNilai = ($jenis_rapor == 'tengah') ? 'n.sts' : 'n.nilai_raport';
 
-        $sql = "SELECT 
-                m.nama_mapel, 
-                IFNULL($kolomNilai, 0) as nilai_final
-            FROM mapel_guru mg
-            JOIN mapel m ON mg.id_mapel = m.id_mapel
-            LEFT JOIN kategori_nilai k ON k.id_mapel_guru = mg.id_mapel_guru
-            LEFT JOIN nilai n ON n.id_kategori = k.id_kategori AND n.id_siswa = ?
-            WHERE mg.id_kelas = ? 
-            AND mg.id_tahun_pelajaran = ?
-            AND m.nama_mapel != 'BIMBINGAN KONSELING'
-            GROUP BY m.id_mapel
-            ORDER BY m.id_mapel ASC";
+        try {
+            $sql = "SELECT 
+                    m.nama_mapel, 
+                    IFNULL($kolomNilai, 0) as nilai_final
+                FROM mapel_guru mg
+                JOIN mapel m ON mg.id_mapel = m.id_mapel
+                LEFT JOIN kategori_nilai k ON k.id_mapel_guru = mg.id_mapel_guru
+                LEFT JOIN nilai n ON n.id_kategori = k.id_kategori AND n.id_siswa = ?
+                WHERE mg.id_kelas = ? 
+                AND mg.id_tahun_pelajaran = ?
+                AND m.nama_mapel != 'BIMBINGAN KONSELING'
+                GROUP BY m.id_mapel
+                ORDER BY (m.urutan IS NULL OR m.urutan = 0) ASC, m.urutan ASC, m.id_mapel ASC";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            $sql = "SELECT 
+                    m.nama_mapel, 
+                    IFNULL($kolomNilai, 0) as nilai_final
+                FROM mapel_guru mg
+                JOIN mapel m ON mg.id_mapel = m.id_mapel
+                LEFT JOIN kategori_nilai k ON k.id_mapel_guru = mg.id_mapel_guru
+                LEFT JOIN nilai n ON n.id_kategori = k.id_kategori AND n.id_siswa = ?
+                WHERE mg.id_kelas = ? 
+                AND mg.id_tahun_pelajaran = ?
+                AND m.nama_mapel != 'BIMBINGAN KONSELING'
+                GROUP BY m.id_mapel
+                ORDER BY m.id_mapel ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
     // Ambil data Ekstrakurikuler berdasarkan id_rapor_siswa
     public function getEkstraSiswa($id_rapor_siswa)
@@ -268,7 +287,26 @@ class Rapor
     {
         $kolomNilai = ($jenis_rapor == 'tengah') ? 'n.sts' : 'n.nilai_raport';
 
-        $sql = "
+        try {
+            $sql = "
+    SELECT 
+        m.nama_mapel,
+        e.nama as nama_guru,
+        IFNULL($kolomNilai, 0) as nilai
+    FROM mapel_guru mg
+    JOIN mapel m ON mg.id_mapel = m.id_mapel
+    JOIN employe e ON mg.id_guru = e.id_employe
+    LEFT JOIN kategori_nilai kn ON kn.id_mapel_guru = mg.id_mapel_guru
+    LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = ?
+    WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ? AND m.nama_mapel != 'BIMBINGAN KONSELING'
+    GROUP BY m.id_mapel, e.id_employe
+    ORDER BY (m.urutan IS NULL OR m.urutan = 0) ASC, m.urutan ASC, m.nama_mapel ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            $sql = "
     SELECT 
         m.nama_mapel,
         e.nama as nama_guru,
@@ -282,9 +320,10 @@ class Rapor
     GROUP BY m.id_mapel, e.id_employe
     ORDER BY m.nama_mapel ASC";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_siswa, $id_kelas, $id_tahun]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 
     public function getPrestasiKolektifSiswa($id_siswa, $id_tahun)

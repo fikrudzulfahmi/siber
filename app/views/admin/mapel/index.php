@@ -28,6 +28,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Urutan</th>
                                     <th>Kode Mapel</th>
                                     <th>Mata Pelajaran</th>
                                     <th>Tingkat</th>
@@ -41,6 +42,7 @@
                                 <?php foreach ($mapel as $row): ?>
                                     <tr>
                                         <td></td>
+                                        <td class="text-center font-weight-bold"><?= !empty($row['urutan']) ? sec_e($row['urutan']) : '-' ?></td>
                                         <td><?= sec_e($row['kode_mapel']) ?></td>
                                         <td><?= sec_e($row['nama_mapel']) ?></td>
                                         <td><?= sec_e($row['tingkat_mapel']) ?></td>
