@@ -85,7 +85,8 @@ class EkstraModel
             JOIN ploting_siswa ps ON ae.id_ploting_siswa = ps.id_ploting
             JOIN siswa s ON ps.id_siswa = s.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
-            WHERE ae.id_ekstra = ? 
+            WHERE ae.id_ekstra = ?
+              AND " . siswa_aktif_sql('s') . "
             ORDER BY k.tingkat ASC, k.kelas ASC, (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ekstra]);
@@ -100,6 +101,7 @@ class EkstraModel
             JOIN siswa s ON ps.id_siswa = s.id_siswa
             JOIN kelas k ON ps.id_kelas = k.id_kelas
             WHERE ps.id_tahun = ? 
+            AND " . siswa_aktif_sql('s') . "
             AND ps.id_ploting NOT IN (
                 SELECT id_ploting_siswa FROM ekstra_anggota WHERE id_ekstra = ?
             )
@@ -309,6 +311,7 @@ class EkstraModel
             LEFT JOIN ekstra_presensi ep ON ps.id_ploting = ep.id_ploting_siswa
             LEFT JOIN ekstra_kegiatan ek ON ep.id_ekstra_kegiatan = ek.id_ekstra_kegiatan
             WHERE ea.id_ekstra = ?
+              AND " . siswa_aktif_sql('s') . "
             GROUP BY ps.id_ploting
             ORDER BY k.tingkat ASC, k.kelas ASC, (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
@@ -393,6 +396,7 @@ class EkstraModel
                 JOIN siswa s ON ps.id_siswa = s.id_siswa
                 JOIN kelas k ON ps.id_kelas = k.id_kelas
                 WHERE ea.id_ekstra = ?
+                  AND " . siswa_aktif_sql('s') . "
                 ORDER BY k.tingkat ASC, k.kelas ASC, (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ekstra]);
