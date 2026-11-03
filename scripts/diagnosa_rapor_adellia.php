@@ -1,11 +1,12 @@
 <?php
 /**
  * scripts/diagnosa_rapor_adellia.php
- * Skrip diagnosa mandiri untuk memeriksa data rapor, mapel duplikat, dan nilai 0
- * untuk siswi Adellia Afriyani di kelas X-1 pada periode rapor aktif.
- *
- * Jalankan di server:
- *   php scripts/diagnosa_rapor_adellia.php
+ * Skrip diagnosa mendalam untuk memeriksa:
+ * 1. Semua setting di tabel rapor_setting
+ * 2. Raw nilai tabel 'nilai' & 'kategori_nilai' untuk Adellia (ID 967)
+ * 3. Semua siswa di kelas X-1 (apakah ada siswa dengan mapel double / nilai 0)
+ * 4. Pengecekan getNilaiAkhirSiswa untuk jenis_rapor 'tengah' vs 'akhir'
+ * 5. Data tabel rapor_siswa, rapor_ekstra, rapor_prestasi
  */
 
 require_once __DIR__ . '/../config/database.php';
@@ -19,7 +20,7 @@ if (!$db) {
 }
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function line(string $char = '=', int $len = 60): void {
+function line(string $char = '=', int $len = 65): void {
     echo str_repeat($char, $len) . "\n";
 }
 
@@ -30,284 +31,246 @@ function section(string $title): void {
     line('=');
 }
 
-// 1. Cek Setting Rapor Aktif
-section("1. SETTING RAPOR AKTIF");
-$raporModel = new Rapor($db);
-$setting = $raporModel->getActiveSetting();
-
-if (!$setting) {
-    echo "[PERINGATAN] Tidak ada periode rapor yang sedang aktif (is_active = 1)!\n";
-    // Cari setting terakhir
-    $stmt = $db->query("SELECT rs.*, tp.tahun_pelajaran, tp.semester 
-                        FROM rapor_setting rs 
-                        JOIN tahun_pelajaran tp ON rs.id_tahun_pelajaran = tp.id_tahun_pelajaran 
-                        ORDER BY rs.id_rapor DESC LIMIT 1");
-    $setting = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($setting) {
-        echo "Menggunakan setting terakhir (non-aktif) untuk simulasi:\n";
-    } else {
-        echo "[ERROR] Tabel rapor_setting kosong!\n";
-        exit(1);
-    }
-}
-
-echo "ID Rapor       : " . $setting['id_rapor'] . "\n";
-echo "Tahun Pelajaran: " . $setting['tahun_pelajaran'] . " (ID: " . $setting['id_tahun_pelajaran'] . ")\n";
-echo "Semester       : " . $setting['semester'] . "\n";
-echo "Jenis Rapor    : " . $setting['jenis_rapor'] . "\n";
-echo "Status Aktif   : " . ($setting['is_active'] ? 'AKTIF' : 'NON-AKTIF') . "\n";
-
-$id_tahun = (int) $setting['id_tahun_pelajaran'];
-$jenis_rapor = $setting['jenis_rapor'];
-
-// 2. Cari Siswa Bernama Adellia Afriyani
-section("2. PENCARIAN SISWA (Adellia Afriyani)");
-$stmt = $db->prepare("SELECT id_siswa, nama_siswa, nisn, status, status_siswa 
-                      FROM siswa 
-                      WHERE nama_siswa LIKE '%adellia%' OR nama_siswa LIKE '%afriyani%'");
-$stmt->execute();
-$siswaList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (empty($siswaList)) {
-    echo "[PERINGATAN] Tidak ditemukan siswa dengan nama Adellia / Afriyani!\n";
-    echo "Mencoba mencari dengan keyword 'Adel':\n";
-    $stmt = $db->prepare("SELECT id_siswa, nama_siswa, nisn, status, status_siswa 
-                          FROM siswa 
-                          WHERE nama_siswa LIKE '%adel%'");
-    $stmt->execute();
-    $siswaList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-if (empty($siswaList)) {
-    echo "[ERROR] Siswa tidak ditemukan di tabel siswa.\n";
-} else {
-    echo "Ditemukan " . count($siswaList) . " record siswa:\n";
-    foreach ($siswaList as $s) {
-        echo sprintf("  - ID: %-5d | NISN: %-12s | Status: %-8s | StatusSiswa: %-10s | Nama: %s\n",
-            $s['id_siswa'],
-            $s['nisn'] ?: '-',
-            $s['status'] ?: '-',
-            $s['status_siswa'] ?: 'aktif',
-            $s['nama_siswa']
-        );
-    }
-}
-
-// 3. Cek Kelas X-1
-section("3. KELAS X-1");
-$stmt = $db->prepare("SELECT k.*, e.nama AS nama_walikelas 
-                      FROM kelas k 
-                      LEFT JOIN employe e ON k.wali_kelas = e.id_employe 
-                      WHERE k.kelas LIKE '%X-1%' OR k.kelas LIKE '%X 1%' OR k.kelas = 'X-1'");
-$stmt->execute();
-$kelasList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$id_kelas_x1 = null;
-if (empty($kelasList)) {
-    echo "[PERINGATAN] Kelas X-1 tidak ditemukan dengan filter spesifik. Menampilkan semua kelas tingkat 10:\n";
-    $stmt = $db->query("SELECT id_kelas, kelas, tingkat FROM kelas WHERE tingkat = 10 OR kelas LIKE '%X%'");
-    $kelasList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-foreach ($kelasList as $k) {
-    echo sprintf("  - ID: %-5d | Kelas: %-12s | Tingkat: %-3s | Walas: %s\n",
-        $k['id_kelas'],
-        $k['kelas'],
-        $k['tingkat'] ?? '-',
-        $k['nama_walikelas'] ?? '-'
+// 1. Semua Setting Rapor
+section("1. SEMUA SETTING RAPOR (tabel rapor_setting)");
+$stmt = $db->query("SELECT rs.*, tp.tahun_pelajaran, tp.semester 
+                    FROM rapor_setting rs 
+                    JOIN tahun_pelajaran tp ON rs.id_tahun_pelajaran = tp.id_tahun_pelajaran 
+                    ORDER BY rs.id_rapor DESC");
+$allSettings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($allSettings as $st) {
+    echo sprintf("  - ID: %-3d | TP: %-10s (ID: %d) | Sem: %-7s | Jenis: %-7s | Aktif: %s | Lock: %s\n",
+        $st['id_rapor'],
+        $st['tahun_pelajaran'],
+        $st['id_tahun_pelajaran'],
+        $st['semester'],
+        $st['jenis_rapor'],
+        $st['is_active'] ? 'YA' : 'TIDAK',
+        $st['is_locked'] ? 'YA' : 'TIDAK'
     );
-    if (strpos(strtoupper($k['kelas']), 'X-1') !== false || strtoupper($k['kelas']) === 'X 1') {
-        $id_kelas_x1 = (int) $k['id_kelas'];
+}
+
+// 2. Setting Aktif
+$raporModel = new Rapor($db);
+$settingAktif = $raporModel->getActiveSetting();
+echo "\nSetting Aktif Saat Ini:\n";
+echo "  ID Rapor       : " . ($settingAktif['id_rapor'] ?? 'TIDAK ADA') . "\n";
+echo "  Tahun Pelajaran: " . ($settingAktif['tahun_pelajaran'] ?? '-') . " (ID: " . ($settingAktif['id_tahun_pelajaran'] ?? '-') . ")\n";
+echo "  Semester       : " . ($settingAktif['semester'] ?? '-') . "\n";
+echo "  Jenis Rapor    : " . ($settingAktif['jenis_rapor'] ?? '-') . "\n";
+
+$id_tahun = (int) ($settingAktif['id_tahun_pelajaran'] ?? 3);
+$jenis_rapor = $settingAktif['jenis_rapor'] ?? 'tengah';
+$id_rapor = (int) ($settingAktif['id_rapor'] ?? 14);
+
+// 3. Siswa Adellia
+section("2. DATA SISWA ADELLIA AFRIYANI (ID 967)");
+$stmt = $db->prepare("SELECT * FROM siswa WHERE id_siswa = 967");
+$stmt->execute();
+$adellia = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($adellia) {
+    echo "  ID Siswa : " . $adellia['id_siswa'] . "\n";
+    echo "  Nama     : " . $adellia['nama_siswa'] . "\n";
+    echo "  NISN     : " . $adellia['nisn'] . "\n";
+    echo "  Status   : " . ($adellia['status'] ?? '-') . " | status_siswa: " . ($adellia['status_siswa'] ?? '-') . "\n";
+} else {
+    echo "  [ERROR] Siswa ID 967 tidak ditemukan!\n";
+}
+
+// 4. Ploting Siswa Adellia
+section("3. PLOTING KELAS ADELLIA");
+$stmt = $db->prepare("SELECT ps.*, k.kelas, tp.tahun_pelajaran 
+                      FROM ploting_siswa ps 
+                      JOIN kelas k ON ps.id_kelas = k.id_kelas 
+                      LEFT JOIN tahun_pelajaran tp ON ps.id_tahun = tp.id_tahun_pelajaran 
+                      WHERE ps.id_siswa = 967");
+$stmt->execute();
+$plots = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$id_kelas_x1 = 1;
+foreach ($plots as $p) {
+    echo sprintf("  - Ploting ID: %-5d | Kelas: %-10s (ID: %d) | TP: %-10s (ID: %d) | Urutan: %s\n",
+        $p['id_ploting'] ?? $p['id_ploting_siswa'] ?? 0,
+        $p['kelas'],
+        $p['id_kelas'],
+        $p['tahun_pelajaran'] ?? '-',
+        $p['id_tahun'],
+        $p['urutan'] ?? 'NULL'
+    );
+    if ((int)$p['id_tahun'] === $id_tahun) {
+        $id_kelas_x1 = (int)$p['id_kelas'];
     }
 }
 
-if (!$id_kelas_x1 && !empty($kelasList)) {
-    $id_kelas_x1 = (int) $kelasList[0]['id_kelas'];
-    echo "Menggunakan ID Kelas default: $id_kelas_x1 (" . $kelasList[0]['kelas'] . ")\n";
-}
-
-// 4. Cek Ploting Siswa Adellia
-section("4. PLOTING SISWA (Adellia)");
-$targetSiswa = null;
-foreach ($siswaList as $s) {
-    $stmt = $db->prepare("SELECT ps.*, k.kelas 
-                          FROM ploting_siswa ps 
-                          JOIN kelas k ON ps.id_kelas = k.id_kelas 
-                          WHERE ps.id_siswa = ?");
-    $stmt->execute([$s['id_siswa']]);
-    $plots = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo "Siswa ID {$s['id_siswa']} ({$s['nama_siswa']}):\n";
-    if (empty($plots)) {
-        echo "  [TIDAK ADA PLOTING]\n";
-    } else {
-        foreach ($plots as $p) {
-            $isTahunIni = ((int)$p['id_tahun'] === $id_tahun) ? ' [TAHUN INI]' : '';
-            echo sprintf("  - ID Ploting: %-5d | Kelas: %-10s (ID: %d) | Tahun: %d | Urutan: %s%s\n",
-                $p['id_ploting'] ?? $p['id_ploting_siswa'] ?? 0,
-                $p['kelas'],
-                $p['id_kelas'],
-                $p['id_tahun'],
-                $p['urutan'] ?? 'NULL',
-                $isTahunIni
-            );
-            if ((int)$p['id_tahun'] === $id_tahun) {
-                $targetSiswa = $s;
-                if (!$id_kelas_x1) $id_kelas_x1 = (int)$p['id_kelas'];
-            }
-        }
-    }
-}
-
-if (!$targetSiswa && !empty($siswaList)) {
-    $targetSiswa = $siswaList[0];
-}
-
-// 5. Cek Mapel & Guru di Kelas X-1
-if ($id_kelas_x1) {
-    section("5. DAFTAR MAPEL DI KELAS X-1 (Tahun ID: $id_tahun)");
-    $stmt = $db->prepare("SELECT mg.id_mapel_guru, mg.id_mapel, mg.id_guru, mg.urutan, 
-                                 m.nama_mapel, m.kode_mapel, e.nama as nama_guru
-                          FROM mapel_guru mg
-                          JOIN mapel m ON mg.id_mapel = m.id_mapel
-                          LEFT JOIN employe e ON mg.id_guru = e.id_employe
-                          WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ?
-                          ORDER BY m.nama_mapel ASC, mg.id_mapel_guru ASC");
-    $stmt->execute([$id_kelas_x1, $id_tahun]);
-    $mapelKelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo "Total mapel_guru di kelas X-1: " . count($mapelKelas) . " baris\n";
-    
-    // Deteksi duplikasi nama_mapel atau id_mapel
-    $hitungNama = [];
-    $hitungId = [];
-    foreach ($mapelKelas as $mk) {
-        $hitungNama[$mk['nama_mapel']][] = $mk;
-        $hitungId[$mk['id_mapel']][] = $mk;
-    }
-
-    $adaDuplikatMapel = false;
-    foreach ($hitungNama as $namaM => $baris) {
-        if (count($baris) > 1) {
-            $adaDuplikatMapel = true;
-            echo "\n[DUPLIKAT TERDETEKSI] Mapel '$namaM' muncul " . count($baris) . " kali di mapel_guru:\n";
-            foreach ($baris as $b) {
-                echo sprintf("   * id_mapel_guru: %-5d | id_mapel: %-4d | Guru: %s (ID: %d) | Urutan: %s\n",
-                    $b['id_mapel_guru'],
-                    $b['id_mapel'],
-                    $b['nama_guru'] ?: 'Belum diset',
-                    $b['id_guru'] ?: 0,
-                    $b['urutan'] ?? 'NULL'
-                );
-            }
-        }
-    }
-
-    if (!$adaDuplikatMapel) {
-        echo "Tidak ada nama mapel yang duplikat di mapel_guru kelas X-1.\n";
-    }
-
-    echo "\nDaftar lengkap mapel kelas X-1:\n";
-    foreach ($mapelKelas as $mk) {
-        echo sprintf("  - ID MG: %-5d | ID Mapel: %-4d | Urutan: %-3s | %-30s | Guru: %s\n",
-            $mk['id_mapel_guru'],
-            $mk['id_mapel'],
-            $mk['urutan'] ?? '-',
-            $mk['nama_mapel'],
-            $mk['nama_guru'] ?: '-'
+// 5. Data Rapor Siswa (tabel rapor_siswa)
+section("4. DATA TABEL rapor_siswa UNTUK ADELLIA");
+$stmt = $db->prepare("SELECT rs.*, rset.jenis_rapor, tp.tahun_pelajaran 
+                      FROM rapor_siswa rs 
+                      JOIN rapor_setting rset ON rs.id_rapor = rset.id_rapor 
+                      JOIN tahun_pelajaran tp ON rset.id_tahun_pelajaran = tp.id_tahun_pelajaran 
+                      WHERE rs.id_siswa = 967");
+$stmt->execute();
+$raporSiswaList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (empty($raporSiswaList)) {
+    echo "  [BELUM ADA DATA DI rapor_siswa untuk Adellia]\n";
+} else {
+    foreach ($raporSiswaList as $rs) {
+        echo sprintf("  - ID Rapor Siswa: %-5d | ID Rapor: %-3d (%s %s) | Sakit: %d | Izin: %d | Alfa: %d | Catatan: %s\n",
+            $rs['id_rapor_siswa'],
+            $rs['id_rapor'],
+            $rs['tahun_pelajaran'],
+            $rs['jenis_rapor'],
+            $rs['sakit'] ?? 0,
+            $rs['izin'] ?? 0,
+            $rs['alfa'] ?? 0,
+            substr($rs['catatan_walikelas'] ?? $rs['catatan'] ?? '-', 0, 40)
         );
     }
 }
 
-// 6. Uji Hasil getNilaiAkhirSiswa untuk Adellia
-if ($targetSiswa && $id_kelas_x1) {
-    section("6. REKAP NILAI AKHIR (getNilaiAkhirSiswa) UNTUK {$targetSiswa['nama_siswa']}");
-    $nilaiAkhir = $raporModel->getNilaiAkhirSiswa($targetSiswa['id_siswa'], $id_tahun, $jenis_rapor, $id_kelas_x1);
+// 6. Uji Nilai Akhir untuk 'tengah' dan 'akhir'
+section("5. REKAP NILAI getNilaiAkhirSiswa (Adellia - Kelas ID $id_kelas_x1)");
+foreach (['tengah', 'akhir'] as $jr) {
+    echo "\n>>> JENIS RAPOR: $jr <<<\n";
+    $nilaiList = $raporModel->getNilaiAkhirSiswa(967, $id_tahun, $jr, $id_kelas_x1);
+    echo "Jumlah baris: " . count($nilaiList) . "\n";
+    $seen = [];
+    foreach ($nilaiList as $n) {
+        $dup = isset($seen[$n['nama_mapel']]) ? ' *** DUPLIKAT! ***' : '';
+        $seen[$n['nama_mapel']] = true;
+        $nol = ((float)$n['nilai_final'] == 0) ? ' [NILAI 0]' : '';
+        echo sprintf("  - %-35s : %6.2f%s%s\n", $n['nama_mapel'], (float)$n['nilai_final'], $dup, $nol);
+    }
+}
 
-    echo "Jumlah baris hasil getNilaiAkhirSiswa: " . count($nilaiAkhir) . "\n";
+// 7. Raw Data Nilai Siswa Adellia di Kelas X-1
+section("6. RAW NILAI TABEL nilai DI KELAS X-1 (Tahun ID $id_tahun)");
+$stmt = $db->prepare("
+    SELECT 
+        m.id_mapel,
+        m.nama_mapel,
+        mg.id_mapel_guru,
+        mg.urutan as mg_urutan,
+        e.nama as nama_guru,
+        kn.id_kategori,
+        kn.kategori,
+        n.id_nilai,
+        n.sts,
+        n.nilai_raport
+    FROM mapel_guru mg
+    JOIN mapel m ON mg.id_mapel = m.id_mapel
+    LEFT JOIN employe e ON mg.id_guru = e.id_employe
+    LEFT JOIN kategori_nilai kn ON kn.id_mapel_guru = mg.id_mapel_guru
+    LEFT JOIN nilai n ON n.id_kategori = kn.id_kategori AND n.id_siswa = 967
+    WHERE mg.id_kelas = ? AND mg.id_tahun_pelajaran = ?
+      AND m.nama_mapel != 'BIMBINGAN KONSELING'
+    ORDER BY (mg.urutan IS NULL OR mg.urutan = 0) ASC, mg.urutan ASC, m.nama_mapel ASC, kn.id_kategori ASC
+");
+$stmt->execute([$id_kelas_x1, $id_tahun]);
+$rawList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+echo "Total baris (termasuk kategori ganda jika ada): " . count($rawList) . "\n";
+$hitungMapel = [];
+foreach ($rawList as $r) {
+    $hitungMapel[$r['nama_mapel']][] = $r;
+}
+
+foreach ($hitungMapel as $namaM => $barisList) {
+    $count = count($barisList);
+    $statusKategori = ($count > 1) ? " [KATEGORI GANDA: $count baris]" : "";
+    echo "\nMapel: $namaM$statusKategori\n";
+    foreach ($barisList as $b) {
+        echo sprintf("   * MG: %-4d | Kat ID: %-4s (%-10s) | Guru: %-22s | STS: %-5s | NilaiRaport: %-5s | Nilai ID: %s\n",
+            $b['id_mapel_guru'],
+            $b['id_kategori'] ?? 'NULL',
+            $b['kategori'] ?? '-',
+            substr($b['nama_guru'] ?? '-', 0, 22),
+            $b['sts'] ?? 'NULL',
+            $b['nilai_raport'] ?? 'NULL',
+            $b['id_nilai'] ?? 'BELUM ADA'
+        );
+    }
+}
+
+// 8. Cek Seluruh Siswa di Kelas X-1
+section("7. SCAN SEMUA SISWA DI KELAS X-1 (Cari Nilai 0 atau Duplikat)");
+$stmt = $db->prepare("
+    SELECT s.id_siswa, s.nama_siswa 
+    FROM ploting_siswa ps 
+    JOIN siswa s ON ps.id_siswa = s.id_siswa 
+    WHERE ps.id_kelas = ? AND ps.id_tahun = ? 
+      AND " . siswa_aktif_sql('s') . "
+    ORDER BY (ps.urutan IS NULL) ASC, ps.urutan ASC, s.nama_siswa ASC
+");
+$stmt->execute([$id_kelas_x1, $id_tahun]);
+$semuaSiswaX1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+echo "Total siswa aktif di kelas X-1: " . count($semuaSiswaX1) . " siswa\n";
+
+$siswaBermasalah = [];
+foreach ($semuaSiswaX1 as $sw) {
+    $nilaiSw = $raporModel->getNilaiAkhirSiswa($sw['id_siswa'], $id_tahun, $jenis_rapor, $id_kelas_x1);
     $namaMapelSeen = [];
-    foreach ($nilaiAkhir as $na) {
-        $isDup = isset($namaMapelSeen[$na['nama_mapel']]) ? ' [DUPLIKAT!]' : '';
-        $namaMapelSeen[$na['nama_mapel']] = true;
-        $isZero = ((float)$na['nilai_final'] == 0) ? ' [NILAI 0]' : '';
-        echo sprintf("  - %-35s : %6.2f%s%s\n",
-            $na['nama_mapel'],
-            (float) $na['nilai_final'],
-            $isDup,
-            $isZero
-        );
-    }
-
-    // Bandingkan dengan siswa lain di kelas yang sama
-    section("7. PERBANDINGAN DENGAN SISWA LAIN DI KELAS X-1");
-    $stmt = $db->prepare("SELECT s.id_siswa, s.nama_siswa 
-                          FROM ploting_siswa ps 
-                          JOIN siswa s ON ps.id_siswa = s.id_siswa 
-                          WHERE ps.id_kelas = ? AND ps.id_tahun = ? AND s.id_siswa != ? 
-                          LIMIT 1");
-    $stmt->execute([$id_kelas_x1, $id_tahun, $targetSiswa['id_siswa']]);
-    $siswaLain = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($siswaLain) {
-        echo "Membandingkan dengan siswa: {$siswaLain['nama_siswa']} (ID: {$siswaLain['id_siswa']})\n";
-        $nilaiLain = $raporModel->getNilaiAkhirSiswa($siswaLain['id_siswa'], $id_tahun, $jenis_rapor, $id_kelas_x1);
-        echo "Jumlah baris siswa pembanding: " . count($nilaiLain) . "\n";
-        $namaMapelSeenLain = [];
-        foreach ($nilaiLain as $nl) {
-            $isDup = isset($namaMapelSeenLain[$nl['nama_mapel']]) ? ' [DUPLIKAT!]' : '';
-            $namaMapelSeenLain[$nl['nama_mapel']] = true;
-            $isZero = ((float)$nl['nilai_final'] == 0) ? ' [NILAI 0]' : '';
-            echo sprintf("  - %-35s : %6.2f%s%s\n",
-                $nl['nama_mapel'],
-                (float) $nl['nilai_final'],
-                $isDup,
-                $isZero
-            );
+    $hasDup = false;
+    $hasZero = false;
+    $zeroMapel = [];
+    $dupMapel = [];
+    foreach ($nilaiSw as $ns) {
+        if (isset($namaMapelSeen[$ns['nama_mapel']])) {
+            $hasDup = true;
+            $dupMapel[] = $ns['nama_mapel'];
         }
-    } else {
-        echo "Tidak ditemukan siswa lain di kelas X-1 tahun ini.\n";
+        $namaMapelSeen[$ns['nama_mapel']] = true;
+        if ((float)$ns['nilai_final'] == 0) {
+            $hasZero = true;
+            $zeroMapel[] = $ns['nama_mapel'];
+        }
     }
 
-    // 8. Cek Detail Progres Siswa (Modal Progres)
-    section("8. DETAIL PROGRES (getDetailProgresSiswa) UNTUK {$targetSiswa['nama_siswa']}");
-    $detailProgres = $raporModel->getDetailProgresSiswa($targetSiswa['id_siswa'], $id_kelas_x1, $id_tahun, $jenis_rapor);
-    echo "Jumlah baris hasil getDetailProgresSiswa: " . count($detailProgres) . "\n";
-    $namaMapelSeenProg = [];
-    foreach ($detailProgres as $dp) {
-        $isDup = isset($namaMapelSeenProg[$dp['nama_mapel']]) ? ' [DUPLIKAT!]' : '';
-        $namaMapelSeenProg[$dp['nama_mapel']] = true;
-        $isZero = ((float)$dp['nilai'] == 0) ? ' [NILAI 0]' : '';
-        echo sprintf("  - %-30s | Guru: %-25s | Nilai: %6.2f%s%s\n",
-            $dp['nama_mapel'],
-            $dp['nama_guru'] ?: '-',
-            (float) $dp['nilai'],
-            $isDup,
-            $isZero
-        );
+    if ($hasDup || $hasZero) {
+        $siswaBermasalah[] = [
+            'id_siswa' => $sw['id_siswa'],
+            'nama_siswa' => $sw['nama_siswa'],
+            'dup' => $dupMapel,
+            'zero' => $zeroMapel
+        ];
     }
+}
 
-    // 9. Raw Nilai untuk Siswa Adellia
-    section("9. RAW DATA NILAI (Tabel 'nilai' & 'kategori_nilai')");
-    $stmt = $db->prepare("SELECT n.*, kn.nama_kategori, kn.keterangan, m.nama_mapel, mg.id_mapel_guru, mg.id_guru, e.nama as nama_guru
-                          FROM nilai n
-                          JOIN kategori_nilai kn ON n.id_kategori = kn.id_kategori
-                          JOIN mapel_guru mg ON kn.id_mapel_guru = mg.id_mapel_guru
-                          JOIN mapel m ON mg.id_mapel = m.id_mapel
-                          LEFT JOIN employe e ON mg.id_guru = e.id_employe
-                          WHERE n.id_siswa = ? AND mg.id_kelas = ?
-                          ORDER BY m.nama_mapel ASC, kn.id_kategori ASC");
-    $stmt->execute([$targetSiswa['id_siswa'], $id_kelas_x1]);
-    $rawNilai = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo "Total entri tabel nilai untuk {$targetSiswa['nama_siswa']}: " . count($rawNilai) . " baris\n";
-    foreach ($rawNilai as $rn) {
-        echo sprintf("  - Mapel: %-25s | Guru: %-15s | Kategori: %-12s | STS: %-5s | NilaiRaport: %-5s\n",
-            $rn['nama_mapel'],
-            $rn['nama_guru'] ?: '-',
-            $rn['nama_kategori'],
-            $rn['sts'] ?? '-',
-            $rn['nilai_raport'] ?? '-'
+if (empty($siswaBermasalah)) {
+    echo "HASIL: TIDAK ADA siswa di kelas X-1 yang memiliki mapel duplikat atau nilai 0 pada getNilaiAkhirSiswa (jenis: $jenis_rapor)!\n";
+} else {
+    echo "[DITEMUKAN SISWA DENGAN NILAI 0 ATAU DUPLIKAT]: " . count($siswaBermasalah) . " siswa\n";
+    foreach ($siswaBermasalah as $sb) {
+        echo sprintf("  - ID: %-5d | Nama: %-25s | Dup: %s | Zero: %s\n",
+            $sb['id_siswa'],
+            $sb['nama_siswa'],
+            empty($sb['dup']) ? '-' : implode(', ', $sb['dup']),
+            empty($sb['zero']) ? '-' : implode(', ', $sb['zero'])
         );
     }
 }
 
-section("SELESAI DIAGNOSA");
+// 9. Cek Semua Mapel Guru di Tahun ID $id_tahun yang Berelasi dengan Adellia
+section("8. CEK SELURUH NILAI ADELLIA DI SELURUH KELAS / TAHUN");
+$stmt = $db->prepare("
+    SELECT n.id_nilai, n.sts, n.nilai_raport, kn.kategori, m.nama_mapel, k.kelas, mg.id_tahun_pelajaran
+    FROM nilai n
+    JOIN kategori_nilai kn ON n.id_kategori = kn.id_kategori
+    JOIN mapel_guru mg ON kn.id_mapel_guru = mg.id_mapel_guru
+    JOIN mapel m ON mg.id_mapel = m.id_mapel
+    JOIN kelas k ON mg.id_kelas = k.id_kelas
+    WHERE n.id_siswa = 967
+    ORDER BY mg.id_tahun_pelajaran DESC, m.nama_mapel ASC
+");
+$stmt->execute();
+$riwayatNilai = $stmt->fetchAll(PDO::FETCH_ASSOC);
+echo "Total entri nilai historis Adellia: " . count($riwayatNilai) . " entri\n";
+$hitungPerTahun = [];
+foreach ($riwayatNilai as $rn) {
+    $hitungPerTahun[$rn['id_tahun_pelajaran'] . ' (' . $rn['kelas'] . ')'][] = $rn;
+}
+foreach ($hitungPerTahun as $thnKelas => $rows) {
+    echo "  - Tahun/Kelas $thnKelas: " . count($rows) . " entri nilai\n";
+}
+
+section("SELESAI DIAGNOSA LENGKAP");
