@@ -112,7 +112,9 @@ async function loop() {
 }
 
 log('=== SERVICE SINKRONISASI FINGERPRINT AKTIF ===');
-log(
-    `jadwal: sibuk 06-09 & 13-15 = 30s | 09-13 & 15-18 = 60s | lainnya = ${INTERVAL_LUAR_JAM}s | log: ${LOG_FILE}`
-);
+const teksJadwal = JADWAL.map(
+    ([mulai, selesai, detik]) =>
+        `${String(mulai).padStart(2, '0')}:00-${String(selesai).padStart(2, '0')}:00 = ${detik}s`
+).join(' | ');
+log(`jadwal: ${teksJadwal} | lainnya = ${INTERVAL_LUAR_JAM}s | log: ${LOG_FILE}`);
 loop();
