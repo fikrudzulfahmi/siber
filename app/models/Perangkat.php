@@ -1,5 +1,6 @@
 <?php
 require_once 'Model.php'; // Pastikan path-nya sesuai, ini relatif terhadap BaseController
+require_once __DIR__ . '/JenisPerangkatAlias.php';
 
 class Perangkat extends Model
 {
@@ -58,45 +59,71 @@ public function insertOrUpdate($data)
  */
 public function getWithDeadline($id_user, $id_tahun_pelajaran, $id_mapel_guru, $tingkat = null)
 {
-    $sql = "
-        SELECT 
-            p.id_mapel_guru,
-            m.nama_mapel,
-            k.kelas,
-            k.tingkat,
-            p.jenis_perangkat,
-            p.file,
-            p.status_approval,
-            p.tanggal_upload,
-            d.tanggal_deadline,
-            p.catatan  -- Menambahkan kolom catatan di sini
+    // Acuan pencocokan = PASANGAN (mapel, tingkat) dari id_mapel_guru yang dipilih,
+    // BUKAN id_mapel_guru itu sendiri. Satu guru sering punya beberapa baris mapel_guru
+    // untuk mapel+tingkat yang sama (kelas paralel); unggahan bisa menempel pada baris
+    // yang berbeda dari yang tampil di dropdown, sehingga pencocokan id persis membuat
+    // file terbaca "belum upload" padahal ada dan sudah muncul di Verifikasi Admin.
+    $stmt = $this->db->prepare("
+        SELECT mg.id_mapel, m.nama_mapel, k.kelas, k.tingkat
+        FROM mapel_guru mg
+        JOIN mapel m ON m.id_mapel = mg.id_mapel
+        JOIN kelas k ON k.id_kelas = mg.id_kelas
+        WHERE mg.id_mapel_guru = ?
+    ");
+    $stmt->execute([$id_mapel_guru]);
+    $acuan = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$acuan) return [];
+
+    $tingkatAcuan = ($tingkat !== null && $tingkat !== '') ? $tingkat : $acuan['tingkat'];
+
+    $stmt = $this->db->prepare("
+        SELECT p.id, p.jenis_perangkat, p.file, p.status_approval, p.tanggal_upload, p.catatan
         FROM perangkat_mengajar p
-        LEFT JOIN deadline_perangkat d 
-            ON p.jenis_perangkat = d.jenis_perangkat 
-            AND p.id_tahun_pelajaran = d.id_tahun_pelajaran
-        JOIN mapel_guru mg ON p.id_mapel_guru = mg.id_mapel_guru
-        JOIN mapel m ON mg.id_mapel = m.id_mapel
-        JOIN kelas k ON mg.id_kelas = k.id_kelas
-        WHERE p.id_employe = :id_user 
-          AND p.id_tahun_pelajaran = :id_tp
-          AND p.id_mapel_guru = :id_mapel_guru
-    ";
+        JOIN mapel_guru mg ON mg.id_mapel_guru = p.id_mapel_guru
+        JOIN kelas k ON k.id_kelas = mg.id_kelas
+        WHERE p.id_employe = ?
+          AND p.id_tahun_pelajaran = ?
+          AND mg.id_mapel = ?
+          AND k.tingkat = ?
+        ORDER BY p.id DESC
+    ");
+    $stmt->execute([$id_user, $id_tahun_pelajaran, $acuan['id_mapel'], $tingkatAcuan]);
 
-    $params = [
-        ':id_user' => $id_user,
-        ':id_tp' => $id_tahun_pelajaran,
-        ':id_mapel_guru' => $id_mapel_guru
-    ];
-
-    if ($tingkat !== null && $tingkat !== '') {
-        $sql .= " AND k.tingkat = :tingkat";
-        $params[':tingkat'] = $tingkat;
+    // Satu baris per jenis. Label jenis lama dinormalkan (JenisPerangkatAlias) supaya
+    // cocok dengan nama master yang dipakai baris tabel di form, sama seperti Verifikasi.
+    $perJenis = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $jenis = JenisPerangkatAlias::PETA[$row['jenis_perangkat']] ?? $row['jenis_perangkat'];
+        if (isset($perJenis[$jenis])) continue; // ORDER BY p.id DESC -> unggahan terbaru menang
+        $perJenis[$jenis] = $row;
     }
 
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $this->db->prepare("SELECT jenis_perangkat, tanggal_deadline FROM deadline_perangkat WHERE id_tahun_pelajaran = ?");
+    $stmt->execute([$id_tahun_pelajaran]);
+    $deadline = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $d) {
+        $deadline[$d['jenis_perangkat']] = $d['tanggal_deadline'];
+    }
+
+    $hasil = [];
+    foreach ($perJenis as $jenis => $row) {
+        $hasil[] = [
+            'id_mapel_guru'    => $id_mapel_guru,
+            'nama_mapel'       => $acuan['nama_mapel'],
+            'kelas'            => $acuan['kelas'],
+            'tingkat'          => $acuan['tingkat'],
+            'jenis_perangkat'  => $jenis,
+            'file'             => $row['file'],
+            'status_approval'  => $row['status_approval'] ?: 'belum upload',
+            'tanggal_upload'   => $row['tanggal_upload'],
+            'tanggal_deadline' => $deadline[$jenis] ?? null,
+            'catatan'          => $row['catatan'],
+        ];
+    }
+    return $hasil;
 }
+
 
 public function getByGuruAndMapel($idGuru, $idTahun, $idMapelGuru)
 {

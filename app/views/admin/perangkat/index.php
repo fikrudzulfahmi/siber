@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
             formContainer.innerHTML = '';
         }
     });
+
+    // Setelah upload / buka dari URL, dropdown bisa sudah terisi -> langsung muat formnya.
+    if (mapelSelect && mapelSelect.value) {
+        mapelSelect.dispatchEvent(new Event('change'));
+    }
 });
 
 </script>
@@ -59,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <select name="id_mapel_guru" id="id_mapel_guru" class="form-select" required>
         <option value="">-- Pilih Mapel & Tingkat --</option>
         <?php foreach ($mapel_guru as $mg): ?>
-            <option value="<?= $mg['id_mapel_guru'] ?>" data-tingkat="<?= $mg['tingkat'] ?>">
+            <option value="<?= $mg['id_mapel_guru'] ?>" data-tingkat="<?= $mg['tingkat'] ?>" <?= (string) $mg['id_mapel_guru'] === (string) ($id_mapel_guru ?? '') ? 'selected' : '' ?>>
                 <?= htmlspecialchars($mg['nama_mapel']) ?> - <?= htmlspecialchars($mg['tingkat']) ?>
             </option>
         <?php endforeach; ?>

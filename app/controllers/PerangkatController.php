@@ -29,7 +29,7 @@ public function index()
     if ($id_mapel_guru) {
         $perangkat = $perangkatModel->getWithDeadline($id_user, $id_tahun, $id_mapel_guru);
     } else {
-        $perangkat = []; // kosong kalau belum pilih
+        $perangkat = []; // form diisi lewat ajaxForm setelah mapel dipilih
     }
 
     // Ambil deadline & jenis perangkat
@@ -146,7 +146,7 @@ $tingkat = $mgInfo['tingkat'] ?? 'tingkat';
 
     $message = implode(' ', $messages);
     setFlash($upload_success ? 'success' : 'error', $message);
-    header('Location: index.php?controller=perangkat&method=index');
+    header('Location: index.php?controller=perangkat&method=index&id_mapel_guru=' . urlencode((string) $id_mapel_guru));
     exit;
 }
 public function ajaxForm()
