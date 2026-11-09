@@ -1,0 +1,38 @@
+<?php
+/**
+ * Salin berkas ini menjadi `config.local.php` di server lokal.
+ * JANGAN commit `config.local.php` — isinya token & kredensial.
+ */
+
+return [
+    // --- database lokal (XAMPP) ---
+    'db_host' => 'localhost',
+    'db_user' => 'root',
+    'db_pass' => '',
+    'db_name' => 'db_fingerprint_local',
+
+    // --- endpoint hosting yang menerima data presensi ---
+    'host_url' => 'https://siber.pondokminggirsari.com/API/index.php',
+
+    // --- token untuk ping.php (dipanggil cron hosting tiap 30 menit) ---
+    // Buat acak: php -r "echo bin2hex(random_bytes(24));"
+    'ping_token' => 'GANTI-DENGAN-TOKEN-ACAK',
+
+    // --- token opsional kalau pull.php dipanggil dari luar localhost ---
+    'pull_token' => '',
+
+    // --- opsional: samakan dengan API_DEVICE_KEY di hosting bila diisi ---
+    // Kalau hosting memakai config/secrets.php dengan API_DEVICE_KEY,
+    // isi di sini supaya push presensi tidak ditolak 401.
+    'device_key' => '',
+
+    // Query string ?token= dimatikan default karena mudah bocor ke log.
+    // Nyalakan hanya kalau cron hosting tidak bisa mengirim header.
+    'allow_query_token' => false,
+
+    // --- mesin fingerprint (untuk laporan status di ping.php) ---
+    'machines' => [
+        ['nama' => 'Mesin 1', 'ip' => '192.168.2.89', 'port' => 4370],
+        ['nama' => 'Mesin 2', 'ip' => '192.168.2.91', 'port' => 4380],
+    ],
+];

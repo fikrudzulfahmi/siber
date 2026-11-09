@@ -23,7 +23,13 @@
                                 $last_ping_time = strtotime($data['last_ping'] . ' UTC');
                                 $waktu_sekarang = time();
                                 $selisih = $waktu_sekarang - $last_ping_time;
-                                $is_online = ($selisih >= 0 && $selisih < 90);
+
+                                // Status server lokal sekarang diambil lewat cron di hosting
+                                // (public/cron_jobs/ping_server_lokal.php) yang berjalan tiap
+                                // 30 menit. Ambang lama 90 detik membuat dashboard selalu
+                                // menampilkan "Offline". 35 menit = 30 menit + toleransi 5 menit.
+                                $batas_online = 35 * 60;
+                                $is_online = ($selisih >= 0 && $selisih < $batas_online);
 
                                 if ($is_online) {
                                     $badge_m1 = ($data['mesin1_status'] == 'Online') ? 'bg-success' : 'bg-danger';

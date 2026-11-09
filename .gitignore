@@ -27,3 +27,11 @@ public/wa-gateway/ack_log.txt
 
 # log runtime cron (berisi PII)
 public/cron_jobs/*_log.txt
+
+# pengaturan ping server lokal (hosting) — berisi token
+config/finger_local.php
+
+# artefak runtime agen lokal di server sekolah (finger/)
+finger/config.local.php
+finger/*.log
+finger/*.lock
