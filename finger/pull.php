@@ -34,8 +34,13 @@ $db_pass = $cfg['db_pass'] ?? '';
 $db_name = $cfg['db_name'] ?? 'db_fingerprint_local';
 
 // ---------- otorisasi ----------
+// Catatan: kalau Cloudflare Tunnel menembak ke Apache lokal, koneksi masuk ke
+// PHP datang dari 127.0.0.1 — jadi "localhost" TIDAK boleh dipercaya begitu saja
+// ketika permintaan sebenarnya datang dari internet. Kehadiran header Cloudflare
+// membatalkan pengecualian localhost.
 $ip = $_SERVER['REMOTE_ADDR'] ?? '';
-$lokal = in_array($ip, ['127.0.0.1', '::1'], true);
+$lewatCloudflare = isset($_SERVER['HTTP_CF_CONNECTING_IP']) || isset($_SERVER['HTTP_CF_RAY']);
+$lokal = !$lewatCloudflare && in_array($ip, ['127.0.0.1', '::1'], true);
 if (!$lokal) {
     $token = $_SERVER['HTTP_X_TOKEN'] ?? '';
     if ($PULL_TOKEN === '' || !hash_equals($PULL_TOKEN, $token)) {
