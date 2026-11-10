@@ -4,66 +4,6 @@
 <div class="container-fluid py-4">
     <div class="row">
 
-        <div class="col-lg-12 col-md-12 mx-auto mb-4">
-            <div class="card mt-4">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">router</i>
-                    </div>
-
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Monitoring Jaringan</p>
-                        <h4 class="mb-0">Status Mesin Fingerprint</h4>
-
-                        <div class="mt-3">
-                            <?php
-                            date_default_timezone_set('Asia/Jakarta');
-
-                            if (!empty($data['last_ping'])) {
-                                // Umur ping dihitung di SQL (lihat SettingController), jadi
-                                // tidak lagi membandingkan zona waktu PHP vs MySQL.
-                                $umur = $data['umur_ping'] ?? null;
-
-                                // Cron ping server lokal berjalan tiap 30 menit.
-                                // 35 menit = 30 menit + toleransi 5 menit.
-                                $batas_online = 35 * 60;
-                                $is_online = ($umur !== null && $umur >= 0 && $umur < $batas_online);
-
-                                if ($is_online) {
-                                    $badge_m1 = ($data['mesin1_status'] == 'Online') ? 'bg-success' : 'bg-danger';
-                                    $badge_m2 = ($data['mesin2_status'] == 'Online') ? 'bg-success' : 'bg-danger';
-
-                                    echo '
-                                    <div class="d-flex justify-content-end align-items-center mb-1">
-                                        <span class="text-sm font-weight-bold text-dark me-2">Server Lokal (Node.js) :</span>
-                                        <span class="badge bg-success" style="width: 80px;">● Online</span>
-                                    </div>
-                                    <div class="d-flex justify-content-end align-items-center mb-1">
-                                        <span class="text-sm text-secondary me-2">Mesin 1 (IP 192.168.2.89) :</span>
-                                        <span class="badge ' . $badge_m1 . '" style="width: 80px;">● ' . $data['mesin1_status'] . '</span>
-                                    </div>
-                                    <div class="d-flex justify-content-end align-items-center">
-                                        <span class="text-sm text-secondary me-2">Mesin 2 (IP 192.168.2.91) :</span>
-                                        <span class="badge ' . $badge_m2 . '" style="width: 80px;">● ' . $data['mesin2_status'] . '</span>
-                                    </div>';
-                                } else {
-                                    echo '
-                                    <div class="d-flex justify-content-end align-items-center mb-1">
-                                        <span class="text-sm font-weight-bold text-dark me-2">Server Lokal (Node.js) :</span>
-                                        <span class="badge bg-danger" style="width: 80px;">● Offline</span>
-                                    </div>
-                                    <p class="text-xs text-danger mb-0 mt-1">*Status Mesin tidak dapat dilacak karena Server Lokal terputus.</p>';
-                                }
-                            } else {
-                                echo '<span class="badge bg-secondary mt-2">Data Status Belum Ada</span>';
-                            }
-                            ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="col-lg-12 col-md-12 mx-auto">
             <div class="card mt-4">
                 <div class="card-header p-3 pt-2">

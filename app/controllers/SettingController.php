@@ -18,21 +18,9 @@ class SettingController
         $model = new Setting($this->db);
         $all_settings = $model->getAllWASettings();
 
-        // Umur ping dihitung oleh MySQL (TIMESTAMPDIFF) supaya tidak bergantung
-        // pada kesamaan zona waktu antara PHP dan server database. Sebelumnya
-        // view menempelkan ' UTC' pada nilai last_ping; kalau zona waktu MySQL
-        // bukan UTC, selisihnya jadi negatif dan status SELALU "Offline".
-        $query = $this->db->query(
-            "SELECT last_ping, mesin1_status, mesin2_status,
-                    TIMESTAMPDIFF(SECOND, last_ping, NOW()) AS umur_detik
-               FROM server_monitoring WHERE id = 1"
-        );
-        $data_server = $query ? $query->fetch(PDO::FETCH_ASSOC) : false;
-
-        $data['last_ping']     = $data_server['last_ping']     ?? null;
-        $data['mesin1_status'] = $data_server['mesin1_status'] ?? 'Offline';
-        $data['mesin2_status'] = $data_server['mesin2_status'] ?? 'Offline';
-        $data['umur_ping']     = isset($data_server['umur_detik']) ? (int) $data_server['umur_detik'] : null;
+        // Catatan: kartu "Monitoring Jaringan" sudah dipindahkan ke halaman
+        // Status Layanan (controller=status), jadi query server_monitoring
+        // tidak lagi diperlukan di sini.
         
         // --- LOGIKA RIWAYAT BACKUP ---
         $backupDir = SIBER_ROOT . '/backups/';
