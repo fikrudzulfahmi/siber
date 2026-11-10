@@ -17,22 +17,22 @@ class SettingController
 
         $model = new Setting($this->db);
         $all_settings = $model->getAllWASettings();
-        $query = $this->db->query("SELECT last_ping, mesin1_status, mesin2_status FROM server_monitoring WHERE id = 1");
-        $data_server = $query->fetch(PDO::FETCH_ASSOC);
 
-        // Masukkan ke dalam array $data agar bisa dibaca oleh View
-        if ($data_server) {
-            $data['last_ping']   = $data_server['last_ping'];
-            $data['mesin1_status'] = $data_server['mesin1_status'];
-            $data['mesin2_status'] = $data_server['mesin2_status'];
-        } else {
-            $data['last_ping']   = null;
-            $data['mesin1_status'] = 'Offline';
-            $data['mesin2_status'] = 'Offline';
-        }
+        // Umur ping dihitung oleh MySQL (TIMESTAMPDIFF) supaya tidak bergantung
+        // pada kesamaan zona waktu antara PHP dan server database. Sebelumnya
+        // view menempelkan ' UTC' pada nilai last_ping; kalau zona waktu MySQL
+        // bukan UTC, selisihnya jadi negatif dan status SELALU "Offline".
+        $query = $this->db->query(
+            "SELECT last_ping, mesin1_status, mesin2_status,
+                    TIMESTAMPDIFF(SECOND, last_ping, NOW()) AS umur_detik
+               FROM server_monitoring WHERE id = 1"
+        );
+        $data_server = $query ? $query->fetch(PDO::FETCH_ASSOC) : false;
 
-        // Data ini akan dikirim ke view
-        $data['last_ping'] = $data_server['last_ping'];
+        $data['last_ping']     = $data_server['last_ping']     ?? null;
+        $data['mesin1_status'] = $data_server['mesin1_status'] ?? 'Offline';
+        $data['mesin2_status'] = $data_server['mesin2_status'] ?? 'Offline';
+        $data['umur_ping']     = isset($data_server['umur_detik']) ? (int) $data_server['umur_detik'] : null;
         
         // --- LOGIKA RIWAYAT BACKUP ---
         $backupDir = SIBER_ROOT . '/backups/';
