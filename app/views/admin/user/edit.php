@@ -26,6 +26,7 @@
 
                 <div class="card-body px-4 py-4">
                     <form action="?controller=user&method=update" method="POST">
+                        <?= sec_csrf_field() ?>
                         <input type="hidden" name="id" value="<?= $user['id_employe'] ?>">
 
                         <!-- Nama -->

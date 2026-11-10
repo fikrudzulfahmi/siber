@@ -109,8 +109,110 @@ class User
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM employe WHERE id_employe = ?");
-        $stmt->execute([$id]);
+        // Bersihkan data terkait lebih dulu: tidak semua instalasi memakai
+        // ON DELETE CASCADE, dan baris yatim membuat menu/level jadi aneh.
+        $pinStmt = $this->db->prepare("SELECT pin FROM employe WHERE id_employe = ?");
+        $pinStmt->execute([$id]);
+        $pin = $pinStmt->fetchColumn();
+
+        $this->db->prepare("DELETE FROM user_level WHERE id_employe = ?")->execute([$id]);
+        if ($pin !== false && $pin !== null && $pin !== '') {
+            $this->db->prepare("DELETE FROM jadwal WHERE id_employee = ?")->execute([$pin]);
+        }
+        $this->db->prepare("DELETE FROM employe WHERE id_employe = ?")->execute([$id]);
+    }
+
+    /** Username sudah dipakai? */
+    public function usernameExists($username, $kecualiId = null)
+    {
+        $sql = "SELECT COUNT(*) FROM employe WHERE username = ?";
+        $params = [$username];
+        if ($kecualiId !== null) {
+            $sql .= " AND id_employe <> ?";
+            $params[] = $kecualiId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    /** PIN (dipakai mesin fingerprint) sudah dipakai? */
+    public function pinExists($pin, $kecualiId = null)
+    {
+        $sql = "SELECT COUNT(*) FROM employe WHERE pin = ?";
+        $params = [$pin];
+        if ($kecualiId !== null) {
+            $sql .= " AND id_employe <> ?";
+            $params[] = $kecualiId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Simpan pegawai baru. Mengembalikan id_employe yang baru dibuat.
+     *
+     * Ada dua jalur: normal (id_employe AUTO_INCREMENT) dan cadangan untuk
+     * tabel lama yang PK-nya tidak auto-increment — di situ id dihitung manual.
+     */
+    public function insert($data)
+    {
+        $nilai = [
+            $data['nama'],
+            $data['pin'],
+            $data['jabatan'],
+            (int) $data['id_jabatan'],
+            $data['no_wa'],
+            $data['username'],
+            password_hash($data['password'], PASSWORD_DEFAULT),
+        ];
+
+        try {
+            $stmt = $this->db->prepare(
+                "INSERT INTO employe (nama, pin, jabatan, id_jabatan, no_wa, username, password)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)"
+            );
+            $stmt->execute($nilai);
+            return (int) $this->db->lastInsertId();
+        } catch (PDOException $e) {
+            // Bukan soal id_employe -> teruskan, biar controller yang menangani.
+            if (stripos($e->getMessage(), 'id_employe') === false) {
+                throw $e;
+            }
+        }
+
+        $idBaru = (int) $this->db->query("SELECT COALESCE(MAX(id_employe), 0) + 1 FROM employe")->fetchColumn();
+        $stmt = $this->db->prepare(
+            "INSERT INTO employe (id_employe, nama, pin, jabatan, id_jabatan, no_wa, username, password)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+        $stmt->execute(array_merge([$idBaru], $nilai));
+
+        return $idBaru;
+    }
+
+    /** Ganti seluruh level akses milik seorang pegawai. */
+    public function setLevels($idEmploye, array $levels)
+    {
+        $this->db->prepare("DELETE FROM user_level WHERE id_employe = ?")->execute([$idEmploye]);
+        if (!$levels) {
+            return;
+        }
+        $ins = $this->db->prepare("INSERT INTO user_level (id_employe, id_level) VALUES (?, ?)");
+        foreach ($levels as $lv) {
+            if (ctype_digit((string) $lv)) {
+                $ins->execute([$idEmploye, (int) $lv]);
+            }
+        }
+    }
+
+    /** Jumlah pegawai yang memegang sebuah level (dipakai cegah hapus admin terakhir). */
+    public function hitungLevel($idLevel)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(DISTINCT id_employe) FROM user_level WHERE id_level = ?");
+        $stmt->execute([$idLevel]);
+        return (int) $stmt->fetchColumn();
     }
 
 

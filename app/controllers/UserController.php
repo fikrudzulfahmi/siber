@@ -22,14 +22,77 @@ class UserController extends BaseController
 
     public function create()
     {
+        $jabatans  = $this->model->getAllJabatan();
+        $allLevels = $this->db->query("SELECT * FROM level ORDER BY nama_level ASC")->fetchAll(PDO::FETCH_ASSOC);
         require __DIR__ . '/../views/admin/user/create.php';
     }
 
     public function store()
     {
-        $this->model->insert($_POST);
-        setFlash('success', 'User berhasil ditambahkan.');
+        $nama     = trim((string) ($_POST['nama'] ?? ''));
+        $pin      = trim((string) ($_POST['pin'] ?? ''));
+        $jabatan  = trim((string) ($_POST['jabatan'] ?? ''));
+        $idJab    = (int) ($_POST['id_jabatan'] ?? 0);
+        $noWa     = trim((string) ($_POST['no_wa'] ?? ''));
+        $username = trim((string) ($_POST['username'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        $levels   = is_array($_POST['levels'] ?? null) ? $_POST['levels'] : [];
+
+        $kembali = 'Location: index.php?controller=user&method=create';
+        $tolak = function (string $pesan) use ($kembali) {
+            setFlash('danger', $pesan);
+            header($kembali);
+            exit;
+        };
+
+        if ($nama === '' || $username === '' || $password === '' || $pin === '' || $idJab <= 0) {
+            $tolak('Nama, PIN, kategori jabatan, username, dan password wajib diisi.');
+        }
+        if (!preg_match('/^[A-Za-z0-9._-]{3,50}$/', $username)) {
+            $tolak('Username 3–50 karakter, hanya huruf/angka/titik/garis bawah/strip.');
+        }
+        if (strlen($password) < 6) {
+            $tolak('Password minimal 6 karakter.');
+        }
+        if (!preg_match('/^[0-9]{1,20}$/', $pin)) {
+            $tolak('PIN harus angka (1–20 digit) — ini yang dipakai mesin fingerprint.');
+        }
+        if ($this->model->usernameExists($username)) {
+            $tolak('Username "' . $username . '" sudah dipakai pegawai lain.');
+        }
+        if ($this->model->pinExists($pin)) {
+            $tolak('PIN ' . $pin . ' sudah dipakai pegawai lain.');
+        }
+
+        // Kolom 'jabatan' (teks lama) diisi otomatis dari kategori bila kosong.
+        if ($jabatan === '') {
+            foreach ($this->model->getAllJabatan() as $j) {
+                if ((int) $j['id_jabatan'] === $idJab) {
+                    $jabatan = (string) $j['jabatan'];
+                    break;
+                }
+            }
+        }
+
+        try {
+            $idBaru = $this->model->insert([
+                'nama'       => $nama,
+                'pin'        => $pin,
+                'jabatan'    => $jabatan,
+                'id_jabatan' => $idJab,
+                'no_wa'      => $noWa,
+                'username'   => $username,
+                'password'   => $password,
+            ]);
+            $this->model->setLevels($idBaru, $levels);
+        } catch (Throwable $e) {
+            error_log('[SIBER] tambah pegawai gagal: ' . $e->getMessage());
+            $tolak('Gagal menyimpan pegawai. Periksa kembali data (username/PIN mungkin sudah dipakai).');
+        }
+
+        setFlash('success', 'Pegawai "' . $nama . '" berhasil ditambahkan.');
         header('Location: index.php?controller=user&method=index');
+        exit;
     }
 
     public function edit() // <-- Hapus parameter $id dari sini
@@ -90,9 +153,54 @@ class UserController extends BaseController
 
     public function delete()
     {
-        $this->model->delete($_GET['id']);
-        setFlash('success', 'User berhasil dihapus.');
-        header('Location: index.php?controller=user&method=index');
+        $kembali = 'Location: index.php?controller=user&method=index';
+
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            setFlash('danger', 'Penghapusan hanya bisa lewat tombol Hapus di daftar pegawai.');
+            header($kembali);
+            exit;
+        }
+
+        $id   = (int) ($_POST['id'] ?? 0);
+        $saya = (int) ($_SESSION['user']['id'] ?? 0);
+
+        if ($id <= 0) {
+            setFlash('danger', 'Pegawai tidak ditemukan.');
+            header($kembali);
+            exit;
+        }
+        if ($id === $saya) {
+            setFlash('danger', 'Tidak bisa menghapus akun yang sedang Anda pakai.');
+            header($kembali);
+            exit;
+        }
+
+        $target = $this->model->find($id);
+        if (!$target) {
+            setFlash('danger', 'Pegawai tidak ditemukan.');
+            header($kembali);
+            exit;
+        }
+
+        // Jangan sampai Administrator terakhir ikut terhapus (tidak ada yang bisa masuk lagi).
+        $cekAdmin = $this->db->prepare("SELECT COUNT(*) FROM user_level WHERE id_employe = ? AND id_level = 1");
+        $cekAdmin->execute([$id]);
+        if ((int) $cekAdmin->fetchColumn() > 0 && $this->model->hitungLevel(1) <= 1) {
+            setFlash('danger', 'Pegawai ini satu-satunya Administrator. Angkat administrator lain dulu sebelum menghapus.');
+            header($kembali);
+            exit;
+        }
+
+        try {
+            $this->model->delete($id);
+            setFlash('success', 'Pegawai "' . $target['nama'] . '" berhasil dihapus.');
+        } catch (Throwable $e) {
+            error_log('[SIBER] hapus pegawai gagal: ' . $e->getMessage());
+            setFlash('danger', 'Gagal menghapus pegawai. Data mungkin masih dipakai di halaman lain.');
+        }
+
+        header($kembali);
+        exit;
     }
 
     // =================== JADWAL ===================

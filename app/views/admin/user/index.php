@@ -7,8 +7,11 @@
         <div class="col-12">
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Daftar User</h6>
+                    <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
+                        <h6 class="text-white text-capitalize mb-0">Daftar Pegawai</h6>
+                        <a href="?controller=user&method=create" class="btn btn-sm btn-white mb-0">
+                            <i class="material-icons text-sm">add</i> Tambah Pegawai
+                        </a>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -51,6 +54,14 @@
                                         <td>
                                             <a href="?controller=user&method=jadwal&id=<?= $user['id_employe'] ?>" class="btn btn-info btn-sm">Jadwal</a>
                                             <a href="?controller=user&method=edit&id=<?= $user['id_employe'] ?>" class="btn btn-success btn-sm">Edit</a>
+                                            <?php if ((int) $user['id_employe'] !== (int) ($_SESSION['user']['id'] ?? 0)): ?>
+                                                <form action="?controller=user&method=delete" method="POST" class="d-inline"
+                                                      onsubmit="return confirm('Hapus pegawai <?= sec_e(addslashes((string) $user['nama'])) ?>? Data level dan jadwalnya ikut dihapus.');">
+                                                    <?= sec_csrf_field() ?>
+                                                    <input type="hidden" name="id" value="<?= (int) $user['id_employe'] ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm mb-0">Hapus</button>
+                                                </form>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
