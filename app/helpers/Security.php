@@ -247,6 +247,7 @@ function sec_policy(): array
     return [
         'user'                      => [1],
         'setting'                   => [1],
+        'status'                    => [1],
         'backup'                    => [1],
         'tahunPelajaran'            => [1],
         'activityLog'               => [1],

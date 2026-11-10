@@ -172,6 +172,15 @@ if (!function_exists('siber_menu')) {
                 'levels' => $semua,
             ],
             [
+                'type' => 'item',
+                'label' => 'Status Layanan',
+                'icon' => 'monitor_heart',
+                'href' => '?controller=status&method=index',
+                'controllers' => ['status'],
+                'method' => null,
+                'levels' => [1],
+            ],
+            [
                 'type' => 'group',
                 'id' => 'collapseMaster',
                 'label' => 'Master',
