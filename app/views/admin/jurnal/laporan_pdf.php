@@ -55,6 +55,11 @@
             </tr>
         </thead>
         <tbody>
+            <?php if (empty($jurnalList)): ?>
+                <tr>
+                    <td colspan="7" style="text-align:center;">Tidak ada jurnal pada periode ini.</td>
+                </tr>
+            <?php else: ?>
             <?php $no = 1;
             foreach ($jurnalList as $j): ?>
                 <tr>
@@ -80,8 +85,13 @@
                     <td><?= sec_e($j['catatan_pembelajaran']) ?></td>
                 </tr>
             <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
+
+    <p style="margin-top:10px; font-size:10px; text-align:right;">
+        Dicetak: <?= date('d-m-Y H:i') ?>
+    </p>
 </body>
 
 </html>

@@ -255,6 +255,41 @@ class Jurnal
 
 
     /**
+     * Jurnal milik seorang guru pada rentang tanggal tertentu (untuk cetak laporan).
+     * Kolom tujuan digabung sebagai `tujuan_pembelajaran` agar cocok dengan view
+     * laporan_pdf.php.
+     */
+    public function getJurnalPeriode($id_guru, $id_tahun, $tanggalAwal, $tanggalAkhir)
+    {
+        $sql = "SELECT
+                    j.*,
+                    m.nama_mapel,
+                    k.kelas,
+                    (
+                        SELECT GROUP_CONCAT(t.tujuan_pembelajaran SEPARATOR '; ')
+                        FROM tp t
+                        WHERE FIND_IN_SET(t.id_tp, REPLACE(j.id_tp, ' ', '')) > 0
+                    ) AS tujuan_pembelajaran
+                FROM jurnal j
+                JOIN mapel_guru mg ON j.id_mapel_guru = mg.id_mapel_guru
+                JOIN mapel m ON mg.id_mapel = m.id_mapel
+                JOIN kelas k ON mg.id_kelas = k.id_kelas
+                WHERE mg.id_guru = :id_guru
+                  AND mg.id_tahun_pelajaran = :id_tahun
+                  AND j.tanggal BETWEEN :awal AND :akhir
+                ORDER BY j.tanggal ASC, j.jam_mulai ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_guru', $id_guru);
+        $stmt->bindValue(':id_tahun', $id_tahun);
+        $stmt->bindValue(':awal', $tanggalAwal);
+        $stmt->bindValue(':akhir', $tanggalAkhir);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Mengambil rekap jurnal berdasarkan tanggal.
      * Logic: Ambil Jadwal di hari itu, Join dengan Jurnal untuk cek sudah isi/belum.
      */

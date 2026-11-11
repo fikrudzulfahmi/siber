@@ -76,6 +76,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <form action="?controller=jurnal&method=cetakLaporan" method="POST" target="_blank">
+                                <?= sec_csrf_field() ?>
                                 <div class="modal-header">
                                     <h5 class="modal-title">Filter Laporan Jurnal</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>

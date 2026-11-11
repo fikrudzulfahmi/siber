@@ -170,6 +170,96 @@ class JurnalController
         require __DIR__ . '/../views/admin/jurnal/history.php';
     }
 
+    /**
+     * Cetak laporan jurnal pembelajaran milik guru yang sedang login.
+     *
+     * Dipanggil dari tombol "Cetak Laporan" di halaman Riwayat (POST tanggal_awal
+     * & tanggal_akhir). Menghasilkan PDF lewat Dompdf; kalau vendor/ tidak ada,
+     * jatuh ke HTML siap-cetak supaya fitur tidak mati total.
+     */
+    public function cetakLaporan()
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: ?controller=auth&method=login');
+            exit;
+        }
+
+        $kembali   = '?controller=jurnal&method=history';
+        $id_guru   = (int) ($_SESSION['user']['id'] ?? 0);
+        $nama_guru = (string) ($_SESSION['user']['nama'] ?? '-');
+        $id_tahun  = $this->getActiveYearId();
+
+        if (!$id_tahun) {
+            setFlash('danger', 'Tahun pelajaran aktif belum ditentukan.');
+            redirect($kembali);
+            exit;
+        }
+
+        $tanggal_awal  = trim((string) ($_POST['tanggal_awal'] ?? ($_GET['tanggal_awal'] ?? '')));
+        $tanggal_akhir = trim((string) ($_POST['tanggal_akhir'] ?? ($_GET['tanggal_akhir'] ?? '')));
+
+        if ($tanggal_awal === '') {
+            $tanggal_awal = date('Y-m-01');
+        }
+        if ($tanggal_akhir === '') {
+            $tanggal_akhir = date('Y-m-d');
+        }
+
+        $validTanggal = static function (string $t): bool {
+            $d = DateTime::createFromFormat('Y-m-d', $t);
+            return $d instanceof DateTime && $d->format('Y-m-d') === $t;
+        };
+
+        if (!$validTanggal($tanggal_awal) || !$validTanggal($tanggal_akhir) || $tanggal_awal > $tanggal_akhir) {
+            setFlash('danger', 'Rentang tanggal tidak valid. Pastikan tanggal awal tidak melebihi tanggal akhir.');
+            redirect($kembali);
+            exit;
+        }
+
+        $model      = new Jurnal($this->db);
+        $jurnalList = $model->getJurnalPeriode($id_guru, $id_tahun, $tanggal_awal, $tanggal_akhir);
+
+        // Sisipkan rekap kehadiran tiap jurnal. Kolom laporan bernama
+        // "Siswa Tidak Hadir", jadi hanya yang bukan "Hadir" yang dibawa.
+        foreach ($jurnalList as $i => $j) {
+            $semua = $model->getAbsensiByJurnal($j['id_jurnal']);
+            $tidakHadir = array_values(array_filter($semua, static function ($s) {
+                return strcasecmp(trim((string) ($s['status'] ?? '')), 'Hadir') !== 0;
+            }));
+            $jurnalList[$i]['rekap_siswa'] = $tidakHadir;
+        }
+
+        // Render HTML laporan (satu-satunya tempat view ini dipakai).
+        ob_start();
+        require __DIR__ . '/../views/admin/jurnal/laporan_pdf.php';
+        $html = (string) ob_get_clean();
+
+        $autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
+        if (is_file($autoload)) {
+            require_once $autoload;
+        }
+
+        if (class_exists('\Dompdf\Dompdf')) {
+            $options = new \Dompdf\Options();
+            $options->set('isRemoteEnabled', true);
+            $dompdf = new \Dompdf\Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape'); // 7 kolom: lebih nyaman mendatar
+            $dompdf->render();
+            $dompdf->stream(
+                'Laporan_Jurnal_' . $tanggal_awal . '_sd_' . $tanggal_akhir . '.pdf',
+                ['Attachment' => false]
+            );
+            exit;
+        }
+
+        // Dompdf tidak tersedia -> kirim HTML yang siap dicetak (Ctrl+P).
+        error_log('[SIBER] cetakLaporan jurnal: vendor/autoload.php tidak ada, memakai mode HTML.');
+        header('Content-Type: text/html; charset=utf-8');
+        echo $html;
+        exit;
+    }
+
     public function edit()
     {
         // 1. Cek Login
