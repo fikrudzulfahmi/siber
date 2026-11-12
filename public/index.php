@@ -9,6 +9,7 @@
 date_default_timezone_set('Asia/Jakarta');
 
 require_once __DIR__ . '/../app/helpers/Security.php';
+require_once __DIR__ . '/../app/helpers/ErrorPage.php';
 
 ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
@@ -34,9 +35,7 @@ $controller = (string) ($_GET['controller'] ?? 'auth');
 $method     = (string) ($_GET['method'] ?? 'login');
 
 if (!preg_match('/^[A-Za-z][A-Za-z0-9_]{0,59}$/', $controller) || !preg_match('/^[A-Za-z][A-Za-z0-9_]{0,59}$/', $method)) {
-    http_response_code(400);
-    echo '<div style="font-family:sans-serif;padding:24px">Permintaan tidak valid.</div>';
-    exit;
+    render_error_page(400, 'Permintaan Tidak Valid', 'Alamat yang dibuka tidak dikenali aplikasi. Periksa kembali tautannya atau mulai dari beranda.', null, isset($_SESSION['user']));
 }
 
 $isProtectedPage = !isset($freeAccess[$controller]) || !in_array($method, $freeAccess[$controller], true);
@@ -92,10 +91,28 @@ try {
     $object = new $controllerName($pdo);
     $object->$method();
 } catch (Throwable $e) {
-    error_log('[SIBER] ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . ($e->getFile() ?: '?') . ':' . $e->getLine());
-    http_response_code(500);
-    echo '<div style="padding:20px;font-family:sans-serif;color:#c0392b;max-width:560px;margin:auto">'
-        . '<h3>Terjadi kesalahan</h3>'
-        . '<p>Permintaan tidak dapat diproses. Silakan coba lagi atau hubungi administrator.</p>'
-        . '<p><a href="index.php?controller=dashboard&amp;method=index">Kembali ke Beranda</a></p></div>';
+    $ref = strtoupper(bin2hex(random_bytes(3)));
+    error_log('[SIBER ' . $ref . '] ' . get_class($e) . ': ' . $e->getMessage()
+        . ' @ ' . ($e->getFile() ?: '?') . ':' . $e->getLine());
+
+    $pesanAsli = $e->getMessage();
+    $adaSesi   = isset($_SESSION['user']);
+
+    if (stripos($pesanAsli, 'Halaman tidak ditemukan') !== false) {
+        render_error_page(
+            404,
+            'Halaman Tidak Ditemukan',
+            'Menu atau tautan ini tidak tersedia. Kemungkinan fiturnya belum dipasang pada versi aplikasi yang sedang dipakai.',
+            $ref,
+            $adaSesi
+        );
+    }
+
+    render_error_page(
+        500,
+        'Terjadi Kesalahan',
+        'Permintaan tidak dapat diproses. Coba muat ulang halaman; bila tetap sama, sampaikan kode rujukan di bawah kepada administrator.',
+        $ref,
+        $adaSesi
+    );
 }

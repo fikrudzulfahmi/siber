@@ -11,6 +11,8 @@ if (defined('SIBER_SECURITY_LOADED')) {
 }
 define('SIBER_SECURITY_LOADED', true);
 
+require_once __DIR__ . '/ErrorPage.php';
+
 /** Akar proyek (satu tingkat di atas public/). */
 if (!defined('SIBER_ROOT')) {
     define('SIBER_ROOT', dirname(__DIR__, 2));
@@ -175,13 +177,14 @@ function sec_csrf_require(): void
         echo json_encode(['status' => 'error', 'message' => 'Sesi formulir kedaluwarsa. Muat ulang halaman lalu coba lagi.']);
         exit;
     }
-    header('Content-Type: text/html; charset=utf-8');
-    echo '<!doctype html><meta charset="utf-8"><div style="font-family:sans-serif;padding:32px;max-width:520px;margin:auto">'
-        . '<h3 style="color:#c0392b">Sesi formulir kedaluwarsa</h3>'
-        . '<p>Halaman terlalu lama dibuka atau permintaan tidak berasal dari aplikasi ini. '
-        . 'Muat ulang halaman, lalu kirim ulang datanya.</p>'
-        . '<p><a href="' . sec_e($_SERVER['HTTP_REFERER'] ?? 'index.php') . '">Kembali</a></p></div>';
-    exit;
+
+    render_error_page(
+        419,
+        'Sesi Formulir Kedaluwarsa',
+        'Halaman terlalu lama dibuka atau permintaan tidak berasal dari aplikasi ini. Muat ulang halaman, lalu kirim ulang datanya.',
+        null,
+        isset($_SESSION['user'])
+    );
 }
 
 /* -------------------------------------------------------------------------
@@ -230,11 +233,8 @@ function sec_require_level($levels, string $message = 'Anda tidak memiliki hak a
         echo json_encode(['status' => 'error', 'message' => $message]);
         exit;
     }
-    header('Content-Type: text/html; charset=utf-8');
-    echo '<!doctype html><meta charset="utf-8"><div style="font-family:sans-serif;padding:32px;max-width:520px;margin:auto">'
-        . '<h3 style="color:#c0392b">Akses ditolak</h3><p>' . sec_e($message) . '</p>'
-        . '<p><a href="index.php?controller=dashboard&amp;method=index">Kembali ke Beranda</a></p></div>';
-    exit;
+
+    render_error_page(403, 'Akses Ditolak', $message, null, isset($_SESSION['user']));
 }
 
 /**
