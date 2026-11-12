@@ -231,12 +231,14 @@ class JurnalController
         $model      = new Jurnal($this->db);
         $jurnalList = $model->getJurnalPeriode($id_guru, $id_tahun, $tanggal_awal, $tanggal_akhir);
 
-        // Sisipkan rekap kehadiran tiap jurnal. Kolom laporan bernama
-        // "Siswa Tidak Hadir", jadi hanya yang bukan "Hadir" yang dibawa.
+        // Sisipkan rekap kehadiran tiap jurnal. Status di tabel disimpan sebagai
+        // KODE SATU HURUF: H=Hadir, S=Sakit, I=Izin, A=Alpa, B=Bolos.
+        // Kolom laporan bernama "Siswa Tidak Hadir", jadi hanya non-H yang dibawa.
         foreach ($jurnalList as $i => $j) {
             $semua = $model->getAbsensiByJurnal($j['id_jurnal']);
             $tidakHadir = array_values(array_filter($semua, static function ($s) {
-                return strcasecmp(trim((string) ($s['status'] ?? '')), 'Hadir') !== 0;
+                $kode = strtoupper(trim((string) ($s['status'] ?? '')));
+                return !in_array($kode, ['H', 'HADIR'], true);
             }));
             $jurnalList[$i]['rekap_siswa'] = $tidakHadir;
         }
