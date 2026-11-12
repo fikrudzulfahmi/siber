@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: sans-serif;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         table {
@@ -23,6 +23,7 @@
 
         th {
             background-color: #f2f2f2;
+            text-align: center;
         }
 
         h2,
@@ -88,10 +89,6 @@
             <?php endif; ?>
         </tbody>
     </table>
-
-    <p style="margin-top:10px; font-size:10px; text-align:right;">
-        Dicetak: <?= date('d-m-Y H:i') ?>
-    </p>
 </body>
 
 </html>

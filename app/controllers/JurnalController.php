@@ -1,8 +1,20 @@
 <?php
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 require_once __DIR__ . '/../helpers/LevelHelper.php';
 require_once 'BaseController.php';
 require_once __DIR__ . '/../models/Jurnal.php';
 require_once __DIR__ . '/../models/TahunPelajaran.php';
+
+// DomPDF untuk fitur cetak — pola sama dengan controller lain (Izin, Kegiatan,
+// Rekon, dll). Dijaga is_file() supaya halaman Riwayat tetap hidup kalau vendor/
+// belum terpasang di server.
+$__dompdfAutoload = __DIR__ . '/../vendor/autoload.php';
+if (is_file($__dompdfAutoload)) {
+    require_once $__dompdfAutoload;
+}
+unset($__dompdfAutoload);
 
 class JurnalController
 {
@@ -234,21 +246,17 @@ class JurnalController
         require __DIR__ . '/../views/admin/jurnal/laporan_pdf.php';
         $html = (string) ob_get_clean();
 
-        $autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
-        if (is_file($autoload)) {
-            require_once $autoload;
-        }
-
-        if (class_exists('\Dompdf\Dompdf')) {
-            $options = new \Dompdf\Options();
+        // Sama seperti controller cetak lain: render DomPDF, tampilkan inline.
+        if (class_exists(Dompdf::class)) {
+            $options = new Options();
             $options->set('isRemoteEnabled', true);
-            $dompdf = new \Dompdf\Dompdf($options);
+            $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'landscape'); // 7 kolom: lebih nyaman mendatar
             $dompdf->render();
             $dompdf->stream(
                 'Laporan_Jurnal_' . $tanggal_awal . '_sd_' . $tanggal_akhir . '.pdf',
-                ['Attachment' => false]
+                ['Attachment' => 0]
             );
             exit;
         }
