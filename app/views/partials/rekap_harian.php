@@ -184,12 +184,21 @@ foreach ($jurnalMengajar as $jm) {
                                 </div>
                                 <div class="text-end flex-shrink-0">
                                     <?php if (($jm['status'] ?? '') === 'Sudah'): ?>
-                                        <span class="badge bg-gradient-success">Sudah</span>
+                                        <?php // Sudah diisi -> hijau, dan bisa diklik untuk mengedit. ?>
+                                        <a href="?controller=jurnal&method=edit&id=<?= (int) ($jm['id_jurnal'] ?? 0) ?>"
+                                           class="badge bg-gradient-success text-decoration-none"
+                                           title="Klik untuk mengedit jurnal ini">
+                                            <i class="material-icons-round" style="font-size:13px; vertical-align:-2px;">edit</i>
+                                            Sudah
+                                        </a>
                                     <?php elseif (($jm['status'] ?? '') === 'Belum'): ?>
-                                        <span class="badge bg-gradient-danger">Belum</span>
-                                        <div>
-                                            <a href="?controller=jurnal&method=index" class="text-xs">Isi</a>
-                                        </div>
+                                        <?php // Belum diisi -> merah, diklik membuka form pengisian. ?>
+                                        <a href="?controller=jurnal&method=index"
+                                           class="badge bg-gradient-danger text-decoration-none"
+                                           title="Klik untuk mengisi jurnal">
+                                            <i class="material-icons-round" style="font-size:13px; vertical-align:-2px;">edit_note</i>
+                                            Belum
+                                        </a>
                                     <?php else: ?>
                                         <span class="badge bg-secondary">Belum waktunya</span>
                                     <?php endif; ?>
