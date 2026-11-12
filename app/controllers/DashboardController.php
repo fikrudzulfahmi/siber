@@ -286,6 +286,31 @@ class DashboardController extends BaseController
         return $hasil;
     }
 
+    /**
+     * Ubah "H:i" / "H:i:s" / "H.i" menjadi detik sejak tengah malam.
+     * Mengembalikan null kalau formatnya tidak dikenali.
+     */
+    private function jamKeDetik($jam)
+    {
+        $jam = trim((string) $jam);
+        if ($jam === '') {
+            return null;
+        }
+        // Sebagian data lama menyimpan "7.00" atau "07.00".
+        $jam = str_replace(['.', ','], ':', $jam);
+        if (preg_match('/^\d{1,2}:\d{2}$/', $jam)) {
+            $jam .= ':00';
+        }
+        if (!preg_match('/^\d{1,2}:\d{2}:\d{2}$/', $jam)) {
+            return null;
+        }
+        [$h, $i, $s] = array_map('intval', explode(':', $jam));
+        if ($h > 23 || $i > 59 || $s > 59) {
+            return null;
+        }
+        return $h * 3600 + $i * 60 + $s;
+    }
+
     /** Daftar jam mengajar hari ini beserta status jurnalnya (kosong = tidak ada jam mengajar). */
     private function rekapJurnalMengajarHariIni($id_guru, $id_tahun)
     {
@@ -295,17 +320,26 @@ class DashboardController extends BaseController
 
         $model = new Jurnal($this->db);
         $baris = $model->getJadwalHariIniStatus($id_guru, $id_tahun, $this->namaHariIndo(date('l')));
-        $jamSekarang = date('H:i:s');
+
+        // Bandingkan sebagai ANGKA detik, bukan string. Perbandingan string
+        // '13:05:00' >= '7:00:00' bernilai FALSE karena '1' < '7', sehingga jam
+        // yang disimpan tanpa nol di depan ("7:00") selalu dianggap
+        // "Belum waktunya" walau pelajarannya sudah lewat.
+        $sekarangDetik = $this->jamKeDetik(date('H:i:s'));
 
         foreach ($baris as &$b) {
+            $mulaiDetik = $this->jamKeDetik($b['jam_mulai'] ?? null);
+
             if (!empty($b['id_jurnal'])) {
                 $b['status'] = 'Sudah';
-            } elseif ($jamSekarang >= $b['jam_mulai']) {
+            } elseif ($mulaiDetik === null || $sekarangDetik >= $mulaiDetik) {
+                // Jadwal tanpa jam yang valid dianggap sudah waktunya, supaya
+                // guru tidak terkunci menunggu selamanya.
                 $b['status'] = 'Belum';
             } else {
                 $b['status'] = 'Belum waktunya';
             }
-            $b['jam'] = substr($b['jam_mulai'], 0, 5) . ' - ' . substr($b['jam_selesai'], 0, 5);
+            $b['jam'] = substr((string) $b['jam_mulai'], 0, 5) . ' - ' . substr((string) $b['jam_selesai'], 0, 5);
         }
         unset($b);
 
