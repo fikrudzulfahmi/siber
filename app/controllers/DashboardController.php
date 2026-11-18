@@ -129,6 +129,29 @@ class DashboardController extends BaseController
     }
 
     /**
+     * Ubah "H:i" / "H:i:s" / "H.i" menjadi jumlah menit sejak tengah malam.
+     * Null kalau tidak terbaca. Dipakai supaya perbandingan jam tidak dilakukan
+     * sebagai string (lihat komentar di rekapPresensiHariIni).
+     */
+    private function menitDariJam($jam)
+    {
+        $jam = trim((string) $jam);
+        if ($jam === '') {
+            return null;
+        }
+        $jam = str_replace(['.', ','], ':', $jam);
+        if (!preg_match('/^(\d{1,2}):(\d{2})/', $jam, $m)) {
+            return null;
+        }
+        $h = (int) $m[1];
+        $i = (int) $m[2];
+        if ($h > 23 || $i > 59) {
+            return null;
+        }
+        return $h * 60 + $i;
+    }
+
+    /**
      * Rekap presensi hari ini.
      * Sumber: kegiatan lembaga (kegiatan + kegiatan_peserta), jadwal kerja (tabel jadwal),
      * dan scan finger (tabel attendance). Scan tetap ditampilkan walau tidak terjadwal.
@@ -261,11 +284,21 @@ class DashboardController extends BaseController
 
         // Datang
         if ($scanMasuk === null) {
-            $hasil['status_datang'] = ($jamSekarang > $jamSelesai) ? 'Alpa' : 'Belum Absen';
+            $menitSekarang = $this->menitDariJam($jamSekarang);
+            $menitSelesai  = $this->menitDariJam($jamSelesai);
+            $hasil['status_datang'] = ($menitSekarang !== null && $menitSelesai !== null && $menitSekarang > $menitSelesai)
+                ? 'Alpa' : 'Belum Absen';
             $hasil['waktu_datang']  = '--:--';
         } else {
             $hasil['waktu_datang']  = $scanMasuk;
-            $hasil['status_datang'] = ($scan['masuk'] > $jamMulai) ? 'Terlambat' : 'Tepat Waktu';
+            // Bandingkan pada tingkat MENIT. Nilai mentah dari database membawa
+            // detik ("08:00:37"), sedangkan jadwal bisa "08:00" / "08:00:00" —
+            // perbandingan string membuat 08:00:37 dianggap lebih besar dari
+            // 08:00 sehingga guru yang datang tepat pukul 08:00 tertulis Terlambat.
+            $menitScan   = $this->menitDariJam($scan['masuk'] ?? null);
+            $menitJadwal = $this->menitDariJam($jamMulai);
+            $hasil['status_datang'] = ($menitScan !== null && $menitJadwal !== null && $menitScan > $menitJadwal)
+                ? 'Terlambat' : 'Tepat Waktu';
         }
 
         // Pulang
@@ -280,7 +313,10 @@ class DashboardController extends BaseController
             }
         } else {
             $hasil['waktu_pulang']  = $scanPulang;
-            $hasil['status_pulang'] = ($scan['pulang'] < $jamSelesai) ? 'Pulang Cepat' : 'Sesuai';
+            $menitPulang  = $this->menitDariJam($scan['pulang'] ?? null);
+            $menitSelesai = $this->menitDariJam($jamSelesai);
+            $hasil['status_pulang'] = ($menitPulang !== null && $menitSelesai !== null && $menitPulang < $menitSelesai)
+                ? 'Pulang Cepat' : 'Sesuai';
         }
 
         return $hasil;
